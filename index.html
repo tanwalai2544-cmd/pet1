@@ -112,7 +112,11 @@
                     <span class="bg-white text-red-700 font-extrabold px-3 py-2 rounded-xl shadow text-xl tracking-wider">Pet's Station</span>
                     <div>
                         <h1 class="text-lg font-bold">ระบบปฏิบัติการหน้าร้าน & สต็อก (Staff Hub)</h1>
-                        <p class="text-xs text-red-200">ผู้ใช้งาน: <span id="staff-user-display" class="font-semibold underline">พนักงาน</span></p>
+                        <p class="text-xs text-red-200 flex items-center gap-2">
+                            <span>ผู้ใช้งาน: <span id="staff-user-display" class="font-semibold underline">พนักงาน</span></span>
+                            <span>&bull;</span>
+                            <span class="bg-red-900/60 px-2 py-0.5 rounded-md font-mono text-[11px] text-red-100 border border-red-600/40" id="live-timestamp-display">🕒 กำลังโหลดเวลา...</span>
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2.5 flex-wrap">
@@ -1066,6 +1070,18 @@
             "TX-2026-903": { supplier: "Royal Canin Thailand", invoice: "INV-RC-5541", items: "อาหารสุนัขพันธุ์เล็ก (30 แพ็ค)", amount: 42000 }
         };
 
+        // ฟังก์ชันแสดงผล Timestamp ปัจจุบันแบบ Real-time ที่ Header พนักงาน
+        function updateLiveTimestamp() {
+            const now = new Date();
+            const dateFormatted = now.toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const timeFormatted = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const timestampElem = document.getElementById('live-timestamp-display');
+            if (timestampElem) {
+                timestampElem.innerText = `🕒 ${dateFormatted} ${timeFormatted}`;
+            }
+        }
+        setInterval(updateLiveTimestamp, 1000);
+
         function togglePassword(inputId, eyeId) {
             const inputField = document.getElementById(inputId);
             const eyeIcon = document.getElementById(eyeId);
@@ -1112,6 +1128,7 @@
                 if(found.role === 'staff') {
                     document.getElementById('staff-user-display').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-staff-content').classList.remove('hidden');
+                    updateLiveTimestamp();
                     renderProductTable(productsFromSheet);
                 } else if(found.role === 'accountant') {
                     document.getElementById('current-user-display').innerText = `${found.name} (${found.email})`;
@@ -1633,6 +1650,7 @@
             lastTransactionReceiptData = {
                 date: dateStr,
                 time: timeStr,
+                timestamp: now.getTime(), // บันทึกค่า Timestamp เพื่อความแม่นยำในการเรียงลำดับและตรวจสอบ
                 taxId: generatedTaxId,
                 member: selectedMemberData ? `${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})` : 'ทั่วไป (General)',
                 items: JSON.parse(JSON.stringify(cartItems)),
@@ -1663,7 +1681,7 @@
             }
         }
 
-        // ฟังก์ชันเปิดหน้ารายงานการขาย (Default วันนี้อัตโนมัติ)
+        // ฟังก์ชันเปิดหน้ารายงานการขาย (Default วันนี้อัตโนมัติด้วย Timestamp ปัจจุบัน)
         function openStaffReportModal() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('reportFilterStart').value = today;
@@ -1693,7 +1711,6 @@
             filterStaffReports();
         }
 
-        // ฟังก์ชันกรองรายงานการขาย รองรับค้นหาชื่อสมาชิก สินค้า และ Tax ID พร้อมกัน
         function filterStaffReports() {
             const startDate = document.getElementById('reportFilterStart').value;
             const endDate = document.getElementById('reportFilterEnd').value;
@@ -1705,7 +1722,6 @@
             const filtered = completedSalesBills.filter(b => {
                 const matchDate = b.date >= startDate && b.date <= endDate;
                 
-                // ตรวจสอบเงื่อนไขการค้นหา (ชื่อสมาชิก, Tax ID หรือรายการสินค้าในบิล)
                 let matchSearch = true;
                 if (searchKeyword !== "") {
                     const memberText = b.member.toLowerCase();
@@ -1735,7 +1751,6 @@
                     sumNet += bill.net;
                 }
 
-                // สรุปชื่อสินค้าในบิลแสดงผลย่อๆ
                 let itemNamesSummary = bill.items.map(i => `${i.name} (${i.qty})`).join(', ');
 
                 const tr = document.createElement('tr');
@@ -2012,7 +2027,7 @@
             e.preventDefault();
             const desc = document.getElementById('drawer-desc').value.trim();
             const amount = parseFloat(document.getElementById('drawer-amount').value) || 0;
-            const todayStr = "2026-11-10";
+            const todayStr = new Date().toISOString().split('T')[0];
 
             if (currentDrawerType === 'income') {
                 journalEntries.unshift({
@@ -2243,7 +2258,7 @@
 
         function processAuditApproval() {
             const txId = document.getElementById('txId').value;
-            const dateStr = document.getElementById('txDate').value || "2026-11-10";
+            const dateStr = document.getElementById('txDate').value || new Date().toISOString().split('T')[0];
             const data = transactionMockup[txId];
             const channel = document.getElementById('auditPaymentChannel').value;
             
@@ -2273,7 +2288,7 @@
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
             const refNo = document.getElementById('expRefNo').value;
-            const dateStr = document.getElementById('expDate').value || "2026-11-10";
+            const dateStr = document.getElementById('expDate').value || new Date().toISOString().split('T')[0];
             const amount = parseFloat(document.getElementById('expAmount').value) || 0;
 
             journalEntries.unshift({
@@ -2295,9 +2310,10 @@
             const docType = document.getElementById('taxDocType').value;
             const customer = document.getElementById('taxCustomer').value;
             const amount = parseFloat(document.getElementById('taxAmount').value) || 0;
+            const todayStr = new Date().toISOString().split('T')[0];
 
             journalEntries.unshift({
-                date: "2026-11-10",
+                date: todayStr,
                 id: `TAX-${Math.floor(Math.random()*8999+1000)}`,
                 supplier: `${customer} (${docType})`,
                 account: docType === 'CN' ? 'ใบลดหนี้ (Contra Revenue)' : 'รายได้จากการขายสินค้า (Sales Revenue)',
@@ -2320,8 +2336,9 @@
         }
 
         function resetDateFilter() {
-            document.getElementById('startDate').value = "2026-11-10";
-            document.getElementById('endDate').value = "2026-11-10";
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = todayStr;
+            document.getElementById('endDate').value = todayStr;
             filterJournalByDateRange();
         }
 
