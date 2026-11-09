@@ -108,6 +108,8 @@
         <header class="bg-gradient-to-r from-red-700 to-red-800 text-white shadow-lg sticky top-0 z-30">
             <div class="w-full px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
+                    <!-- ปุ่มรายงานการขาย เพิ่มไว้ข้างหน้าโลโก้ Pet's Station ตามสั่ง -->
+                    <button onclick="openStaffReportModal()" class="bg-white hover:bg-red-50 text-red-700 font-bold px-3.5 py-2 rounded-xl shadow transition text-sm flex items-center gap-1.5">📊 รายงานการขาย</button>
                     <span class="bg-white text-red-700 font-extrabold px-3 py-2 rounded-xl shadow text-xl tracking-wider">Pet's Station</span>
                     <div>
                         <h1 class="text-lg font-bold">ระบบปฏิบัติการหน้าร้าน & สต็อก (Staff Hub)</h1>
@@ -225,6 +227,64 @@
         </main>
     </div>
 
+    <!-- ================= Staff Sales Report Modal (รายงานการขายของพนักงาน) ================= -->
+    <div id="staff-report-modal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative flex flex-col max-h-[92vh]">
+            <button onclick="closeStaffReportModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-gray-100 pb-4 mb-4 pr-10">
+                <h3 class="text-xl font-bold text-red-700 flex items-center gap-2"><span>📊</span> รายงานการขาย & ประวัติบิลสินค้าสำเร็จ</h3>
+                
+                <!-- ตัวกรองวันที่ และปุ่มลัด วันนี้ / เมื่อวาน -->
+                <div class="flex items-center gap-2 flex-wrap text-sm">
+                    <span class="font-bold text-gray-700">จากวันที่:</span>
+                    <input type="date" id="reportFilterStart" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
+                    <span class="font-bold text-gray-700">ถึง:</span>
+                    <input type="date" id="reportFilterEnd" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
+                    <button onclick="setReportDateToday()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl font-bold transition text-xs">วันนี้</button>
+                    <button onclick="setReportDateYesterday()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl font-bold transition text-xs">เมื่อวาน</button>
+                    <button onclick="filterStaffReports()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold transition shadow-sm text-xs">🔍 กรองข้อมูล</button>
+                </div>
+            </div>
+
+            <div class="overflow-y-auto flex-grow rounded-2xl border border-gray-200 shadow-inner">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-red-50 text-red-900 text-sm uppercase font-bold sticky top-0 backdrop-blur-sm z-10">
+                        <tr>
+                            <th class="p-3.5">Tax-ID / วันที่-เวลา</th>
+                            <th class="p-3.5">ชื่อลูกค้าสมาชิก</th>
+                            <th class="p-3.5 text-center">ช่องทางจ่าย</th>
+                            <th class="p-3.5 text-right">ส่วนลดทั้งหมด</th>
+                            <th class="p-3.5 text-right">ยอดขายสุทธิ</th>
+                            <th class="p-3.5 text-center">VAT 7%</th>
+                            <th class="p-3.5 text-center">จัดการบิล</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffReportTableBody" class="text-sm divide-y divide-gray-100">
+                        <!-- รายการบิลจะถูกแสดงผลที่นี่ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold text-gray-700">
+                <span>ยอดขายรวมทั้งหมดในช่วงที่เลือก: <span id="reportTotalSumNet" class="text-red-600 text-lg">0.00 ฿</span></span>
+                <button onclick="closeStaffReportModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-xl transition">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Modal ดูรายละเอียดบิล (View Bill Details) ================= -->
+    <div id="bill-detail-modal" class="hidden fixed inset-0 bg-black/80 z-[170] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative flex flex-col max-h-[90vfs]">
+            <button onclick="closeBillDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
+            <h3 class="text-lg font-bold text-red-700 mb-3 flex items-center gap-2"><span>📄</span> รายละเอียดบิลสินค้า</h3>
+            <div id="bill-detail-content" class="font-mono text-xs text-gray-800 bg-gray-50 p-4 rounded-2xl border border-gray-200 overflow-y-auto max-h-[350px] space-y-2"></div>
+            <div class="pt-4 flex gap-2">
+                <button onclick="closeBillDetailModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2.5 rounded-xl transition text-sm">ปิด</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= Member Popup Modal (ลูกค้าสมาชิก) ================= -->
     <div id="member-modal" class="hidden fixed inset-0 bg-black/80 z-[130] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative flex flex-col max-h-[90vh]">
@@ -289,16 +349,14 @@
                 <span id="pay-modal-total" class="font-bold text-gray-900 text-xl">0.00</span>
             </div>
             
-            <!-- ช่องส่วนลดท้ายบิล (บาทหรือ %) -->
             <div class="bg-red-50/70 p-4 rounded-2xl border border-red-200 space-y-3 shadow-sm">
                 <div class="flex justify-between items-center">
-                    <span class="text-red-900 font-bold text-base">🏷️ ส่วนลดท้ายบิล </span>
+                    <span class="text-red-900 font-bold text-base">🏷️ ส่วนลดท้ายบิล [F6]</span>
                     <div class="flex items-center gap-2">
                         <input type="number" id="pay-modal-extra-discount" oninput="calculateFinalCheckout()" value="0" min="0" step="0.01" class="w-32 border border-gray-300 rounded-xl p-2.5 text-right font-extrabold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none bg-white text-lg">
                         <span class="text-gray-700 font-bold">บาท</span>
                     </div>
                 </div>
-                <!-- ปุ่มเพิ่มส่วนลดด่วน 2%, 3%, 5% -->
                 <div class="flex items-center gap-2 pt-1">
                     <span class="text-xs font-bold text-gray-600">ส่วนลดด่วน:</span>
                     <button type="button" onclick="applyPercentDiscount(2)" class="flex-1 bg-white hover:bg-red-100 border border-red-300 text-red-700 font-bold py-2 rounded-xl text-xs transition shadow-sm">ลด 2%</button>
@@ -325,7 +383,6 @@
                 <input type="text" id="pay-modal-note" placeholder="หมายเหตุ กรอกหมายเหตุ..." class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
             </div>
 
-            <!-- Payment Methods -->
             <div class="grid grid-cols-5 gap-2 py-1 text-xs font-bold text-center">
                 <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                     <input type="radio" name="payMethod" value="cash" onchange="handlePaymentMethodChange()" class="text-red-600"> เงินสด
@@ -344,7 +401,6 @@
                 </label>
             </div>
 
-            <!-- Quick Cash Buttons Grid -->
             <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
                 <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">1</button>
                 <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">5</button>
@@ -359,7 +415,6 @@
                 <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2.5 font-bold text-blue-700 shadow-sm text-xs transition">พอดี</button>
             </div>
 
-            <!-- ช่องรับเงิน / แยกช่องโอนผสมสด และป้ายแจ้งเตือนส่วนต่าง -->
             <div class="pt-1">
                 <div id="single-receive-box">
                     <label id="receive-label-title" class="block text-sm font-bold text-gray-700 mb-1">รับเงินโอน [F7]</label>
@@ -402,7 +457,6 @@
     <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-gray-300 p-6 relative max-h-[90vh] flex flex-col">
         <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition z-10">✕</button>
         
-        <!-- ส่วนหัวใบเสร็จขนาด 80ซม (Thermal 80mm Printable Area) -->
         <div id="receipt-printable-area" class="font-mono text-xs text-gray-900 bg-white p-3 overflow-y-auto flex-grow space-y-2 border border-dashed border-gray-300 rounded-2xl shadow-inner my-2">
             <div class="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
                 <h2 class="text-base font-extrabold tracking-wider">ร้านสถานีสัตว์เลี้ยงTH</h2>
@@ -948,8 +1002,8 @@
         let selectedMemberData = null;
         let originalItemBasePrice = 0;
 
-        // ตัวแปรสำหรับนับลำดับธุรกรรมการขายในแต่ละเดือน (รูปแบบ YYYYMM)
         let salesTaxIdCounters = {};
+        let completedSalesBills = []; // เก็บประวัติบิลการขายสำเร็จทั้งหมด
 
         let membersData = [
             { petName: "หมีพู", ownerName: "ปะป๊า", address: "ศรีไพศาล", phone: "0813143599" },
@@ -1150,8 +1204,8 @@
 
                 let filtered = productsFromSheet.filter(p => {
                     const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                         p.name.toLowerCase().includes(keyword) || 
-                                         p.brand.toLowerCase().includes(keyword);
+                                       p.name.toLowerCase().includes(keyword) || 
+                                       p.brand.toLowerCase().includes(keyword);
                     const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                     const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                     return matchKeyword && matchBrand && matchUnit;
@@ -1201,6 +1255,8 @@
                 closeEditCartModal();
                 closeCheckoutModal();
                 closeReceiptModal();
+                closeStaffReportModal();
+                closeBillDetailModal();
             }
         });
 
@@ -1389,7 +1445,6 @@
                 if(r.value === 'transfer') r.checked = true;
             }
 
-            // Defult เป็น 'noprint' (ไม่พิมพ์ใบเสร็จ) เสมอตามคำสั่ง
             document.getElementById('print-option-select').value = 'noprint';
 
             calculateFinalCheckout();
@@ -1547,17 +1602,16 @@
             }
 
             const now = new Date();
-            const yearStr = now.getFullYear().toString(); // ปี ค.ศ. 4 หลัก
-            const monthStr = (now.getMonth() + 1).toString().padStart(2, '0'); // เดือน 2 หลัก
+            const yearStr = now.getFullYear().toString();
+            const monthStr = (now.getMonth() + 1).toString().padStart(2, '0');
             const yyyymm = yearStr + monthStr;
 
-            // จัดการสร้างและเรียงลำดับ Tax ID อัตโนมัติ (YYYYMM + ลำดับที่ของเดือนนั้นๆ)
             if (!salesTaxIdCounters[yyyymm]) {
                 salesTaxIdCounters[yyyymm] = 1;
             } else {
                 salesTaxIdCounters[yyyymm]++;
             }
-            let runningNumber = salesTaxIdCounters[yyyymm].toString(); // ไม่เติม zero padding เพื่อให้ได้เลขลำดับตรงๆ เช่น 1, 100
+            let runningNumber = salesTaxIdCounters[yyyymm].toString();
             let generatedTaxId = yyyymm + runningNumber;
 
             const dateStr = now.toISOString().split('T')[0];
@@ -1566,6 +1620,10 @@
             const vatAmount = parseFloat(document.getElementById('pay-modal-vat-amount').innerText.replace(' ฿', '').replace(/,/g, '')) || 0;
             const noteText = document.getElementById('pay-modal-note').value.trim();
             const changeVal = parseFloat(document.getElementById('pay-modal-change').innerText.replace(/,/g, '')) || 0;
+            const hasVat = document.getElementById('pay-modal-vat-checkbox').checked;
+
+            let totalCartDiscount = cartItems.reduce((acc, item) => acc + ((item.originalPrice || item.price) - item.price) * item.qty, 0);
+            let totalOverallDiscount = totalCartDiscount + extraDisc;
 
             lastTransactionReceiptData = {
                 date: dateStr,
@@ -1575,13 +1633,19 @@
                 items: JSON.parse(JSON.stringify(cartItems)),
                 subtotal: currentCheckoutSubtotal,
                 extraDiscount: extraDisc,
+                totalDiscount: totalOverallDiscount,
                 vat: vatAmount,
+                hasVat: hasVat,
                 net: finalNet,
                 payMethod: selectedMethod,
                 received: totalReceived,
                 change: changeVal,
-                note: noteText
+                note: noteText,
+                status: 'completed'
             };
+
+            // บันทึกลงรายการบิลสำเร็จ
+            completedSalesBills.unshift(lastTransactionReceiptData);
 
             closeCheckoutModal();
             clearCart();
@@ -1592,6 +1656,138 @@
                 openReceiptModal(lastTransactionReceiptData);
             } else {
                 alert(`บันทึกการขายสำเร็จเรียบร้อย\n- เลขที่ Tax ID: ${generatedTaxId}`);
+            }
+        }
+
+        // ฟังก์ชันควบคุมหน้าต่างรายงานการขายของพนักงาน
+        function openStaffReportModal() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reportFilterStart').value = today;
+            document.getElementById('reportFilterEnd').value = today;
+            filterStaffReports();
+            document.getElementById('staff-report-modal').classList.remove('hidden');
+        }
+
+        function closeStaffReportModal() {
+            document.getElementById('staff-report-modal').classList.add('hidden');
+        }
+
+        function setReportDateToday() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reportFilterStart').value = today;
+            document.getElementById('reportFilterEnd').value = today;
+            filterStaffReports();
+        }
+
+        function setReportDateYesterday() {
+            const d = new Date();
+            d.setDate(d.getDate() - 1);
+            const yesterday = d.toISOString().split('T')[0];
+            document.getElementById('reportFilterStart').value = yesterday;
+            document.getElementById('reportFilterEnd').value = yesterday;
+            filterStaffReports();
+        }
+
+        function filterStaffReports() {
+            const startDate = document.getElementById('reportFilterStart').value;
+            const endDate = document.getElementById('reportFilterEnd').value;
+
+            const tbody = document.getElementById('staffReportTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = completedSalesBills.filter(b => b.date >= startDate && b.date <= endDate);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-400 font-medium">ไม่พบประวัติบิลการขายในช่วงวันที่เลือก</td></tr>`;
+                document.getElementById('reportTotalSumNet').innerText = "0.00 ฿";
+                return;
+            }
+
+            let sumNet = 0;
+            const methodMap = { cash: 'เงินสด', transfer: 'เงินโอน', credit: 'บัตรเครดิต', debt: 'ลูกหนี้', mixed: 'โอนผสมสด' };
+
+            filtered.forEach((bill, idx) => {
+                const globalIdx = completedSalesBills.indexOf(bill);
+                if (bill.status === 'completed') {
+                    sumNet += bill.net;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = bill.status === 'cancelled' ? 'bg-gray-100 opacity-60' : 'hover:bg-red-50/50 transition';
+                tr.innerHTML = `
+                    <td class="p-3.5">
+                        <div class="font-bold font-mono text-gray-900">${bill.taxId}</div>
+                        <div class="text-xs text-gray-500">${bill.date} ${bill.time}</div>
+                    </td>
+                    <td class="p-3.5 font-semibold text-gray-800">${bill.member}</td>
+                    <td class="p-3.5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">${methodMap[bill.payMethod] || bill.payMethod}</span></td>
+                    <td class="p-3.5 text-right font-semibold text-red-600">${bill.totalDiscount.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    <td class="p-3.5 text-right font-bold text-gray-900">${bill.net.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    <td class="p-3.5 text-center"><span class="text-xs font-bold px-2 py-1 rounded ${bill.hasVat ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'}">${bill.hasVat ? 'มี (7%)' : 'ไม่มี'}</span></td>
+                    <td class="p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                            <button onclick="viewBillDetail(${globalIdx})" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-2.5 py-1.5 rounded-xl text-xs font-bold transition">ดูบิล</button>
+                            ${bill.status === 'completed' ? `
+                                <button onclick="recallAndEditBill(${globalIdx})" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold transition">แก้ไข</button>
+                                <button onclick="cancelBill(${globalIdx})" class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold transition">ยกเลิก</button>
+                            ` : `<span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-200">ยกเลิกแล้ว</span>`}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('reportTotalSumNet').innerText = sumNet.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+        }
+
+        function viewBillDetail(index) {
+            const bill = completedSalesBills[index];
+            const content = document.getElementById('bill-detail-content');
+            let itemsHtml = '';
+            bill.items.forEach(i => {
+                itemsHtml += `<div>- ${i.name} x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
+            });
+
+            content.innerHTML = `
+                <div class="text-center font-bold pb-2 border-b">สถานีสัตว์เลี้ยงTH (Tax ID: ${bill.taxId})</div>
+                <div>วันที่: ${bill.date} เวลา: ${bill.time}</div>
+                <div>สมาชิก: ${bill.member}</div>
+                <div class="py-1 border-b">รายการสินค้า:<br>${itemsHtml}</div>
+                <div>ยอดรวม: ${bill.subtotal.toLocaleString()} ฿</div>
+                <div>ส่วนลดรวม: -${bill.totalDiscount.toLocaleString()} ฿</div>
+                <div>VAT 7%: ${bill.vat.toLocaleString()} ฿</div>
+                <div class="font-bold text-red-700 pt-1 border-t">ยอดสุทธิ: ${bill.net.toLocaleString()} ฿</div>
+                <div>ชำระโดย: ${bill.payMethod} (รับ: ${bill.received.toLocaleString()} ฿ | ทอน: ${bill.change.toLocaleString()} ฿)</div>
+                ${bill.note ? `<div>หมายเหตุ: ${bill.note}</div>` : ''}
+            `;
+            document.getElementById('bill-detail-modal').classList.remove('hidden');
+        }
+
+        function closeBillDetailModal() {
+            document.getElementById('bill-detail-modal').classList.add('hidden');
+        }
+
+        function cancelBill(index) {
+            if (confirm(`คุณต้องการยกเลิกบิลเลขที่ ${completedSalesBills[index].taxId} ใช่หรือไม่?`)) {
+                completedSalesBills[index].status = 'cancelled';
+                filterStaffReports();
+                alert('ยกเลิกบิลสำเร็จเรียบร้อย');
+            }
+        }
+
+        // ฟังก์ชันดึงบิลกลับมาแก้ไข แล้วนำไปสู่หน้าหลัก POS พนักงาน
+        function recallAndEditBill(index) {
+            const bill = completedSalesBills[index];
+            if (confirm(`ต้องการดึงบิลเลขที่ ${bill.taxId} กลับมาแก้ไขที่หน้า POS ใช่หรือไม่? (สถานะบิลเดิมจะถูกยกเลิก)`)) {
+                // นำรายการสินค้ากลับเข้าตะกร้า
+                cartItems = JSON.parse(JSON.stringify(bill.items));
+                
+                // เปลี่ยนสถานะบิลเดิมเป็นยกเลิก (เนื่องจากถูกนำกลับมาแก้ไขเป็นบิลใหม่)
+                completedSalesBills[index].status = 'cancelled';
+
+                renderCart();
+                closeStaffReportModal();
+                alert(`ดึงรายการสินค้าจากบิล ${bill.taxId} กลับมาที่หน้า POS เรียบร้อยแล้ว คุณสามารถทำการแก้ไขและชำระเงินใหม่ได้ทันที`);
             }
         }
 
