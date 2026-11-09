@@ -246,7 +246,7 @@
             <div id="member-view-form" class="hidden flex flex-col flex-grow overflow-hidden">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4 pr-8">
                     <h3 id="member-form-title" class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📝</span> เพิ่มสมาชิกใหม่</h3>
-                    <button onclick="backToMemberList()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3.5 py-2 rounded-xl font-bold transition">⬅️</button>
+                    <button onclick="backToMemberList()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3.5 py-2 rounded-xl font-bold transition">⬅️ ย้อนกลับ</button>
                 </div>
 
                 <form onsubmit="saveMemberForm(event)" class="space-y-4 text-sm overflow-y-auto flex-grow pr-1">
@@ -342,6 +342,21 @@
                 <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                     <input type="radio" name="payMethod" value="mixed" onchange="handlePaymentMethodChange()" class="text-red-600"> โอนผสมสด
                 </label>
+            </div>
+
+            <!-- Quick Cash Buttons Grid -->
+            <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
+                <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">1</button>
+                <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">5</button>
+                <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">20</button>
+                <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">100</button>
+                <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">1000</button>
+                
+                <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">2</button>
+                <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">10</button>
+                <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">50</button>
+                <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">500</button>
+                <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2.5 font-bold text-blue-700 shadow-sm text-xs transition">พอดี</button>
             </div>
 
             <!-- ช่องรับเงิน / แยกช่องโอนผสมสด และป้ายแจ้งเตือนส่วนต่าง -->
@@ -511,7 +526,7 @@
             <div id="cash-drawer-step-2" class="hidden">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
                     <h3 id="drawer-form-title" class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📝</span> บันทึกรายการ</h3>
-                    <button onclick="backToDrawerStep1()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl font-semibold transition">⬅️</button>
+                    <button onclick="backToDrawerStep1()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl font-semibold transition">⬅️ ย้อนกลับ</button>
                 </div>
                 <form onsubmit="submitCashDrawer(event)" class="space-y-4 text-sm">
                     <div>
