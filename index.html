@@ -274,8 +274,7 @@
                 </table>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-sm font-bold text-gray-700">
-                <span>ยอดขายรวมทั้งหมดในช่วงที่เลือก: <span id="reportTotalSumNet" class="text-red-600 text-lg">0.00 ฿</span></span>
+            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-end items-center text-sm font-bold text-gray-700">
                 <button onclick="closeStaffReportModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-xl transition">ปิดหน้าต่าง</button>
             </div>
         </div>
@@ -1070,6 +1069,15 @@
             "TX-2026-903": { supplier: "Royal Canin Thailand", invoice: "INV-RC-5541", items: "อาหารสุนัขพันธุ์เล็ก (30 แพ็ค)", amount: 42000 }
         };
 
+        // ฟังก์ชันดึงวันที่ปัจจุบันในรูปแบบ YYYY-MM-DD ตาม Local Time ของเครื่อง เพื่อป้องกันปัญหาเวลาเหลื่อมล้ำ
+        function getLocalTodayDateString() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // ฟังก์ชันแสดงผล Timestamp ปัจจุบันแบบ Real-time ที่ Header พนักงาน
         function updateLiveTimestamp() {
             const now = new Date();
@@ -1636,7 +1644,7 @@
             let runningNumber = salesTaxIdCounters[yyyymm].toString();
             let generatedTaxId = yyyymm + runningNumber;
 
-            const dateStr = now.toISOString().split('T')[0];
+            const dateStr = getLocalTodayDateString();
             const timeStr = now.toTimeString().split(' ')[0];
             const extraDisc = parseFloat(document.getElementById('pay-modal-extra-discount').value) || 0;
             const vatAmount = parseFloat(document.getElementById('pay-modal-vat-amount').innerText.replace(' ฿', '').replace(/,/g, '')) || 0;
@@ -1650,7 +1658,7 @@
             lastTransactionReceiptData = {
                 date: dateStr,
                 time: timeStr,
-                timestamp: now.getTime(), // บันทึกค่า Timestamp เพื่อความแม่นยำในการเรียงลำดับและตรวจสอบ
+                timestamp: now.getTime(),
                 taxId: generatedTaxId,
                 member: selectedMemberData ? `${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})` : 'ทั่วไป (General)',
                 items: JSON.parse(JSON.stringify(cartItems)),
@@ -1681,9 +1689,9 @@
             }
         }
 
-        // ฟังก์ชันเปิดหน้ารายงานการขาย (Default วันนี้อัตโนมัติด้วย Timestamp ปัจจุบัน)
+        // ฟังก์ชันเปิดหน้ารายงานการขาย (ใช้ getLocalTodayDateString เพื่อให้ค่า Default เป็นวันปัจจุบันตามเครื่องเสมอ)
         function openStaffReportModal() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getLocalTodayDateString();
             document.getElementById('reportFilterStart').value = today;
             document.getElementById('reportFilterEnd').value = today;
             document.getElementById('reportSearchInput').value = '';
@@ -1696,7 +1704,7 @@
         }
 
         function setReportDateToday() {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getLocalTodayDateString();
             document.getElementById('reportFilterStart').value = today;
             document.getElementById('reportFilterEnd').value = today;
             filterStaffReports();
@@ -1705,7 +1713,10 @@
         function setReportDateYesterday() {
             const d = new Date();
             d.setDate(d.getDate() - 1);
-            const yesterday = d.toISOString().split('T')[0];
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const yesterday = `${year}-${month}-${day}`;
             document.getElementById('reportFilterStart').value = yesterday;
             document.getElementById('reportFilterEnd').value = yesterday;
             filterStaffReports();
@@ -1738,19 +1749,13 @@
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium">ไม่พบประวัติบิลการขายในช่วงวันที่หรือคำค้นหานี้</td></tr>`;
-                document.getElementById('reportTotalSumNet').innerText = "0.00 ฿";
                 return;
             }
 
-            let sumNet = 0;
             const methodMap = { cash: 'เงินสด', transfer: 'เงินโอน', credit: 'บัตรเครดิต', debt: 'ลูกหนี้', mixed: 'โอนผสมสด' };
 
             filtered.forEach((bill, idx) => {
                 const globalIdx = completedSalesBills.indexOf(bill);
-                if (bill.status === 'completed') {
-                    sumNet += bill.net;
-                }
-
                 let itemNamesSummary = bill.items.map(i => `${i.name} (${i.qty})`).join(', ');
 
                 const tr = document.createElement('tr');
@@ -1776,8 +1781,6 @@
                 `;
                 tbody.appendChild(tr);
             });
-
-            document.getElementById('reportTotalSumNet').innerText = sumNet.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
         }
 
         function viewBillDetail(index) {
@@ -2027,7 +2030,7 @@
             e.preventDefault();
             const desc = document.getElementById('drawer-desc').value.trim();
             const amount = parseFloat(document.getElementById('drawer-amount').value) || 0;
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalTodayDateString();
 
             if (currentDrawerType === 'income') {
                 journalEntries.unshift({
@@ -2258,7 +2261,7 @@
 
         function processAuditApproval() {
             const txId = document.getElementById('txId').value;
-            const dateStr = document.getElementById('txDate').value || new Date().toISOString().split('T')[0];
+            const dateStr = document.getElementById('txDate').value || getLocalTodayDateString();
             const data = transactionMockup[txId];
             const channel = document.getElementById('auditPaymentChannel').value;
             
@@ -2288,7 +2291,7 @@
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
             const refNo = document.getElementById('expRefNo').value;
-            const dateStr = document.getElementById('expDate').value || new Date().toISOString().split('T')[0];
+            const dateStr = document.getElementById('expDate').value || getLocalTodayDateString();
             const amount = parseFloat(document.getElementById('expAmount').value) || 0;
 
             journalEntries.unshift({
@@ -2310,7 +2313,7 @@
             const docType = document.getElementById('taxDocType').value;
             const customer = document.getElementById('taxCustomer').value;
             const amount = parseFloat(document.getElementById('taxAmount').value) || 0;
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalTodayDateString();
 
             journalEntries.unshift({
                 date: todayStr,
@@ -2336,7 +2339,7 @@
         }
 
         function resetDateFilter() {
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = getLocalTodayDateString();
             document.getElementById('startDate').value = todayStr;
             document.getElementById('endDate').value = todayStr;
             filterJournalByDateRange();
