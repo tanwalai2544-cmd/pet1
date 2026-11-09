@@ -191,7 +191,7 @@
                     </div>
                 </div>
 
-                <!-- เพิ่มส่วนสรุปรายการ จำนวน, ส่วนลด, ราคารวมสุทธิ ตามที่ดีไซน์ต้องการ -->
+                <!-- ส่วนสรุปรายการ จำนวน, ส่วนลด, ราคารวมสุทธิ -->
                 <div class="border-t pt-3 pb-2 space-y-1.5 text-sm bg-gray-50 p-3 rounded-xl border border-gray-200">
                     <div class="flex justify-between text-gray-600">
                         <span>จำนวนสินค้าทั้งหมด:</span>
@@ -221,7 +221,6 @@
         <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative flex flex-col max-h-[90vh]">
             <button onclick="closeMemberModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
             
-            <!-- View 1: Member List & Search -->
             <div id="member-view-list" class="flex flex-col flex-grow overflow-hidden">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4 pr-8">
                     <h3 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>👥</span> เลือกลูกค้าสมาชิก (Member Directory)</h3>
@@ -232,12 +231,9 @@
                     <input type="text" id="memberSearchInput" onkeyup="filterMembers()" placeholder="🔍 ค้นหาจากชื่อน้อง, ชื่อเจ้าของ, เบอร์โทร หรือที่อยู่..." class="w-full border border-gray-300 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none shadow-inner">
                 </div>
 
-                <div class="overflow-y-auto flex-grow space-y-2.5 pr-1" id="member-list-container">
-                    <!-- รายการสมาชิกจะถูกเรนเดอร์ที่นี่ -->
-                </div>
+                <div class="overflow-y-auto flex-grow space-y-2.5 pr-1" id="member-list-container"></div>
             </div>
 
-            <!-- View 2: Add / Edit Member Form -->
             <div id="member-view-form" class="hidden flex flex-col flex-grow overflow-hidden">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4 pr-8">
                     <h3 id="member-form-title" class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📝</span> เพิ่มสมาชิกใหม่</h3>
@@ -272,7 +268,7 @@
         </div>
     </div>
 
-    <!-- ================= Checkout Payment Modal (หน้าต่างชำระเงินตามแบบที่ส่งมา) ================= -->
+    <!-- ================= Checkout Payment Modal (หน้าต่างชำระเงินปรับปรุงใหม่ตามเงื่อนไข) ================= -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-black/70 z-[150] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative max-h-[95vh] overflow-y-auto">
             <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
@@ -280,19 +276,27 @@
 
             <div class="space-y-4 text-sm">
                 <div class="flex justify-between items-center text-base">
-                    <span class="text-gray-600 font-semibold">ราคารวม</span>
+                    <span class="text-gray-600 font-semibold">ราคารวม (หลังหักส่วนลดรายการ/ของแถม)</span>
                     <span id="pay-modal-total" class="font-bold text-gray-900 text-lg">0.00</span>
                 </div>
-                <div class="flex justify-between items-center text-base">
-                    <span class="text-gray-600 font-semibold">ส่วนลด [F6] กรอกส่วนลดเป็น %</span>
-                    <span class="font-bold text-gray-900">0.00</span>
+                
+                <!-- ส่วนลดท้ายบิล [F6] ที่สามารถกรอกแก้ไขได้ -->
+                <div class="flex justify-between items-center text-base bg-gray-50 p-2.5 rounded-xl border">
+                    <span class="text-gray-700 font-semibold">ส่วนลดท้ายบิล [F6] (บาทหรือ %)</span>
+                    <input type="number" id="pay-modal-extra-discount" oninput="calculateFinalCheckout()" value="0" min="0" step="0.01" class="w-32 border border-gray-300 rounded-lg p-1.5 text-right font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
                 </div>
-                <div class="flex justify-between items-center text-base border-b pb-3">
-                    <span class="text-gray-600 font-semibold">VAT 7%</span>
-                    <span class="font-bold text-gray-900">0.00</span>
+
+                <!-- ช่องเลือกคิด VAT 7% (Defult เป็นไม่มี VAT) -->
+                <div class="flex justify-between items-center text-base bg-red-50/50 p-3 rounded-xl border border-red-100">
+                    <label class="flex items-center gap-2 font-bold text-gray-800 cursor-pointer">
+                        <input type="checkbox" id="pay-modal-vat-checkbox" onchange="calculateFinalCheckout()" class="w-5 h-5 text-red-600 rounded">
+                        <span>คำนวณ VAT 7% เพิ่มเติม</span>
+                    </label>
+                    <span id="pay-modal-vat-amount" class="font-bold text-gray-700">0.00 ฿</span>
                 </div>
+
                 <div class="flex justify-between items-center text-lg font-bold bg-red-50 p-3 rounded-xl border border-red-100">
-                    <span class="text-red-800">ยอดสุทธิ</span>
+                    <span class="text-red-800">ยอดสุทธิ (อัปเดตอัตโนมัติ)</span>
                     <span id="pay-modal-net" class="text-red-700 text-2xl">0.00</span>
                 </div>
 
@@ -357,7 +361,7 @@
         </div>
     </div>
 
-    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ติ๊กแถม + รีสตาร์ท) ================= -->
+    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ติ๊กแถมล็อกจำนวนเป็น 1) ================= -->
     <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/60 z-[140] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
             <button onclick="closeEditCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
@@ -378,6 +382,7 @@
 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">จำนวน</label>
+                    <!-- ช่องจำนวน: หากติ๊กของแถมจะถูกล็อกไม่ให้แก้และเป็น 1 เท่านั้น -->
                     <input type="number" id="form-edit-item-qty" min="1" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 </div>
 
@@ -395,7 +400,7 @@
                 <div class="bg-red-50 p-3.5 rounded-xl border border-red-200">
                     <label class="flex items-center space-x-2 text-sm text-red-900 font-semibold cursor-pointer">
                         <input type="checkbox" id="form-edit-is-gift" onchange="toggleGiftItemCheckbox()" class="w-5 h-5 text-red-600 rounded">
-                        <span>🎁 ของแถม (ปรับราคาขายเป็น 0 บาททันที)</span>
+                        <span>🎁 ของแถม (ปรับราคาขายเป็น 0 และล็อกจำนวนเป็น 1 ชิ้น)</span>
                     </label>
                 </div>
 
@@ -476,9 +481,7 @@
                             <th class="p-3.5 text-center">เลือกสินค้า</th>
                         </tr>
                     </thead>
-                    <tbody id="f1ProductTableBody" class="text-base divide-y divide-gray-100">
-                        <!-- รายการสินค้าแสดงที่นี่ -->
-                    </tbody>
+                    <tbody id="f1ProductTableBody" class="text-base divide-y divide-gray-100"></tbody>
                 </table>
             </div>
         </div>
@@ -544,18 +547,10 @@
                 </div>
                 
                 <div class="flex bg-red-800 p-1.5 rounded-xl shadow-inner flex-wrap gap-1.5">
-                    <button onclick="switchMainTab('procurement')" id="btn-procurement" class="px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow">
-                        📦 ตรวจสอบรับสินค้า (Audit)
-                    </button>
-                    <button onclick="switchMainTab('expense')" id="btn-expense" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">
-                        💸 ค่าใช้จ่าย & ระบบจ่ายเงิน
-                    </button>
-                    <button onclick="switchMainTab('tax')" id="btn-tax" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">
-                        🧾 ใบเสร็จ/ใบกำกับภาษี/CN
-                    </button>
-                    <button onclick="switchMainTab('reports')" id="btn-reports" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">
-                        📊 งบการเงิน & สมุดรายวัน
-                    </button>
+                    <button onclick="switchMainTab('procurement')" id="btn-procurement" class="px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow">📦 ตรวจสอบรับสินค้า (Audit)</button>
+                    <button onclick="switchMainTab('expense')" id="btn-expense" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">💸 ค่าใช้จ่าย & ระบบจ่ายเงิน</button>
+                    <button onclick="switchMainTab('tax')" id="btn-tax" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">🧾 ใบเสร็จ/ใบกำกับภาษี/CN</button>
+                    <button onclick="switchMainTab('reports')" id="btn-reports" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">📊 งบการเงิน & สมุดรายวัน</button>
                 </div>
             </div>
         </header>
@@ -565,9 +560,7 @@
                 
                 <div id="form-procurement-container">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>📦</span> ตรวจสอบและลงบัญชีรับเข้าสินค้า (Audit-002)
-                        </h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📦</span> ตรวจสอบและลงบัญชีรับเข้าสินค้า (Audit-002)</h2>
                         <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Pay-001</span>
                     </div>
                     
@@ -629,9 +622,7 @@
 
                 <div id="form-expense-container" class="hidden">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>💸</span> บันทึกค่าใช้จ่ายในร้าน (Expense & Payment)
-                        </h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>💸</span> บันทึกค่าใช้จ่ายในร้าน (Expense & Payment)</h2>
                         <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Log-002</span>
                     </div>
                     <form id="expenseForm" class="space-y-3.5 text-base">
@@ -674,9 +665,7 @@
 
                 <div id="form-tax-container" class="hidden">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>🧾</span> ระบบออกใบเสร็จ / ใบกำกับภาษี / CN
-                        </h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>🧾</span> ระบบออกใบเสร็จ / ใบกำกับภาษี / CN</h2>
                         <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Tax & CN</span>
                     </div>
                     <div class="space-y-3.5 text-base">
@@ -718,9 +707,7 @@
                 
                 <section id="section-journal" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col">
                     <div class="flex flex-col justify-between items-start border-b border-red-100 pb-3 mb-4 gap-3">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>📊</span> สมุดรายวันทั่วไป & ประวัติธุรกรรม (General Journal)
-                        </h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📊</span> สมุดรายวันทั่วไป & ประวัติธุรกรรม (General Journal)</h2>
                         <div class="flex flex-wrap items-center gap-2.5 bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-sm w-full justify-between">
                             <div class="flex items-center gap-2">
                                 <span class="text-gray-700 font-bold">จากวันที่:</span>
@@ -760,9 +747,7 @@
 
                 <section id="section-reports" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col hidden">
                     <div class="flex justify-between items-center border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>📈</span> งบกำไรขาดทุน & งบดุล (เชื่อมโยงอัตโนมัติ)
-                        </h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📈</span> งบกำไรขาดทุน & งบดุล (เชื่อมโยงอัตโนมัติ)</h2>
                         <div class="flex items-center gap-1.5 bg-gray-50 p-1.5 rounded-xl border text-sm font-semibold">
                             <button onclick="switchReportPeriod('monthly')" id="rep-monthly" class="px-3.5 py-1.5 rounded-lg bg-red-600 text-white font-bold">รายเดือน</button>
                             <button onclick="switchReportPeriod('yearly')" id="rep-yearly" class="px-3.5 py-1.5 rounded-lg text-gray-700">รายปี</button>
@@ -1005,7 +990,7 @@
                 switchAuthTab('otp-reset');
             } else {
                 document.getElementById('error-message-text').innerText = "ไม่พบ Google Mail นี้ในระบบฐานข้อมูลร้านที่ได้รับอนุญาต";
-                document.getElementById('login-error-alert').classList.remove('hidden');
+                document.getElementById('login-error-alert').classList.add('hidden');
             }
         }
 
@@ -1291,21 +1276,23 @@
             backToMemberList();
         }
 
-        // ================= Checkout / Payment Modal Functions =================
-        let currentCheckoutTotal = 0;
+        // ================= Checkout / Payment Modal Functions (ตามเงื่อนไขข้อ 3) =================
+        let currentCheckoutSubtotal = 0;
 
         function openCheckoutModal() {
             if (cartItems.length === 0) {
                 alert('กรุณาเลือกสินค้าใส่ตะกร้าก่อนทำรายการชำระเงิน');
                 return;
             }
-            let total = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            currentCheckoutTotal = total;
-            document.getElementById('pay-modal-total').innerText = total.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            document.getElementById('pay-modal-net').innerText = total.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            document.getElementById('pay-modal-received').value = total;
-            document.getElementById('pay-modal-change').innerText = "0.00";
+            let subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            currentCheckoutSubtotal = subtotal;
 
+            document.getElementById('pay-modal-total').innerText = subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('pay-modal-extra-discount').value = 0;
+            document.getElementById('pay-modal-vat-checkbox').checked = false;
+            document.getElementById('pay-modal-vat-amount').innerText = "0.00 ฿";
+
+            calculateFinalCheckout();
             document.getElementById('checkout-modal').classList.remove('hidden');
             setTimeout(() => {
                 const recInput = document.getElementById('pay-modal-received');
@@ -1318,6 +1305,27 @@
             document.getElementById('checkout-modal').classList.add('hidden');
         }
 
+        function calculateFinalCheckout() {
+            const extraDisc = parseFloat(document.getElementById('pay-modal-extra-discount').value) || 0;
+            const hasVat = document.getElementById('pay-modal-vat-checkbox').checked;
+
+            let afterExtraDisc = currentCheckoutSubtotal - extraDisc;
+            if (afterExtraDisc < 0) afterExtraDisc = 0;
+
+            let vatAmount = 0;
+            let finalNet = afterExtraDisc;
+
+            if (hasVat) {
+                vatAmount = afterExtraDisc * 0.07;
+                finalNet = afterExtraDisc + vatAmount;
+            }
+
+            document.getElementById('pay-modal-vat-amount').innerText = vatAmount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-modal-net').innerText = finalNet.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('pay-modal-received').value = finalNet.toFixed(2);
+            calculateChange();
+        }
+
         function addCashAmount(val) {
             const recInput = document.getElementById('pay-modal-received');
             let current = parseFloat(recInput.value) || 0;
@@ -1326,19 +1334,22 @@
         }
 
         function setExactCash() {
-            document.getElementById('pay-modal-received').value = currentCheckoutTotal;
+            const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
+            document.getElementById('pay-modal-received').value = finalNet.toFixed(2);
             calculateChange();
         }
 
         function calculateChange() {
             const received = parseFloat(document.getElementById('pay-modal-received').value) || 0;
-            let change = received - currentCheckoutTotal;
+            const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
+            let change = received - finalNet;
             document.getElementById('pay-modal-change').innerText = change >= 0 ? change.toLocaleString('en-US', { minimumFractionDigits: 2 }) : change.toLocaleString('en-US', { minimumFractionDigits: 2 });
         }
 
         function confirmCheckout() {
             const received = parseFloat(document.getElementById('pay-modal-received').value) || 0;
-            if (received < currentCheckoutTotal) {
+            const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
+            if (received < finalNet) {
                 alert('⚠️ ยอดรับเงินน้อยกว่ายอดสุทธิ กรุณารับเงินเพิ่ม');
                 return;
             }
@@ -1348,7 +1359,7 @@
             clearCart();
         }
 
-        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม & รีสตาร์ท =================
+        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม (ล็อกจำนวนเป็น 1 และเพิ่มซ้ำได้ตามข้อ 1, 2) =================
         function openEditCartModal(index) {
             const item = cartItems[index];
             document.getElementById('edit-cart-index').value = index;
@@ -1360,14 +1371,20 @@
             document.getElementById('form-edit-item-discount').value = item.discount || 0;
             document.getElementById('form-edit-item-note').value = item.note || '';
 
-            const isGift = (item.price === 0 && (item.discount === 0 || item.discount >= originalItemBasePrice));
+            const isGift = (item.isGift === true);
             document.getElementById('form-edit-is-gift').checked = isGift;
 
+            const qtyInput = document.getElementById('form-edit-item-qty');
             if (isGift) {
                 document.getElementById('form-edit-item-price').value = 0;
+                qtyInput.value = 1;
+                qtyInput.disabled = true;
+                qtyInput.classList.add('bg-gray-100', 'cursor-not-allowed');
             } else {
                 let calcPrice = originalItemBasePrice - (item.discount || 0);
                 document.getElementById('form-edit-item-price').value = calcPrice >= 0 ? calcPrice : 0;
+                qtyInput.disabled = false;
+                qtyInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
             }
 
             document.getElementById('discount-error-msg').classList.add('hidden');
@@ -1382,6 +1399,9 @@
             document.getElementById('form-edit-is-gift').checked = false;
             document.getElementById('form-edit-item-discount').value = 0;
             document.getElementById('form-edit-item-price').value = originalItemBasePrice;
+            const qtyInput = document.getElementById('form-edit-item-qty');
+            qtyInput.disabled = false;
+            qtyInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
             document.getElementById('discount-error-msg').classList.add('hidden');
         }
 
@@ -1389,14 +1409,20 @@
             const isChecked = document.getElementById('form-edit-is-gift').checked;
             const priceInput = document.getElementById('form-edit-item-price');
             const discountInput = document.getElementById('form-edit-item-discount');
+            const qtyInput = document.getElementById('form-edit-item-qty');
             
             if (isChecked) {
                 priceInput.value = 0;
                 discountInput.value = originalItemBasePrice;
+                qtyInput.value = 1;
+                qtyInput.disabled = true;
+                qtyInput.classList.add('bg-gray-100', 'cursor-not-allowed');
                 document.getElementById('discount-error-msg').classList.add('hidden');
             } else {
                 discountInput.value = 0;
                 priceInput.value = originalItemBasePrice;
+                qtyInput.disabled = false;
+                qtyInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
             }
         }
 
@@ -1410,6 +1436,10 @@
                 errorMsg.classList.remove('hidden');
                 priceInput.value = 0;
                 giftCheckbox.checked = true;
+                const qtyInput = document.getElementById('form-edit-item-qty');
+                qtyInput.value = 1;
+                qtyInput.disabled = true;
+                qtyInput.classList.add('bg-gray-100', 'cursor-not-allowed');
             } else {
                 errorMsg.classList.add('hidden');
                 let newPrice = originalItemBasePrice - discountVal;
@@ -1425,9 +1455,10 @@
         function saveCartItemEdit(e) {
             e.preventDefault();
             const index = parseInt(document.getElementById('edit-cart-index').value);
-            const newQty = parseInt(document.getElementById('form-edit-item-qty').value) || 1;
-            const finalPrice = parseFloat(document.getElementById('form-edit-item-price').value) || 0;
-            const newDiscount = parseFloat(document.getElementById('form-edit-item-discount').value) || 0;
+            const isGift = document.getElementById('form-edit-is-gift').checked;
+            const newQty = isGift ? 1 : (parseInt(document.getElementById('form-edit-item-qty').value) || 1);
+            const finalPrice = isGift ? 0 : (parseFloat(document.getElementById('form-edit-item-price').value) || 0);
+            const newDiscount = isGift ? originalItemBasePrice : (parseFloat(document.getElementById('form-edit-item-discount').value) || 0);
             const newNote = document.getElementById('form-edit-item-note').value;
 
             if (index >= 0 && index < cartItems.length) {
@@ -1436,6 +1467,7 @@
                 cartItems[index].discount = newDiscount;
                 cartItems[index].note = newNote;
                 cartItems[index].originalPrice = originalItemBasePrice;
+                cartItems[index].isGift = isGift;
             }
             renderCart();
             closeEditCartModal();
@@ -1572,17 +1604,23 @@
                 alert('⚠️ บิลถูกพักไว้เต็มทั้ง 3 ช่องแล้ว! กรุณากดลบบิลที่พักไว้ก่อนจึงจะสามารถเพิ่มสินค้าใหม่ได้');
                 return;
             }
-            const existing = cartItems.find(i => i.name === name);
+            // เงื่อนไขข้อ 2: หากเพิ่มสินค้าปกติ (ไม่ใช่ของแถม) ให้รวมจำนวนถ้ารายการซ้ำ แต่ถ้าเพิ่มของแถมหรือสินค้าทั่วไป จะพิจารณาเพิ่มแถวใหม่หรือบวกตามเหมาะสม
+            const existing = cartItems.find(i => i.name === name && !i.isGift);
             if(existing) { 
                 existing.qty += 1; 
             } else { 
-                cartItems.push({ name, price, qty: 1, discount: 0, note: '', originalPrice: price }); 
+                cartItems.push({ name, price, qty: 1, discount: 0, note: '', originalPrice: price, isGift: false }); 
             }
             renderCart();
         }
 
         function updateCartQty(index, newQty) {
             const qty = parseInt(newQty);
+            if (cartItems[index].isGift) {
+                cartItems[index].qty = 1; // ล็อกของแถมเป็น 1 เสมอ
+                renderCart();
+                return;
+            }
             if (isNaN(qty) || qty <= 0) {
                 cartItems.splice(index, 1);
             } else {
@@ -1620,8 +1658,7 @@
                 let origPrice = item.originalPrice !== undefined ? item.originalPrice : item.price;
                 let itemDisc = item.discount || 0;
                 
-                // ถ้าราคาขายเป็น 0 หรือตั้งเป็นของแถม ให้คิดส่วนลดเท่ากับราคาตั้งต้น
-                if (item.price === 0) {
+                if (item.isGift) {
                     itemDisc = origPrice;
                 }
 
@@ -1637,10 +1674,10 @@
                 row.innerHTML = `
                     <td class="py-3 pr-2 font-bold text-gray-900 text-sm">
                         ${item.name}
-                        ${item.price === 0 ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold">ของแถม</span>' : ''}
+                        ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold">ของแถม</span>' : ''}
                     </td>
                     <td class="py-3 text-center">
-                        <input type="number" min="1" value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-lg text-center py-1.5 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none">
+                        <input type="number" min="1" ${item.isGift ? 'disabled' : ''} value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-lg text-center py-1.5 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
                     </td>
                     <td class="py-3 text-right font-bold text-gray-900 text-sm">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
                     <td class="py-3 text-center flex items-center justify-center gap-1.5">
