@@ -256,21 +256,25 @@
         </div>
     </div>
 
-    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ติ๊กแถม) ================= -->
+    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ปรับราคา/ส่วนลดอัตโนมัติ + รีสตาร์ท) ================= -->
     <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/60 z-[140] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
             <button onclick="closeEditCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
-            <h3 class="text-lg font-bold text-gray-800 mb-5">แก้ไขข้อมูลสินค้า</h3>
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-bold text-gray-800">แก้ไขข้อมูลสินค้า</h3>
+                <!-- ปุ่มรีสตาร์ทคืนค่าเริ่มต้น -->
+                <button type="button" onclick="resetEditCartForm()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                    🔄 รีสตาร์ทค่าเดิม
+                </button>
+            </div>
             
             <form onsubmit="saveCartItemEdit(event)" class="space-y-4 text-sm">
                 <input type="hidden" id="edit-cart-index" value="-1">
                 
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">ราคาขาย</label>
-                    <div class="relative">
-                        <input type="number" id="form-edit-item-price" step="0.01" min="0" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none pr-10">
-                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">⌄</span>
-                    </div>
+                    <label class="block font-semibold text-gray-700 mb-1">ราคาขาย (คำนวณอัตโนมัติ)</label>
+                    <!-- ล็อคช่องราคาขายด้วย readonly ไม่ให้พิมพ์แก้เอง -->
+                    <input type="number" id="form-edit-item-price" step="0.01" readonly class="w-full border border-gray-300 bg-gray-100 rounded-lg p-3 text-base text-gray-700 font-bold cursor-not-allowed">
                 </div>
 
                 <div>
@@ -279,8 +283,9 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">ส่วนลด</label>
-                    <input type="number" id="form-edit-item-discount" step="0.01" min="0" value="0" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <label class="block font-semibold text-gray-700 mb-1">ส่วนลด (บาท)</label>
+                    <input type="number" id="form-edit-item-discount" step="0.01" min="0" value="0" oninput="calculateEditItemPrice()" placeholder="กรอกจำนวนเงินส่วนลด" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <span id="discount-error-msg" class="text-xs text-red-600 hidden font-semibold mt-1 block">⚠️ ไม่สามารถลดราคาเกินราคาขายได้</span>
                 </div>
 
                 <div>
@@ -292,7 +297,7 @@
                 <div class="bg-red-50 p-3.5 rounded-xl border border-red-200">
                     <label class="flex items-center space-x-2 text-sm text-red-900 font-semibold cursor-pointer">
                         <input type="checkbox" id="form-edit-is-gift" onchange="toggleGiftItemCheckbox()" class="w-5 h-5 text-red-600 rounded">
-                        <span>🎁 ของแถม (ปรับราคาขายเป็น 0 บาท)</span>
+                        <span>🎁 ของแถม (ปรับราคาขายเป็น 0 บาททันที)</span>
                     </label>
                 </div>
 
@@ -774,6 +779,7 @@
         let currentSortOrder = 'none';
         let currentDrawerType = '';
         let selectedMemberData = null;
+        let originalItemBasePrice = 0; // ตัวแปรเก็บราคาตั้งต้นของสินค้าชิ้นที่กำลังแก้ไข
 
         let membersData = [
             { petName: "หมีพู", ownerName: "ปะป๊า", address: "ศรีไพศาล", phone: "0813143599" },
@@ -947,8 +953,8 @@
 
             let filtered = productsFromSheet.filter(p => {
                 const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                     p.name.toLowerCase().includes(keyword) || 
-                                     p.brand.toLowerCase().includes(keyword);
+                                   p.name.toLowerCase().includes(keyword) || 
+                                   p.brand.toLowerCase().includes(keyword);
                 const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                 const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                 return matchKeyword && matchBrand && matchUnit;
@@ -1188,18 +1194,30 @@
             backToMemberList();
         }
 
-        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม =================
+        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม & รีสตาร์ท =================
         function openEditCartModal(index) {
             const item = cartItems[index];
             document.getElementById('edit-cart-index').value = index;
-            document.getElementById('form-edit-item-price').value = item.price;
+            
+            // ค้นหาราคาตั้งต้นจากรายการสินค้าในระบบ (ถ้าไม่มีใช้ราคาปัจจุบันในตะกร้า)
+            const foundProd = productsFromSheet.find(p => p.name === item.name);
+            originalItemBasePrice = foundProd ? foundProd.price : (item.price === 0 ? item.originalPrice || 150 : item.price);
+
             document.getElementById('form-edit-item-qty').value = item.qty;
             document.getElementById('form-edit-item-discount').value = item.discount || 0;
             document.getElementById('form-edit-item-note').value = item.note || '';
 
-            const isGift = item.price === 0;
+            const isGift = (item.price === 0 && (item.discount === 0 || item.discount >= originalItemBasePrice));
             document.getElementById('form-edit-is-gift').checked = isGift;
-            
+
+            if (isGift) {
+                document.getElementById('form-edit-item-price').value = 0;
+            } else {
+                let calcPrice = originalItemBasePrice - (item.discount || 0);
+                document.getElementById('form-edit-item-price').value = calcPrice >= 0 ? calcPrice : 0;
+            }
+
+            document.getElementById('discount-error-msg').classList.add('hidden');
             document.getElementById('edit-cart-modal').classList.remove('hidden');
         }
 
@@ -1207,11 +1225,48 @@
             document.getElementById('edit-cart-modal').classList.add('hidden');
         }
 
+        // ฟังก์ชันรีสตาร์ทคืนค่าเริ่มต้นใน Pop-up แก้ไข
+        function resetEditCartForm() {
+            document.getElementById('form-edit-is-gift').checked = false;
+            document.getElementById('form-edit-item-discount').value = 0;
+            document.getElementById('form-edit-item-price').value = originalItemBasePrice;
+            document.getElementById('discount-error-msg').classList.add('hidden');
+        }
+
         function toggleGiftItemCheckbox() {
             const isChecked = document.getElementById('form-edit-is-gift').checked;
             const priceInput = document.getElementById('form-edit-item-price');
+            const discountInput = document.getElementById('form-edit-item-discount');
+            
             if (isChecked) {
                 priceInput.value = 0;
+                discountInput.value = originalItemBasePrice;
+                document.getElementById('discount-error-msg').classList.add('hidden');
+            } else {
+                discountInput.value = 0;
+                priceInput.value = originalItemBasePrice;
+            }
+        }
+
+        function calculateEditItemPrice() {
+            const discountVal = parseFloat(document.getElementById('form-edit-item-discount').value) || 0;
+            const priceInput = document.getElementById('form-edit-item-price');
+            const errorMsg = document.getElementById('discount-error-msg');
+            const giftCheckbox = document.getElementById('form-edit-is-gift');
+
+            if (discountVal > originalItemBasePrice) {
+                errorMsg.classList.remove('hidden');
+                priceInput.value = 0;
+                giftCheckbox.checked = true;
+            } else {
+                errorMsg.classList.add('hidden');
+                let newPrice = originalItemBasePrice - discountVal;
+                priceInput.value = newPrice >= 0 ? newPrice : 0;
+                if (discountVal === originalItemBasePrice) {
+                    giftCheckbox.checked = true;
+                } else {
+                    giftCheckbox.checked = false;
+                }
             }
         }
 
@@ -1219,16 +1274,16 @@
             e.preventDefault();
             const index = parseInt(document.getElementById('edit-cart-index').value);
             const newQty = parseInt(document.getElementById('form-edit-item-qty').value) || 1;
-            const isGift = document.getElementById('form-edit-is-gift').checked;
-            const newPrice = isGift ? 0 : (parseFloat(document.getElementById('form-edit-item-price').value) || 0);
+            const finalPrice = parseFloat(document.getElementById('form-edit-item-price').value) || 0;
             const newDiscount = parseFloat(document.getElementById('form-edit-item-discount').value) || 0;
             const newNote = document.getElementById('form-edit-item-note').value;
 
             if (index >= 0 && index < cartItems.length) {
                 cartItems[index].qty = newQty;
-                cartItems[index].price = newPrice;
+                cartItems[index].price = finalPrice;
                 cartItems[index].discount = newDiscount;
                 cartItems[index].note = newNote;
+                cartItems[index].originalPrice = originalItemBasePrice;
             }
             renderCart();
             closeEditCartModal();
@@ -1369,7 +1424,7 @@
             if(existing) { 
                 existing.qty += 1; 
             } else { 
-                cartItems.push({ name, price, qty: 1, discount: 0, note: '' }); 
+                cartItems.push({ name, price, qty: 1, discount: 0, note: '', originalPrice: price }); 
             }
             renderCart();
         }
@@ -1404,7 +1459,7 @@
                 return;
             }
             cartItems.forEach((item, index) => {
-                let sum = (item.price * item.qty) - (item.discount || 0);
+                let sum = (item.price * item.qty);
                 if(sum < 0) sum = 0;
                 total += sum;
 
