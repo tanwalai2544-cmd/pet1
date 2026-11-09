@@ -436,60 +436,6 @@
         </div>
     </div>
 </div>
-                <!-- Quick Cash Buttons Grid -->
-                <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
-                    <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">1</button>
-                    <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">5</button>
-                    <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">20</button>
-                    <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">100</button>
-                    <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">1000</button>
-                    
-                    <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">2</button>
-                    <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">10</button>
-                    <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">50</button>
-                    <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">500</button>
-                    <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2 font-bold text-blue-700 shadow-sm text-[11px] transition">พอดี</button>
-                </div>
-
-                <!-- ช่องรับเงิน / แยกช่องโอนผสมสด และป้ายแจ้งเตือนส่วนต่าง -->
-                <div class="pt-1">
-                    <div id="single-receive-box">
-                        <label id="receive-label-title" class="block text-xs font-bold text-gray-700 mb-1">รับเงินโอน [F7]</label>
-                        <input type="number" id="pay-modal-received" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3.5 text-lg font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
-                    </div>
-
-                    <div id="mixed-receive-box" class="hidden grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">💵 เงินสด (ฝั่งซ้าย)</label>
-                            <input type="number" id="pay-mixed-cash" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">💳 เงินโอน (ฝั่งขวา)</label>
-                            <input type="number" id="pay-mixed-transfer" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
-                        </div>
-                    </div>
-
-                    <!-- พื้นที่แจ้งเตือนพร้อมแสดงจำนวนเงินที่ขาดหรือเกิน -->
-                    <div id="payment-warning-alert" class="hidden mt-2 p-3 text-xs font-bold rounded-2xl text-center border shadow-sm"></div>
-                </div>
-
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border shadow-sm">
-                    <span class="font-semibold text-gray-700">ทอนเงิน</span>
-                    <span id="pay-modal-change" class="text-xl font-bold text-red-600">0.00</span>
-                </div>
-
-                <div class="flex items-center justify-between pt-2">
-                    <select class="border border-gray-300 rounded-xl px-3 py-2.5 text-xs bg-white text-gray-700 font-semibold shadow-sm">
-                        <option>ไม่พิมพ์</option>
-                        <option>พิมพ์ใบเสร็จ</option>
-                    </select>
-                    <button onclick="confirmCheckout()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg shadow-blue-600/35 transition text-base flex items-center gap-2">
-                        <span>💾</span> บันทึก
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ================= Edit Cart Item Modal ================= -->
     <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/80 z-[140] flex items-center justify-center p-4 backdrop-blur-md">
@@ -1034,7 +980,7 @@
             { date: "2026-11-07", id: "EXP-2026-089", supplier: "ค่าไฟฟ้าประจำเดือน", account: "ค่าไฟฟ้า (Expense)", creditAcc: "เงินสด / ธนาคารร้าน", amount: 3500, type: "expense" }
         ];
 
-        const transactionMockup = {
+        let transactionMockup = {
             "TX-2026-901": { supplier: "บริษัท จรัญกิจ (Imperial Paw)", invoice: "INV-2026-1105", items: "อาหารเม็ดแมว Imperial Paw (50 กระสอบ)", amount: 15000 },
             "TX-2026-902": { supplier: "ศรีไพศาลอาหารสัตว์", invoice: "INV-SRI-8892", items: "ทรายแมว Sunpo (100 ถุง)", amount: 28500 },
             "TX-2026-903": { supplier: "Royal Canin Thailand", invoice: "INV-RC-5541", items: "อาหารสุนัขพันธุ์เล็ก (30 แพ็ค)", amount: 42000 }
@@ -1156,8 +1102,8 @@
 
             let filtered = productsFromSheet.filter(p => {
                 const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                     p.name.toLowerCase().includes(keyword) || 
-                                     p.brand.toLowerCase().includes(keyword);
+                                   p.name.toLowerCase().includes(keyword) || 
+                                   p.brand.toLowerCase().includes(keyword);
                 const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                 const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                 return matchKeyword && matchBrand && matchUnit;
@@ -1233,6 +1179,7 @@
                 closeMemberModal();
                 closeEditCartModal();
                 closeCheckoutModal();
+                closeReceiptModal();
             }
         });
 
@@ -1542,6 +1489,20 @@
             }
         }
 
+        function applyPercentDiscount(percent) {
+            if (percent === 0) {
+                document.getElementById('pay-modal-extra-discount').value = 0;
+                calculateFinalCheckout();
+                return;
+            }
+            let subtotal = currentCheckoutSubtotal;
+            let discountAmount = (subtotal * percent) / 100;
+            document.getElementById('pay-modal-extra-discount').value = discountAmount.toFixed(2);
+            calculateFinalCheckout();
+        }
+
+        let lastTransactionReceiptData = null;
+
         function confirmCheckout() {
             const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
             const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
@@ -1560,10 +1521,96 @@
                 alert(`⚠️ รับเงินไม่พอ ขาดอีก ${shortage.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท ไม่สามารถบันทึกรายการได้`);
                 return;
             }
-            const memberInfo = selectedMemberData ? ` [สมาชิก: ${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})]` : '';
-            alert(`ชำระเงินสำเร็จ! บันทึกการขายและตัดสต็อก${memberInfo} เรียบร้อย`);
+
+            // จัดเก็บข้อมูลใบเสร็จสำหรับแสดงผลใน Pop-up
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0];
+            const extraDisc = parseFloat(document.getElementById('pay-modal-extra-discount').value) || 0;
+            const vatAmount = parseFloat(document.getElementById('pay-modal-vat-amount').innerText.replace(' ฿', '').replace(/,/g, '')) || 0;
+            const noteText = document.getElementById('pay-modal-note').value.trim();
+            const changeVal = parseFloat(document.getElementById('pay-modal-change').innerText.replace(/,/g, '')) || 0;
+
+            lastTransactionReceiptData = {
+                date: dateStr,
+                time: timeStr,
+                member: selectedMemberData ? `${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})` : 'ทั่วไป (General)',
+                items: JSON.parse(JSON.stringify(cartItems)),
+                subtotal: currentCheckoutSubtotal,
+                extraDiscount: extraDisc,
+                vat: vatAmount,
+                net: finalNet,
+                payMethod: selectedMethod,
+                received: totalReceived,
+                change: changeVal,
+                note: noteText
+            };
+
             closeCheckoutModal();
             clearCart();
+            clearSelectedMember();
+
+            // ตรวจสอบตัวเลือกการพิมพ์และแสดง Pop-up ใบเสร็จ
+            const printOption = document.getElementById('print-option-select').value;
+            if (printOption === 'print') {
+                openReceiptModal(lastTransactionReceiptData);
+            } else {
+                alert('บันทึกการขายสำเร็จเรียบร้อย');
+            }
+        }
+
+        function openReceiptModal(data) {
+            document.getElementById('rec-date').innerText = data.date;
+            document.getElementById('rec-time').innerText = data.time;
+            document.getElementById('rec-member').innerText = data.member;
+            document.getElementById('rec-subtotal').innerText = data.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+            document.getElementById('rec-extra-disc').innerText = '-' + data.extraDiscount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+            document.getElementById('rec-vat').innerText = data.vat.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+            document.getElementById('rec-net').innerText = data.net.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+            
+            const methodMap = { cash: 'เงินสด', transfer: 'เงินโอน', credit: 'บัตรเครดิต', debt: 'ลูกหนี้', mixed: 'โอนผสมสด' };
+            document.getElementById('rec-pay-method').innerText = methodMap[data.payMethod] || data.payMethod;
+            document.getElementById('rec-received').innerText = data.received.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+            document.getElementById('rec-change').innerText = data.change.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' ฿';
+
+            const noteWrapper = document.getElementById('rec-note-wrapper');
+            if (data.note) {
+                document.getElementById('rec-note').innerText = data.note;
+                noteWrapper.classList.remove('hidden');
+            } else {
+                noteWrapper.classList.add('hidden');
+            }
+
+            const itemsContainer = document.getElementById('rec-items-container');
+            itemsContainer.innerHTML = '';
+            data.items.forEach(item => {
+                let sum = (item.price * item.qty);
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-start text-[11px]';
+                div.innerHTML = `
+                    <div class="pr-2">
+                        <div>${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''}</div>
+                        <div class="text-[10px] text-gray-500">${item.qty} x ${item.price.toLocaleString()} ฿</div>
+                    </div>
+                    <div class="font-bold text-gray-900">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+                `;
+                itemsContainer.appendChild(div);
+            });
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+
+            // ส่งคำสั่งพิมพ์ไปยังเครื่องพิมพ์ (Thermal Printer) ทันที
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function triggerDirectPrint() {
+            window.print();
         }
 
         function openEditCartModal(index) {
