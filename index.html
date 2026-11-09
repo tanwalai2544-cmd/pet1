@@ -8,6 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Sarabun', sans-serif; }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #receipt-printable-area, #receipt-printable-area * {
+                visibility: visible;
+            }
+            #receipt-printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0;
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-red-950 to-stone-900 text-gray-800 min-h-screen flex flex-col text-base selection:bg-red-600 selection:text-white">
@@ -369,8 +387,8 @@
 
             <div class="flex items-center justify-between pt-2">
                 <select id="print-option-select" class="border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white text-gray-700 font-semibold shadow-sm">
-                    <option value="print">พิมพ์ใบเสร็จอัตโนมัติ</option>
                     <option value="noprint">ไม่พิมพ์ใบเสร็จ</option>
+                    <option value="print">พิมพ์ใบเสร็จอัตโนมัติ</option>
                 </select>
                 <button onclick="confirmCheckout()" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-10 py-4 rounded-2xl shadow-lg shadow-red-600/35 transition text-lg flex items-center gap-2">
                     <span>💾</span> บันทึก & พิมพ์ใบเสร็จ
@@ -389,7 +407,7 @@
             <div class="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
                 <h2 class="text-base font-extrabold tracking-wider">ร้านสถานีสัตว์เลี้ยงTH</h2>
                 <p class="text-[11px] text-gray-600">สุราษฎร์ธานี (Surat Thani)</p>
-                <p class="text-[10px] text-gray-500">Tax ID: 0845568000XXX</p>
+                <p class="text-[10px] text-gray-500">Tax ID: <span id="rec-tax-id">0845568000XXX</span></p>
             </div>
 
             <div class="py-1 space-y-0.5 text-[11px] text-gray-700 border-b border-dashed border-gray-300 pb-2">
@@ -930,6 +948,9 @@
         let selectedMemberData = null;
         let originalItemBasePrice = 0;
 
+        // ตัวแปรสำหรับนับลำดับธุรกรรมการขายในแต่ละเดือน (รูปแบบ YYYYMM)
+        let salesTaxIdCounters = {};
+
         let membersData = [
             { petName: "หมีพู", ownerName: "ปะป๊า", address: "ศรีไพศาล", phone: "0813143599" },
             { petName: "ฮอร์มุซ", ownerName: "ลิลลี่", address: "มารวย", phone: "จำไม่ได้" },
@@ -1368,6 +1389,9 @@
                 if(r.value === 'transfer') r.checked = true;
             }
 
+            // Defult เป็น 'noprint' (ไม่พิมพ์ใบเสร็จ) เสมอตามคำสั่ง
+            document.getElementById('print-option-select').value = 'noprint';
+
             calculateFinalCheckout();
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
@@ -1522,8 +1546,20 @@
                 return;
             }
 
-            // จัดเก็บข้อมูลใบเสร็จสำหรับแสดงผลใน Pop-up
             const now = new Date();
+            const yearStr = now.getFullYear().toString(); // ปี ค.ศ. 4 หลัก
+            const monthStr = (now.getMonth() + 1).toString().padStart(2, '0'); // เดือน 2 หลัก
+            const yyyymm = yearStr + monthStr;
+
+            // จัดการสร้างและเรียงลำดับ Tax ID อัตโนมัติ (YYYYMM + ลำดับที่ของเดือนนั้นๆ)
+            if (!salesTaxIdCounters[yyyymm]) {
+                salesTaxIdCounters[yyyymm] = 1;
+            } else {
+                salesTaxIdCounters[yyyymm]++;
+            }
+            let runningNumber = salesTaxIdCounters[yyyymm].toString(); // ไม่เติม zero padding เพื่อให้ได้เลขลำดับตรงๆ เช่น 1, 100
+            let generatedTaxId = yyyymm + runningNumber;
+
             const dateStr = now.toISOString().split('T')[0];
             const timeStr = now.toTimeString().split(' ')[0];
             const extraDisc = parseFloat(document.getElementById('pay-modal-extra-discount').value) || 0;
@@ -1534,6 +1570,7 @@
             lastTransactionReceiptData = {
                 date: dateStr,
                 time: timeStr,
+                taxId: generatedTaxId,
                 member: selectedMemberData ? `${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})` : 'ทั่วไป (General)',
                 items: JSON.parse(JSON.stringify(cartItems)),
                 subtotal: currentCheckoutSubtotal,
@@ -1550,16 +1587,16 @@
             clearCart();
             clearSelectedMember();
 
-            // ตรวจสอบตัวเลือกการพิมพ์และแสดง Pop-up ใบเสร็จ
             const printOption = document.getElementById('print-option-select').value;
             if (printOption === 'print') {
                 openReceiptModal(lastTransactionReceiptData);
             } else {
-                alert('บันทึกการขายสำเร็จเรียบร้อย');
+                alert(`บันทึกการขายสำเร็จเรียบร้อย\n- เลขที่ Tax ID: ${generatedTaxId}`);
             }
         }
 
         function openReceiptModal(data) {
+            document.getElementById('rec-tax-id').innerText = data.taxId;
             document.getElementById('rec-date').innerText = data.date;
             document.getElementById('rec-time').innerText = data.time;
             document.getElementById('rec-member').innerText = data.member;
@@ -1599,7 +1636,6 @@
 
             document.getElementById('receipt-modal').classList.remove('hidden');
 
-            // ส่งคำสั่งพิมพ์ไปยังเครื่องพิมพ์ (Thermal Printer) ทันที
             setTimeout(() => {
                 window.print();
             }, 300);
