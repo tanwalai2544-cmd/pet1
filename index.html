@@ -10,105 +10,105 @@
         body { font-family: 'Sarabun', sans-serif; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-red-900 via-red-800 to-black text-gray-800 min-h-screen flex flex-col text-base">
+<body class="bg-gradient-to-br from-slate-900 via-red-950 to-stone-900 text-gray-800 min-h-screen flex flex-col text-base selection:bg-red-600 selection:text-white">
 
     <!-- ================= 1. ส่วนหน้าล็อกอิน & ระบบขอรับรหัสผ่านใหม่ ================= -->
-    <div id="auth-wrapper" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-red-100 p-8 transform transition-all">
+    <div id="auth-wrapper" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white/95 backdrop-blur-xl w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-red-100 p-8 transform transition-all">
             
             <div class="text-center mb-6">
-                <div class="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white font-bold p-4 rounded-2xl shadow-lg text-3xl mb-2">Pet's Station</div>
+                <div class="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg text-3xl mb-3 tracking-wider">Pet's Station</div>
                 <h2 class="text-2xl font-extrabold text-gray-900">ระบบจัดการร้านสถานีสัตว์เลี้ยง</h2>
-                <p class="text-sm text-red-600 font-medium mt-1">สุราษฎร์ธานี (Surat Thani)</p>
+                <p class="text-sm text-red-600 font-semibold mt-1">สุราษฎร์ธานี (Surat Thani)</p>
             </div>
 
-            <div id="login-error-alert" class="hidden mb-4 p-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl flex items-center gap-2 shadow-sm">
+            <div id="login-error-alert" class="hidden mb-4 p-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl flex items-center gap-2 shadow-sm animate-pulse">
                 <span>⚠️</span> <span id="error-message-text">อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
             </div>
 
-            <div class="flex bg-gray-100 p-1.5 rounded-2xl mb-6 text-sm font-semibold">
+            <div class="flex bg-gray-100/80 p-1.5 rounded-2xl mb-6 text-sm font-semibold border border-gray-200/60">
                 <button onclick="switchAuthTab('login')" id="tab-login-btn" class="flex-1 py-3 rounded-xl bg-white text-red-700 shadow-sm transition">เข้าสู่ระบบ</button>
-                <button onclick="switchAuthTab('forgot')" id="tab-forgot-btn" class="flex-1 py-3 rounded-xl text-gray-600 transition">ขอรับรหัส</button>
+                <button onclick="switchAuthTab('forgot')" id="tab-forgot-btn" class="flex-1 py-3 rounded-xl text-gray-600 transition hover:text-gray-900">ขอรับรหัส</button>
             </div>
 
             <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Google Mail (Gmail)</label>
-                    <input type="email" id="login-email" required placeholder="name@gmail.com" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none" value="tanwalai2544@gmail.com">
+                    <input type="email" id="login-email" required placeholder="name@gmail.com" class="w-full border border-gray-300 rounded-2xl px-4 py-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none transition shadow-sm" value="tanwalai2544@gmail.com">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">รหัสผ่านบัญชีร้าน</label>
                     <div class="relative">
-                        <input type="password" id="login-pass" required placeholder="••••••••" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none pr-12" value="1234">
-                        <button type="button" onclick="togglePassword('login-pass', 'eye-login')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none text-xl">
+                        <input type="password" id="login-pass" required placeholder="••••••••" class="w-full border border-gray-300 rounded-2xl px-4 py-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none pr-12 transition shadow-sm" value="1234">
+                        <button type="button" onclick="togglePassword('login-pass', 'eye-login')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-700 focus:outline-none text-xl">
                             <span id="eye-login">👁️</span>
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-base flex items-center justify-center gap-2">
+                <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-600/30 transition duration-200 text-base flex items-center justify-center gap-2">
                     <span>🔐</span> เข้าสู่ระบบ
                 </button>
             </form>
 
             <form id="form-forgot" onsubmit="handleRequestNewPassword(event)" class="space-y-4 hidden">
-                <p class="text-sm text-gray-600 bg-red-50 p-3.5 rounded-xl border border-red-100 leading-relaxed">💡 กรอกอีเมลที่อยู่ในระบบอนุญาต ระบบจะสร้างรหัสผ่านใหม่ทันที และส่งแจ้งเตือนไปยังอีเมลเถ้าแก่ (<span class="font-semibold text-red-700">pets.station681@gmail.com</span>)</p>
+                <p class="text-sm text-gray-600 bg-red-50/80 p-4 rounded-2xl border border-red-100 leading-relaxed shadow-sm">💡 กรอกอีเมลที่อยู่ในระบบอนุญาต ระบบจะสร้างรหัสผ่านใหม่ทันที และส่งแจ้งเตือนไปยังอีเมลเถ้าแก่ (<span class="font-semibold text-red-700">pets.station681@gmail.com</span>)</p>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Google Mail (Gmail)</label>
-                    <input type="email" id="forgot-email" required placeholder="name@gmail.com" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <input type="email" id="forgot-email" required placeholder="name@gmail.com" class="w-full border border-gray-300 rounded-2xl px-4 py-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none transition shadow-sm">
                 </div>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-base">
+                <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-600/30 transition duration-200 text-base">
                     📤 ขอรับรหัสผ่านใหม่
                 </button>
             </form>
 
             <form id="form-otp-reset" onsubmit="return false;" class="space-y-4 hidden">
-                <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-xs text-blue-800 space-y-1.5">
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-xs text-blue-900 space-y-1.5 shadow-sm">
                     <p class="font-bold text-sm">✉️ เจนรหัสผ่านใหม่สำเร็จ!</p>
                     <p>- ส่งรหัสผ่านใหม่ไปที่อีเมลผู้ขอเรียบร้อยแล้ว</p>
                     <p>- 🚨 แจ้งเตือนส่งไปยังอีเมลเถ้าแก่ (pets.station681@gmail.com) แล้ว</p>
                 </div>
                 
-                <div id="revealed-password-box" class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center space-y-1.5">
+                <div id="revealed-password-box" class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-center space-y-1.5 shadow-sm">
                     <p class="text-sm text-emerald-800 font-bold">🎉 รหัสผ่านใหม่ของคุณ:</p>
-                    <div id="display-user-pass" class="text-2xl font-bold text-emerald-900 tracking-wider bg-white py-2.5 rounded-lg border border-emerald-200 shadow-inner"></div>
+                    <div id="display-user-pass" class="text-2xl font-extrabold text-emerald-900 tracking-wider bg-white py-3 rounded-xl border border-emerald-200 shadow-inner"></div>
                 </div>
 
-                <button type="button" onclick="switchAuthTab('login')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-base">
+                <button type="button" onclick="switchAuthTab('login')" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-600/30 transition duration-200 text-base">
                     🔑 กลับไปหน้าเข้าสู่ระบบด้วยรหัสใหม่
                 </button>
             </form>
 
-            <div class="mt-6 text-center border-t border-gray-100 pt-4 text-sm text-gray-400">
-                Pet's Station Security v4.2
+            <div class="mt-6 text-center border-t border-gray-100 pt-4 text-xs text-gray-400 font-medium">
+                Pet's Station Security v4.2 &bull; Enterprise Edition
             </div>
         </div>
     </div>
 
 
     <!-- ================= 2. เลนหลักสำหรับ "พนักงาน" (Staff Hub) เชื่อม Google Sheets ================= -->
-    <div id="app-staff-content" class="hidden flex flex-col min-h-screen bg-gray-50">
-        <header class="bg-red-700 text-white shadow-md">
-            <div class="w-full px-6 py-4 flex justify-between items-center">
+    <div id="app-staff-content" class="hidden flex flex-col min-h-screen bg-gray-50/50">
+        <header class="bg-gradient-to-r from-red-700 to-red-800 text-white shadow-lg sticky top-0 z-30">
+            <div class="w-full px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
-                    <span class="bg-white text-red-700 font-bold p-2.5 rounded-lg shadow text-xl">Pet's Station</span>
+                    <span class="bg-white text-red-700 font-extrabold px-3 py-2 rounded-xl shadow text-xl tracking-wider">Pet's Station</span>
                     <div>
                         <h1 class="text-lg font-bold">ระบบปฏิบัติการหน้าร้าน & สต็อก (Staff Hub)</h1>
-                        <p class="text-sm text-red-200">ผู้ใช้งาน: <span id="staff-user-display" class="font-semibold underline">พนักงาน</span></p>
+                        <p class="text-xs text-red-200">ผู้ใช้งาน: <span id="staff-user-display" class="font-semibold underline">พนักงาน</span></p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="openCashDrawerModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-sm font-bold shadow border border-emerald-500">💵 เปิดลิ้นชัก</button>
-                    <button onclick="openHoldBillModal()" class="bg-red-800 hover:bg-red-900 px-4 py-2 rounded-xl text-sm font-bold shadow border border-red-600">📌 พักบิล [F8]</button>
-                    <button onclick="handleLogout()" class="bg-red-800 hover:bg-red-900 px-4 py-2 rounded-xl text-sm font-bold">ออกจากระบบ</button>
+                <div class="flex items-center gap-2.5 flex-wrap">
+                    <button onclick="openCashDrawerModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-sm font-bold shadow-md transition border border-emerald-500 flex items-center gap-1.5">💵 เปิดลิ้นชัก</button>
+                    <button onclick="openHoldBillModal()" class="bg-red-800 hover:bg-red-900 px-4 py-2 rounded-xl text-sm font-bold shadow-md transition border border-red-600 flex items-center gap-1.5">📌 พักบิล [F8]</button>
+                    <button onclick="handleLogout()" class="bg-red-900/80 hover:bg-red-950 px-4 py-2 rounded-xl text-sm font-bold transition shadow-md">ออกจากระบบ</button>
                 </div>
             </div>
         </header>
-        <main class="w-full px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div class="lg:col-span-8 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col">
+        <main class="w-full p-4 md:p-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-8 bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-                    <h2 class="text-lg font-bold text-red-700">🛒 POS & คลังสินค้า</h2>
-                    <div class="flex items-center gap-3 w-full md:w-auto flex-wrap md:flex-nowrap">
-                        <select id="brandFilterSelect" onchange="filterProducts()" class="border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm bg-white text-gray-700 font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">🛒 POS & คลังสินค้า</h2>
+                    <div class="flex items-center gap-2.5 w-full md:w-auto flex-wrap md:flex-nowrap">
+                        <select id="brandFilterSelect" onchange="filterProducts()" class="border border-gray-300 rounded-2xl px-3.5 py-2.5 text-sm bg-white text-gray-700 font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                             <option value="">🏢 ทุกยี่ห้อ/ประเภท</option>
                             <option value="อาหารสุนัข">อาหารสุนัข</option>
                             <option value="อาหารแมว">อาหารแมว</option>
@@ -117,7 +117,7 @@
                             <option value="Topfeed">Topfeed</option>
                             <option value="ยาและเวชภัณฑ์">ยาและเวชภัณฑ์</option>
                         </select>
-                        <select id="unitFilterSelect" onchange="filterProducts()" class="border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm bg-white text-gray-700 font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <select id="unitFilterSelect" onchange="filterProducts()" class="border border-gray-300 rounded-2xl px-3.5 py-2.5 text-sm bg-white text-gray-700 font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                             <option value="">🏷️ ทุกหน่วย</option>
                             <option value="ถุง">ถุง</option>
                             <option value="ซอง">ซอง</option>
@@ -125,13 +125,13 @@
                             <option value="กล่อง">กล่อง</option>
                             <option value="กระสอบ">กระสอบ</option>
                         </select>
-                        <input type="text" id="productSearchInput" onkeyup="handleSearchKeyup(event)" placeholder="🔍 ค้นหา & กด Enter เพิ่ม (F1 จอใหญ่)..." class="border border-gray-300 rounded-xl px-4 py-2.5 text-sm w-full md:w-64 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="productSearchInput" onkeyup="handleSearchKeyup(event)" placeholder="🔍 ค้นหา & กด Enter เพิ่ม (F1 จอใหญ่)..." class="border border-gray-300 rounded-2xl px-4 py-2.5 text-sm w-full md:w-64 focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                     </div>
                 </div>
                 
-                <div class="overflow-y-auto flex-grow max-h-[calc(100vh-260px)] min-h-[450px] border border-gray-100 rounded-xl">
+                <div class="overflow-y-auto flex-grow max-h-[calc(100vh-280px)] min-h-[450px] border border-gray-100 rounded-2xl shadow-inner">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-red-50 text-red-800 text-sm sticky top-0 font-bold">
+                        <thead class="bg-red-50/90 text-red-900 text-sm sticky top-0 font-bold backdrop-blur-sm z-10">
                             <tr>
                                 <th class="p-3.5">รหัส</th>
                                 <th class="p-3.5">ชื่อสินค้า</th>
@@ -148,28 +148,28 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
+            <div class="lg:col-span-4 bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-lg font-bold text-red-700">🧾 ตะกร้าสินค้า</h2>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-1.5">🧾 ตะกร้าสินค้า</h2>
                         <div class="flex items-center gap-2">
-                            <button onclick="openMemberModal()" class="bg-red-700 hover:bg-red-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-sm">👥 ลูกค้าสมาชิก [F4]</button>
-                            <button onclick="clearCart()" class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-xl text-xs font-bold transition">🗑️ ล้างจอ</button>
+                            <button onclick="openMemberModal()" class="bg-red-700 hover:bg-red-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">👥 สมาชิก [F4]</button>
+                            <button onclick="clearCart()" class="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-xl text-xs font-bold transition border border-red-200">🗑️ ล้างจอ</button>
                         </div>
                     </div>
                     
-                    <div id="selected-member-display" class="hidden mb-3 bg-red-50 border border-red-200 p-3.5 rounded-xl text-xs flex justify-between items-center">
+                    <div id="selected-member-display" class="hidden mb-3 bg-red-50/80 border border-red-200 p-3.5 rounded-2xl text-xs flex justify-between items-center shadow-sm">
                         <div>
-                            <span class="font-bold text-red-800 block text-sm">👤 สมาชิก: <span id="disp-owner" class="text-gray-900"></span> (น้อง: <span id="disp-pet" class="text-gray-900"></span>)</span>
+                            <span class="font-bold text-red-900 block text-sm">👤 สมาชิก: <span id="disp-owner" class="text-gray-900"></span> (น้อง: <span id="disp-pet" class="text-gray-900"></span>)</span>
                             <span class="text-xs text-gray-600 mt-0.5 block">📞 <span id="disp-phone"></span> | 🏠 <span id="disp-address"></span></span>
                         </div>
-                        <button onclick="clearSelectedMember()" class="text-red-500 hover:text-red-700 font-bold text-base px-2" title="เปลี่ยนสมาชิก">✕</button>
+                        <button onclick="clearSelectedMember()" class="text-red-500 hover:text-red-700 font-bold text-base px-2 bg-white rounded-full shadow-sm" title="เปลี่ยนสมาชิก">✕</button>
                     </div>
 
-                    <div class="overflow-y-auto max-h-[calc(100vh-420px)] min-h-[220px] mb-3 border border-gray-100 rounded-xl p-3 text-sm">
+                    <div class="overflow-y-auto max-h-[calc(100vh-440px)] min-h-[220px] mb-3 border border-gray-100 rounded-2xl p-3 text-sm shadow-inner bg-gray-50/30">
                         <table class="w-full text-left">
                             <thead>
-                                <tr class="text-gray-500 border-b text-xs font-semibold">
+                                <tr class="text-gray-400 border-b text-xs font-semibold">
                                     <th class="pb-2">รายการ</th>
                                     <th class="pb-2 text-center">จำนวน</th>
                                     <th class="pb-2 text-right">ราคา</th>
@@ -177,29 +177,29 @@
                                 </tr>
                             </thead>
                             <tbody id="cartTableBody">
-                                <tr><td colspan="4" class="text-center py-4 text-gray-400">ยังไม่มีสินค้าในตะกร้า</td></tr>
+                                <tr><td colspan="4" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีสินค้าในตะกร้า</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="border-t pt-3 pb-2 space-y-1.5 text-sm bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <div class="flex justify-between text-gray-600">
+                <div class="border-t pt-3 pb-2 space-y-1.5 text-sm bg-gray-50/80 p-3.5 rounded-2xl border border-gray-200/80 shadow-sm">
+                    <div class="flex justify-between text-gray-600 font-medium">
                         <span>จำนวนสินค้าทั้งหมด:</span>
                         <span id="summary-total-qty" class="font-bold text-gray-900">0 ชิ้น</span>
                     </div>
-                    <div class="flex justify-between text-gray-600">
+                    <div class="flex justify-between text-gray-600 font-medium">
                         <span>ส่วนลดรวมทั้งหมด:</span>
                         <span id="summary-total-discount" class="font-bold text-red-600">0.00 ฿</span>
                     </div>
                     <div class="flex justify-between items-center text-lg font-bold border-t pt-2 mt-1">
                         <span class="text-gray-800">ราคารวมสุทธิ:</span> 
-                        <span id="cartTotalPrice" class="text-red-600 text-2xl">0.00 ฿</span>
+                        <span id="cartTotalPrice" class="text-red-600 text-2xl font-extrabold">0.00 ฿</span>
                     </div>
                 </div>
 
                 <div class="pt-2">
-                    <button onclick="openCheckoutModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2">
+                    <button onclick="openCheckoutModal()" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-2xl text-base shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
                         <span>💳</span> ชำระเงิน [F9]
                     </button>
                 </div>
@@ -208,14 +208,14 @@
     </div>
 
     <!-- ================= Member Popup Modal (ลูกค้าสมาชิก) ================= -->
-    <div id="member-modal" class="hidden fixed inset-0 bg-black/70 z-[130] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div id="member-modal" class="hidden fixed inset-0 bg-black/80 z-[130] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative flex flex-col max-h-[90vh]">
-            <button onclick="closeMemberModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
+            <button onclick="closeMemberModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
             
             <div id="member-view-list" class="flex flex-col flex-grow overflow-hidden">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4 pr-8">
                     <h3 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>👥</span> เลือกลูกค้าสมาชิก (Member Directory)</h3>
-                    <button onclick="openAddMemberView()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow transition">➕ เพิ่มสมาชิกใหม่</button>
+                    <button onclick="openAddMemberView()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition">➕ เพิ่มสมาชิกใหม่</button>
                 </div>
                 
                 <div class="mb-4">
@@ -235,22 +235,22 @@
                     <input type="hidden" id="edit-member-index" value="-1">
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">ชื่อน้อง (สัตว์เลี้ยง)</label>
-                        <input type="text" id="form-pet-name" required placeholder="เช่น หมีพู / ซุส กิ๊ฟ มะลิ" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="form-pet-name" required placeholder="เช่น หมีพู / ซุส กิ๊ฟ มะลิ" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">ชื่อเจ้าของ</label>
-                        <input type="text" id="form-owner-name" required placeholder="เช่น ปะป๊า / ลิลลี่" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="form-owner-name" required placeholder="เช่น ปะป๊า / ลิลลี่" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">ที่อยู่</label>
-                        <input type="text" id="form-address" required placeholder="เช่น ศรีไพศาล / สถานีสัตว์เลี้ยง" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="form-address" required placeholder="เช่น ศรีไพศาล / สถานีสัตว์เลี้ยง" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">เบอร์โทรศัพท์</label>
-                        <input type="text" id="form-phone" placeholder="เช่น 0813143599 หรือ จำไม่ได้" class="w-full border border-gray-300 rounded-xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="form-phone" placeholder="เช่น 0813143599 หรือ จำไม่ได้" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-red-500 focus:outline-none">
                     </div>
                     <div class="pt-3">
-                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl shadow transition text-base">
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-red-600/30 transition text-base">
                             💾 บันทึกข้อมูลสมาชิก
                         </button>
                     </div>
@@ -260,10 +260,10 @@
     </div>
 
     <!-- ================= Checkout Payment Modal ================= -->
-    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/70 z-[150] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative max-h-[95vh] overflow-y-auto">
-            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
-            <h3 class="text-xl font-bold text-gray-900 mb-4">ชำระเงิน</h3>
+            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
+            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"><span>💳</span> ชำระเงิน</h3>
 
             <div class="space-y-4 text-sm">
                 <div class="flex justify-between items-center text-base">
@@ -271,12 +271,12 @@
                     <span id="pay-modal-total" class="font-bold text-gray-900 text-lg">0.00</span>
                 </div>
                 
-                <div class="flex justify-between items-center text-base bg-gray-50 p-2.5 rounded-xl border">
+                <div class="flex justify-between items-center text-base bg-gray-50 p-3 rounded-2xl border border-gray-200 shadow-inner">
                     <span class="text-gray-700 font-semibold">ส่วนลดท้ายบิล [F6] (บาทหรือ %)</span>
-                    <input type="number" id="pay-modal-extra-discount" oninput="calculateFinalCheckout()" value="0" min="0" step="0.01" class="w-32 border border-gray-300 rounded-lg p-1.5 text-right font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <input type="number" id="pay-modal-extra-discount" oninput="calculateFinalCheckout()" value="0" min="0" step="0.01" class="w-32 border border-gray-300 rounded-xl p-2 text-right font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none bg-white">
                 </div>
 
-                <div class="flex justify-between items-center text-base bg-red-50/50 p-3 rounded-xl border border-red-100">
+                <div class="flex justify-between items-center text-base bg-red-50/50 p-3.5 rounded-2xl border border-red-100 shadow-sm">
                     <label class="flex items-center gap-2 font-bold text-gray-800 cursor-pointer">
                         <input type="checkbox" id="pay-modal-vat-checkbox" onchange="calculateFinalCheckout()" class="w-5 h-5 text-red-600 rounded">
                         <span>คำนวณ VAT 7% เพิ่มเติม</span>
@@ -284,82 +284,82 @@
                     <span id="pay-modal-vat-amount" class="font-bold text-gray-700">0.00 ฿</span>
                 </div>
 
-                <div class="flex justify-between items-center text-lg font-bold bg-red-50 p-3 rounded-xl border border-red-100">
+                <div class="flex justify-between items-center text-lg font-bold bg-red-50 p-4 rounded-2xl border border-red-100 shadow-sm">
                     <span class="text-red-800">ยอดสุทธิ (อัปเดตอัตโนมัติ)</span>
                     <span id="pay-modal-net" class="text-red-700 text-2xl font-extrabold">0.00</span>
                 </div>
 
                 <div>
-                    <input type="text" placeholder="หมายเหตุ กรอกหมายเหตุ..." class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    <input type="text" placeholder="หมายเหตุ กรอกหมายเหตุ..." class="w-full border border-gray-300 rounded-2xl p-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                 </div>
 
                 <!-- Payment Methods -->
-                <div class="grid grid-cols-5 gap-2 py-2 text-xs font-bold text-center">
-                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                <div class="grid grid-cols-5 gap-2 py-1 text-xs font-bold text-center">
+                    <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                         <input type="radio" name="payMethod" value="cash" onchange="handlePaymentMethodChange()" class="text-red-600"> เงินสด
                     </label>
-                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-red-50 border-red-200 text-red-800">
+                    <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-red-50 border-red-200 text-red-800 shadow-sm">
                         <input type="radio" name="payMethod" value="transfer" checked onchange="handlePaymentMethodChange()" class="text-red-600"> เงินโอน
                     </label>
-                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                    <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                         <input type="radio" name="payMethod" value="credit" onchange="handlePaymentMethodChange()" class="text-red-600"> บัตรเครดิต
                     </label>
-                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                    <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                         <input type="radio" name="payMethod" value="debt" onchange="handlePaymentMethodChange()" class="text-red-600"> ลูกหนี้
                     </label>
-                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                    <label class="border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100 transition shadow-sm">
                         <input type="radio" name="payMethod" value="mixed" onchange="handlePaymentMethodChange()" class="text-red-600"> โอนผสมสด
                     </label>
                 </div>
 
                 <!-- Quick Cash Buttons Grid -->
                 <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
-                    <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">1</button>
-                    <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">5</button>
-                    <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">20</button>
-                    <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">100</button>
-                    <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">1000</button>
+                    <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">1</button>
+                    <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">5</button>
+                    <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">20</button>
+                    <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">100</button>
+                    <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">1000</button>
                     
-                    <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">2</button>
-                    <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">10</button>
-                    <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">50</button>
-                    <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">500</button>
-                    <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2 font-bold text-blue-700 shadow-sm text-[11px]">พอดี</button>
+                    <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">2</button>
+                    <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">10</button>
+                    <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">50</button>
+                    <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs transition">500</button>
+                    <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2 font-bold text-blue-700 shadow-sm text-[11px] transition">พอดี</button>
                 </div>
 
                 <!-- ช่องรับเงิน / แยกช่องโอนผสมสด และป้ายแจ้งเตือนส่วนต่าง -->
                 <div class="pt-1">
                     <div id="single-receive-box">
                         <label id="receive-label-title" class="block text-xs font-bold text-gray-700 mb-1">รับเงินโอน [F7]</label>
-                        <input type="number" id="pay-modal-received" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-3 text-lg font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
+                        <input type="number" id="pay-modal-received" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3.5 text-lg font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
                     </div>
 
                     <div id="mixed-receive-box" class="hidden grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">💵 เงินสด (ฝั่งซ้าย)</label>
-                            <input type="number" id="pay-mixed-cash" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-2.5 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
+                            <input type="number" id="pay-mixed-cash" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">💳 เงินโอน (ฝั่งขวา)</label>
-                            <input type="number" id="pay-mixed-transfer" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-2.5 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
+                            <input type="number" id="pay-mixed-transfer" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-2xl p-3 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" value="0">
                         </div>
                     </div>
 
                     <!-- พื้นที่แจ้งเตือนพร้อมแสดงจำนวนเงินที่ขาดหรือเกิน -->
-                    <div id="payment-warning-alert" class="hidden mt-2 p-2.5 text-xs font-bold rounded-xl text-center border"></div>
+                    <div id="payment-warning-alert" class="hidden mt-2 p-3 text-xs font-bold rounded-2xl text-center border shadow-sm"></div>
                 </div>
 
-                <div class="flex justify-between items-center bg-gray-50 p-3.5 rounded-xl border">
+                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border shadow-sm">
                     <span class="font-semibold text-gray-700">ทอนเงิน</span>
                     <span id="pay-modal-change" class="text-xl font-bold text-red-600">0.00</span>
                 </div>
 
                 <div class="flex items-center justify-between pt-2">
-                    <select class="border border-gray-300 rounded-xl px-3 py-2 text-xs bg-white text-gray-700 font-semibold">
+                    <select class="border border-gray-300 rounded-xl px-3 py-2.5 text-xs bg-white text-gray-700 font-semibold shadow-sm">
                         <option>ไม่พิมพ์</option>
                         <option>พิมพ์ใบเสร็จ</option>
                     </select>
-                    <button onclick="confirmCheckout()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition text-base flex items-center gap-2">
+                    <button onclick="confirmCheckout()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg shadow-blue-600/35 transition text-base flex items-center gap-2">
                         <span>💾</span> บันทึก
                     </button>
                 </div>
@@ -368,12 +368,12 @@
     </div>
 
     <!-- ================= Edit Cart Item Modal ================= -->
-    <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/60 z-[140] flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
-            <button onclick="closeEditCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
+    <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/80 z-[140] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
+            <button onclick="closeEditCartModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
             <div class="flex justify-between items-center mb-5">
-                <h3 class="text-lg font-bold text-gray-800">แก้ไขข้อมูลสินค้า</h3>
-                <button type="button" onclick="resetEditCartForm()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">✏️ แก้ไขข้อมูลสินค้า</h3>
+                <button type="button" onclick="resetEditCartForm()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1">
                     🔄 รีสตาร์ทค่าเดิม
                 </button>
             </div>
@@ -383,53 +383,53 @@
                 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">ราคาขาย (คำนวณอัตโนมัติจากส่วนลด)</label>
-                    <input type="number" id="form-edit-item-price" step="0.01" readonly class="w-full border border-gray-300 bg-gray-100 rounded-lg p-3 text-base text-gray-700 font-bold cursor-not-allowed">
+                    <input type="number" id="form-edit-item-price" step="0.01" readonly class="w-full border border-gray-300 bg-gray-100 rounded-2xl p-3.5 text-base text-gray-700 font-bold cursor-not-allowed">
                 </div>
 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">จำนวน</label>
-                    <input type="number" id="form-edit-item-qty" min="1" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="number" id="form-edit-item-qty" min="1" required class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
                 </div>
 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">ส่วนลด (บาท)</label>
-                    <input type="number" id="form-edit-item-discount" step="0.01" min="0" value="0" oninput="calculateEditItemPrice()" placeholder="กรอกจำนวนเงินส่วนลด" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="number" id="form-edit-item-discount" step="0.01" min="0" value="0" oninput="calculateEditItemPrice()" placeholder="กรอกจำนวนเงินส่วนลด" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
                     <span id="discount-error-msg" class="text-xs text-red-600 hidden font-semibold mt-1 block">⚠️ ไม่สามารถลดราคาเกินราคาขายได้</span>
                 </div>
 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">หมายเหตุ</label>
-                    <input type="text" id="form-edit-item-note" placeholder="กรอกหมายเหตุ" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="text" id="form-edit-item-note" placeholder="กรอกหมายเหตุ" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
                 </div>
 
-                <div class="bg-red-50 p-3.5 rounded-xl border border-red-200">
-                    <label class="flex items-center space-x-2 text-sm text-red-900 font-semibold cursor-pointer">
+                <div class="bg-red-50/80 p-4 rounded-2xl border border-red-200 shadow-sm">
+                    <label class="flex items-center space-x-2.5 text-sm text-red-900 font-semibold cursor-pointer">
                         <input type="checkbox" id="form-edit-is-gift" onchange="toggleGiftItemCheckbox()" class="w-5 h-5 text-red-600 rounded">
                         <span>🎁 ของแถม (ปรับราคาขายเป็น 0 และล็อกจำนวนเป็น 1 ชิ้น)</span>
                     </label>
                 </div>
 
-                <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition text-base">บันทึก</button>
-                    <button type="button" onclick="closeEditCartModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl shadow transition text-base">ยกเลิก</button>
+                <div class="flex gap-3 pt-3">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-blue-600/30 transition text-base">บันทึก</button>
+                    <button type="button" onclick="closeEditCartModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl shadow transition text-base">ยกเลิก</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- ================= Cash Drawer Modal ================= -->
-    <div id="cash-drawer-modal" class="hidden fixed inset-0 bg-black/70 z-[120] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div id="cash-drawer-modal" class="hidden fixed inset-0 bg-black/80 z-[120] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative">
-            <button onclick="closeCashDrawerModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
+            <button onclick="closeCashDrawerModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
             
             <div id="cash-drawer-step-1">
                 <h3 class="text-lg font-bold text-red-700 flex items-center gap-2 mb-4"><span>💵</span> เปิดลิ้นชัก (บันทึกรับ/จ่ายเงินสด)</h3>
                 <p class="text-sm text-gray-500 mb-4">กรุณาเลือกประเภทรายการที่คุณต้องการทำ:</p>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <button onclick="selectDrawerType('income')" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition font-bold text-sm">
+                <div class="grid grid-cols-2 gap-3 mb-2">
+                    <button onclick="selectDrawerType('income')" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition font-bold text-sm shadow-sm">
                         <span class="text-3xl">📥</span> รับเงินสดเข้าลิ้นชัก
                     </button>
-                    <button onclick="selectDrawerType('expense')" class="bg-red-50 hover:bg-red-100 border border-red-200 text-red-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition font-bold text-sm">
+                    <button onclick="selectDrawerType('expense')" class="bg-red-50 hover:bg-red-100 border border-red-200 text-red-800 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition font-bold text-sm shadow-sm">
                         <span class="text-3xl">📤</span> จ่ายเงินสดออกจากลิ้นชัก
                     </button>
                 </div>
@@ -438,18 +438,18 @@
             <div id="cash-drawer-step-2" class="hidden">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
                     <h3 id="drawer-form-title" class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📝</span> บันทึกรายการ</h3>
-                    <button onclick="backToDrawerStep1()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg font-semibold transition">⬅️ ย้อนกลับ</button>
+                    <button onclick="backToDrawerStep1()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl font-semibold transition">⬅️ ย้อนกลับ</button>
                 </div>
                 <form onsubmit="submitCashDrawer(event)" class="space-y-4 text-sm">
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">รายละเอียด / รายการ</label>
-                        <input type="text" id="drawer-desc" required placeholder="เช่น รับเงินทอนเพิ่ม / จ่ายค่าซื้อของเบ็ดเตล็ด" class="w-full border border-gray-300 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="text" id="drawer-desc" required placeholder="เช่น รับเงินทอนเพิ่ม / จ่ายค่าซื้อของเบ็ดเตล็ด" class="w-full border border-gray-300 rounded-2xl p-3.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 mb-1">จำนวนเงิน (บาท)</label>
-                        <input type="number" id="drawer-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full border border-gray-300 rounded-xl p-3.5 text-base font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="number" id="drawer-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm">
                     </div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl shadow transition duration-200 text-base mt-2">
+                    <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-red-600/30 transition duration-200 text-base mt-2">
                         💾 บันทึกบัญชี & เปิดลิ้นชัก
                     </button>
                 </form>
@@ -458,21 +458,21 @@
     </div>
 
     <!-- ================= F1 Fullscreen Search Popup ================= -->
-    <div id="f1-search-modal" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fadeIn">
+    <div id="f1-search-modal" class="hidden fixed inset-0 bg-black/85 z-[100] flex items-center justify-center p-4 backdrop-blur-md animate-fadeIn">
         <div class="bg-white w-full max-w-4xl h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-red-200">
-            <div class="bg-gradient-to-r from-red-700 to-red-800 text-white p-6 flex justify-between items-center">
+            <div class="bg-gradient-to-r from-red-700 to-red-800 text-white p-6 flex justify-between items-center shadow">
                 <div>
                     <h2 class="text-xl font-bold flex items-center gap-2"><span>🔍</span> ค้นหาสินค้าด่วน (F1)</h2>
                     <p class="text-xs text-red-200 mt-0.5">พิมพ์ค้นหาหรือเลือกสินค้าได้อย่างรวดเร็วเต็มหน้าจอ</p>
                 </div>
-                <button onclick="closeF1Modal()" class="bg-red-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold transition">ปิดหน้าต่าง (ESC)</button>
+                <button onclick="closeF1Modal()" class="bg-red-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow">ปิดหน้าต่าง (ESC)</button>
             </div>
             <div class="p-6 bg-red-50/50 border-b flex gap-3">
-                <input type="text" id="f1ModalInput" onkeyup="filterF1Products()" placeholder="พิมพ์ชื่อสินค้า, รหัสบาร์โค้ด, หรือยี่ห้อเพื่อค้นหาทันที..." class="w-full border border-gray-300 rounded-2xl px-5 py-4 text-base focus:ring-4 focus:ring-red-500 focus:outline-none shadow-inner">
+                <input type="text" id="f1ModalInput" onkeyup="filterF1Products()" placeholder="พิมพ์ชื่อสินค้า, รหัสบาร์โค้ด, หรือยี่ห้อเพื่อค้นหาทันที..." class="w-full border border-gray-300 rounded-2xl px-5 py-4 text-base focus:ring-4 focus:ring-red-500 focus:outline-none shadow-inner bg-white">
             </div>
             <div class="overflow-y-auto flex-grow p-6">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-red-100/70 text-red-900 text-sm uppercase font-bold sticky top-0">
+                    <thead class="bg-red-100/70 text-red-900 text-sm uppercase font-bold sticky top-0 backdrop-blur-sm">
                         <tr>
                             <th class="p-3.5">รหัสสินค้า</th>
                             <th class="p-3.5">ชื่อสินค้า</th>
@@ -489,16 +489,16 @@
     </div>
 
     <!-- ================= Hold Bill Popup Modal ================= -->
-    <div id="hold-bill-modal" class="hidden fixed inset-0 bg-black/70 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div id="hold-bill-modal" class="hidden fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6">
             <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
                 <h3 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📌</span> พักบิลขาย (Hold Bill)</h3>
-                <button onclick="closeHoldBillModal()" class="text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
+                <button onclick="closeHoldBillModal()" class="text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button>
             </div>
             <p class="text-sm text-gray-500 mb-4">คุณสามารถพักบิลไว้ได้สูงสุด 3 บิล เลือกช่องด้านล่างเพื่อพักบิลปัจจุบันหรือเรียกคืนบิลที่พักไว้:</p>
             
             <div class="grid grid-cols-3 gap-3 mb-4">
-                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50 hover:border-red-300 transition">
+                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50/70 hover:border-red-300 transition shadow-sm">
                     <div id="slot-info-0" class="text-center mb-3 w-full">
                         <span class="text-sm font-bold text-gray-700 block mb-1">บิลที่ 1</span>
                         <span id="slot-status-0" class="text-xs text-gray-400 block">ว่าง</span>
@@ -508,7 +508,7 @@
                         <button onclick="clearHeldBill(0)" id="slot-clear-0" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1.5 rounded-xl text-xs transition hidden">🗑️ ล้าง</button>
                     </div>
                 </div>
-                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50 hover:border-red-300 transition">
+                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50/70 hover:border-red-300 transition shadow-sm">
                     <div id="slot-info-1" class="text-center mb-3 w-full">
                         <span class="text-sm font-bold text-gray-700 block mb-1">บิลที่ 2</span>
                         <span id="slot-status-1" class="text-xs text-gray-400 block">ว่าง</span>
@@ -518,7 +518,7 @@
                         <button onclick="clearHeldBill(1)" id="slot-clear-1" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1.5 rounded-xl text-xs transition hidden">🗑️ ล้าง</button>
                     </div>
                 </div>
-                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50 hover:border-red-300 transition">
+                <div class="border border-gray-200 rounded-2xl p-3.5 flex flex-col justify-between items-center bg-gray-50/70 hover:border-red-300 transition shadow-sm">
                     <div id="slot-info-2" class="text-center mb-3 w-full">
                         <span class="text-sm font-bold text-gray-700 block mb-1">บิลที่ 3</span>
                         <span id="slot-status-2" class="text-xs text-gray-400 block">ว่าง</span>
@@ -530,49 +530,49 @@
                 </div>
             </div>
 
-            <button onclick="closeHoldBillModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-sm transition">ปิดหน้าต่าง</button>
+            <button onclick="closeHoldBillModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-2xl text-sm transition shadow-sm">ปิดหน้าต่าง</button>
         </div>
     </div>
 
 
     <!-- ================= 3. เลนหลักสำหรับ "นักบัญชี" ================= -->
-    <div id="app-accountant-content" class="hidden flex flex-col min-h-screen bg-gray-50">
-        <header class="bg-red-700 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div id="app-accountant-content" class="hidden flex flex-col min-h-screen bg-gray-50/50">
+        <header class="bg-gradient-to-r from-red-700 to-red-800 text-white shadow-lg sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
-                    <span class="bg-white text-red-700 font-bold p-2.5 rounded-lg shadow text-xl">Pet's Station</span>
+                    <span class="bg-white text-red-700 font-extrabold px-3 py-2 rounded-xl shadow text-xl tracking-wider">Pet's Station</span>
                     <div>
                         <h1 class="text-lg font-bold">ระบบบัญชีและตรวจสอบ (Audit & Accounting Hub)</h1>
-                        <p class="text-sm text-red-200">ผู้ใช้งาน: <span id="current-user-display" class="font-semibold underline">นักบัญชี</span></p>
+                        <p class="text-xs text-red-200">ผู้ใช้งาน: <span id="current-user-display" class="font-semibold underline">นักบัญชี</span></p>
                     </div>
                 </div>
                 
-                <div class="flex bg-red-800 p-1.5 rounded-xl shadow-inner flex-wrap gap-1.5">
-                    <button onclick="switchMainTab('procurement')" id="btn-procurement" class="px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow">📦 ตรวจสอบรับสินค้า (Audit)</button>
-                    <button onclick="switchMainTab('expense')" id="btn-expense" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">💸 ค่าใช้จ่าย & ระบบจ่ายเงิน</button>
-                    <button onclick="switchMainTab('tax')" id="btn-tax" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">🧾 ใบเสร็จ/ใบกำกับภาษี/CN</button>
-                    <button onclick="switchMainTab('reports')" id="btn-reports" class="px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700">📊 งบการเงิน & สมุดรายวัน</button>
+                <div class="flex bg-red-900/80 p-1.5 rounded-2xl shadow-inner flex-wrap gap-1.5 border border-red-600/50">
+                    <button onclick="switchMainTab('procurement')" id="btn-procurement" class="px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow">📦 ตรวจสอบรับสินค้า (Audit)</button>
+                    <button onclick="switchMainTab('expense')" id="btn-expense" class="px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80">💸 ค่าใช้จ่าย & ระบบจ่ายเงิน</button>
+                    <button onclick="switchMainTab('tax')" id="btn-tax" class="px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80">🧾 ใบเสร็จ/ใบกำกับภาษี/CN</button>
+                    <button onclick="switchMainTab('reports')" id="btn-reports" class="px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80">📊 งบการเงิน & สมุดรายวัน</button>
                 </div>
             </div>
         </header>
 
         <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-            <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
+            <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col justify-between">
                 
                 <div id="form-procurement-container">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📦</span> ตรวจสอบและลงบัญชีรับเข้าสินค้า (Audit-002)</h2>
-                        <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Pay-001</span>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📦</span> ตรวจสอบรับสินค้า (Audit-002)</h2>
+                        <span class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded-full font-bold border border-red-100">Pay-001</span>
                     </div>
                     
                     <form id="purchaseForm" class="space-y-3.5 text-base">
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">วันที่ทำรายการ</label>
-                            <input type="date" id="txDate" class="w-full border border-gray-300 rounded-xl p-2.5 text-base focus:ring-2 focus:ring-red-500" value="2026-11-07">
+                            <input type="date" id="txDate" class="w-full border border-gray-300 rounded-2xl p-3 text-base focus:ring-2 focus:ring-red-500 shadow-sm" value="2026-11-07">
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">รหัสธุรกรรมสั่งซื้อ / ใบรับสินค้า (Transaction ID)</label>
-                            <select id="txId" onchange="loadTransactionData()" class="w-full border border-gray-300 rounded-xl p-3 font-bold text-red-700 bg-red-50/50 text-base">
+                            <select id="txId" onchange="loadTransactionData()" class="w-full border border-gray-300 rounded-2xl p-3.5 font-bold text-red-700 bg-red-50/50 text-base shadow-sm">
                                 <option value="TX-2026-901">TX-2026-901 | บ. จรัญกิจ (Imperial Paw) - 15,000 ฿</option>
                                 <option value="TX-2026-902">TX-2026-902 | ศรีไพศาลอาหารสัตว์ - 28,500 ฿</option>
                                 <option value="TX-2026-903">TX-2026-903 | Royal Canin Thailand - 42,000 ฿</option>
@@ -581,41 +581,41 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">ชื่อผู้จำหน่าย (Supplier)</label>
-                                <input type="text" id="auditSupplier" readonly value="บริษัท จรัญกิจ (Imperial Paw)" class="w-full border border-gray-200 bg-gray-50 rounded-xl p-2.5 text-sm">
+                                <input type="text" id="auditSupplier" readonly value="บริษัท จรัญกิจ (Imperial Paw)" class="w-full border border-gray-200 bg-gray-50 rounded-2xl p-3 text-sm shadow-inner">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">เลขที่ Invoice</label>
-                                <input type="text" id="auditInvoice" readonly value="INV-2026-1105" class="w-full border border-gray-200 bg-gray-50 rounded-xl p-2.5 text-sm">
+                                <input type="text" id="auditInvoice" readonly value="INV-2026-1105" class="w-full border border-gray-200 bg-gray-50 rounded-2xl p-3 text-sm shadow-inner">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 mb-1">รายการสินค้า</label>
-                            <input type="text" id="auditItems" readonly value="อาหารเม็ดแมว Imperial Paw (50 กระสอบ)" class="w-full border border-gray-200 bg-gray-50 rounded-xl p-2.5 text-sm">
+                            <input type="text" id="auditItems" readonly value="อาหารเม็ดแมว Imperial Paw (50 กระสอบ)" class="w-full border border-gray-200 bg-gray-50 rounded-2xl p-3 text-sm shadow-inner">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">ยอดเงินรวมสุทธิ (บาท)</label>
-                                <input type="text" id="auditAmount" readonly value="15,000.00" class="w-full border border-gray-200 bg-gray-50 rounded-xl p-2.5 text-sm font-bold text-red-600">
+                                <input type="text" id="auditAmount" readonly value="15,000.00" class="w-full border border-gray-200 bg-gray-50 rounded-2xl p-3 text-sm font-bold text-red-600 shadow-inner">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">ช่องทางระบบจ่ายเงิน</label>
-                                <select id="auditPaymentChannel" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm">
+                                <select id="auditPaymentChannel" class="w-full border border-gray-300 rounded-2xl p-3 text-sm shadow-sm">
                                     <option value="transfer">โอนชำระผ่านธนาคารร้าน</option>
                                     <option value="cash">เงินสดร้าน</option>
                                     <option value="credit">ตั้งเจ้าหนี้การค้า (Credit 30 วัน)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="bg-red-50 p-3.5 rounded-xl border border-red-200">
-                            <label class="flex items-center space-x-2 text-sm text-red-900 font-semibold cursor-pointer">
+                        <div class="bg-red-50/80 p-4 rounded-2xl border border-red-200 shadow-sm">
+                            <label class="flex items-center space-x-2.5 text-sm text-red-900 font-semibold cursor-pointer">
                                 <input type="checkbox" id="checkMatch" checked class="w-5 h-5 text-red-600 rounded">
                                 <span>ตรวจสอบความถูกต้องตรงกันระหว่าง PO, Invoice และสต็อกสินค้า (Audit Passed)</span>
                             </label>
                         </div>
                     </form>
 
-                    <div class="mt-4 pt-3 border-t border-gray-100">
-                        <button onclick="processAuditApproval()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl shadow transition text-base flex items-center justify-center gap-2">
+                    <div class="mt-5 pt-3 border-t border-gray-100">
+                        <button onclick="processAuditApproval()" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-red-600/30 transition text-base flex items-center justify-center gap-2">
                             <span>✨</span> ยืนยันระบบจ่ายเงิน & ลงบัญชีอัตโนมัติ
                         </button>
                     </div>
@@ -623,17 +623,17 @@
 
                 <div id="form-expense-container" class="hidden">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>💸</span> บันทึกค่าใช้จ่ายในร้าน (Expense & Payment)</h2>
-                        <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Log-002</span>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>💸</span> บันทึกค่าใช้จ่ายในร้าน (Expense)</h2>
+                        <span class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded-full font-bold border border-red-100">Log-002</span>
                     </div>
                     <form id="expenseForm" class="space-y-3.5 text-base">
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">วันที่จ่าย</label>
-                            <input type="date" id="expDate" class="w-full border border-gray-300 rounded-xl p-2.5 text-base" value="2026-11-07">
+                            <input type="date" id="expDate" class="w-full border border-gray-300 rounded-2xl p-3 text-base shadow-sm" value="2026-11-07">
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">ประเภทค่าใช้จ่าย</label>
-                            <select id="expenseCategory" class="w-full border border-gray-300 rounded-xl p-3 text-base">
+                            <select id="expenseCategory" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base shadow-sm">
                                 <option value="ค่าไฟฟ้า">ค่าไฟฟ้า (Electricity)</option>
                                 <option value="ค่าน้ำ">ค่าน้ำ (Water)</option>
                                 <option value="ค่าเช่าที่">ค่าเช่าที่ (Rental)</option>
@@ -644,21 +644,21 @@
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">รายละเอียด / ผู้รับเงิน</label>
-                            <input type="text" id="expenseDesc" value="ค่าไฟฟ้าประจำเดือนร้าน" class="w-full border border-gray-300 rounded-xl p-3 text-base">
+                            <input type="text" id="expenseDesc" value="ค่าไฟฟ้าประจำเดือนร้าน" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base shadow-sm">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">เลขที่ใบเสร็จ / บิล</label>
-                                <input type="text" id="expRefNo" value="EXP-2026-091" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm">
+                                <input type="text" id="expRefNo" value="EXP-2026-091" class="w-full border border-gray-300 rounded-2xl p-3 text-sm shadow-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">ยอดเงิน (บาท)</label>
-                                <input type="number" id="expAmount" value="3500" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm font-bold text-red-600">
+                                <input type="number" id="expAmount" value="3500" class="w-full border border-gray-300 rounded-2xl p-3 text-sm font-bold text-red-600 shadow-sm">
                             </div>
                         </div>
                     </form>
-                    <div class="mt-4 pt-3 border-t border-gray-100">
-                        <button onclick="processExpenseEntry()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl shadow transition text-base">
+                    <div class="mt-5 pt-3 border-t border-gray-100">
+                        <button onclick="processExpenseEntry()" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-red-600/30 transition text-base">
                             ✨ บันทึกจ่ายเงิน & ลงบัญชีค่าใช้จ่าย
                         </button>
                     </div>
@@ -666,13 +666,13 @@
 
                 <div id="form-tax-container" class="hidden">
                     <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>🧾</span> ระบบออกใบเสร็จ / ใบกำกับภาษี / CN</h2>
-                        <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-bold">Tax & CN</span>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>🧾</span> ระบบออกใบเสร็จ / ภาษี / CN</h2>
+                        <span class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded-full font-bold border border-red-100">Tax & CN</span>
                     </div>
                     <div class="space-y-3.5 text-base">
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">เลือกประเภทเอกสารทางการเงิน</label>
-                            <select id="taxDocType" class="w-full border border-gray-300 rounded-xl p-3 font-bold text-red-700 text-base">
+                            <select id="taxDocType" class="w-full border border-gray-300 rounded-2xl p-3.5 font-bold text-red-700 text-base shadow-sm">
                                 <option value="RECEIPT">ใบเสร็จรับเงิน (Cash Receipt)</option>
                                 <option value="TAX_INVOICE">ใบกำกับภาษีเต็มรูปแบบ (Tax Invoice)</option>
                                 <option value="CN">ใบลดหนี้ / เพิ่มหนี้ (Credit / Debit Note - CN)</option>
@@ -680,64 +680,64 @@
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">อ้างอิงเลขที่บิล / ธุรกรรมเดิม</label>
-                            <input type="text" id="taxRefId" value="TX-2026-901 หรือ POS-5920" class="w-full border border-gray-300 rounded-xl p-3 text-base">
+                            <input type="text" id="taxRefId" value="TX-2026-901 หรือ POS-5920" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base shadow-sm">
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">ชื่อลูกค้า / คู่ค้า</label>
-                            <input type="text" id="taxCustomer" value="คุณสมชาย ใจดี (ลูกค้าหน้าร้าน/ฟาร์มแมว)" class="w-full border border-gray-300 rounded-xl p-3 text-base">
+                            <input type="text" id="taxCustomer" value="คุณสมชาย ใจดี (ลูกค้าหน้าร้าน/ฟาร์มแมว)" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base shadow-sm">
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1 text-sm">จำนวนเงินปรับปรุง / ยอดสุทธิ (บาท)</label>
-                            <input type="number" id="taxAmount" value="1500" class="w-full border border-gray-300 rounded-xl p-3 text-base font-bold text-red-600">
+                            <input type="number" id="taxAmount" value="1500" class="w-full border border-gray-300 rounded-2xl p-3.5 text-base font-bold text-red-600 shadow-sm">
                         </div>
-                        <div class="mt-4 pt-3 border-t border-gray-100">
-                            <button onclick="generateTaxDocument()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl shadow transition text-base">
+                        <div class="mt-5 pt-3 border-t border-gray-100">
+                            <button onclick="generateTaxDocument()" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-red-600/30 transition text-base">
                                 🖨️ ออกเอกสารและบันทึกผลเข้าสมุดบัญชี
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-6 pt-3 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+                <div class="mt-6 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
                     <span>สถานะระบบ: เชื่อมโยงบัญชีออนไลน์ปกติ</span>
                     <button onclick="handleLogout()" class="text-red-600 font-semibold hover:underline">ออกจากระบบ</button>
                 </div>
             </div>
 
-            <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="lg:col-span-7 flex flex-col gap-6">
                 
-                <section id="section-journal" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col">
+                <section id="section-journal" class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col">
                     <div class="flex flex-col justify-between items-start border-b border-red-100 pb-3 mb-4 gap-3">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📊</span> สมุดรายวันทั่วไป & ประวัติธุรกรรม (General Journal)</h2>
-                        <div class="flex flex-wrap items-center gap-2.5 bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-sm w-full justify-between">
-                            <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📊</span> สมุดรายวันทั่วไป & ประวัติธุรกรรม</h2>
+                        <div class="flex flex-wrap items-center gap-2.5 bg-gray-50 p-3 rounded-2xl border border-gray-200/80 text-sm w-full justify-between shadow-sm">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 <span class="text-gray-700 font-bold">จากวันที่:</span>
-                                <input type="date" id="startDate" class="border border-gray-300 rounded-lg p-1.5 text-sm" value="2026-11-07">
+                                <input type="date" id="startDate" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm" value="2026-11-07">
                                 <span class="text-gray-700 font-bold pl-2">ถึง:</span>
-                                <input type="date" id="endDate" class="border border-gray-300 rounded-lg p-1.5 text-sm" value="2026-11-07">
+                                <input type="date" id="endDate" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm" value="2026-11-07">
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="filterJournalByDateRange()" class="bg-red-600 text-white px-4 py-1.5 rounded-lg font-bold">ค้นหา</button>
-                                <button onclick="resetDateFilter()" class="bg-gray-200 px-4 py-1.5 rounded-lg text-gray-700 font-semibold">ล้างค่า</button>
+                                <button onclick="filterJournalByDateRange()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold transition shadow-sm">ค้นหา</button>
+                                <button onclick="resetDateFilter()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-xl text-gray-700 font-semibold transition">ล้างค่า</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto max-h-[320px]">
+                    <div class="overflow-x-auto max-h-[320px] rounded-2xl border border-gray-100 shadow-inner">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-red-50 text-red-800 text-sm uppercase font-bold sticky top-0">
-                                    <th class="p-3.5 rounded-l-lg">รหัสธุรกรรม / วันที่</th>
+                                <tr class="bg-red-50 text-red-900 text-sm uppercase font-bold sticky top-0 backdrop-blur-sm z-10">
+                                    <th class="p-3.5">รหัสธุรกรรม / วันที่</th>
                                     <th class="p-3.5">บัญชีแยกประเภท</th>
                                     <th class="p-3.5 text-right">เดบิต (Dr)</th>
-                                    <th class="p-3.5 text-right rounded-r-lg">เครดิต (Cr)</th>
+                                    <th class="p-3.5 text-right">เครดิต (Cr)</th>
                                 </tr>
                             </thead>
                             <tbody id="journalTableBody" class="text-sm divide-y divide-gray-100"></tbody>
                         </table>
                     </div>
 
-                    <div class="mt-3 bg-gray-50 p-3.5 rounded-xl border border-gray-200 flex justify-between items-center text-sm font-bold">
+                    <div class="mt-4 bg-gray-50 p-4 rounded-2xl border border-gray-200 flex justify-between items-center text-sm font-bold shadow-sm">
                         <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ช่วงวันที่เลือก):</span>
                         <div class="flex gap-5">
                             <span class="text-red-700">Dr: <span id="totalDebit">0.00</span> ฿</span>
@@ -746,20 +746,20 @@
                     </div>
                 </section>
 
-                <section id="section-reports" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col hidden">
+                <section id="section-reports" class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col hidden">
                     <div class="flex justify-between items-center border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📈</span> งบกำไรขาดทุน & งบดุล (เชื่อมโยงอัตโนมัติ)</h2>
-                        <div class="flex items-center gap-1.5 bg-gray-50 p-1.5 rounded-xl border text-sm font-semibold">
-                            <button onclick="switchReportPeriod('monthly')" id="rep-monthly" class="px-3.5 py-1.5 rounded-lg bg-red-600 text-white font-bold">รายเดือน</button>
-                            <button onclick="switchReportPeriod('yearly')" id="rep-yearly" class="px-3.5 py-1.5 rounded-lg text-gray-700">รายปี</button>
+                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📈</span> งบกำไรขาดทุน & งบดุลอัตโนมัติ</h2>
+                        <div class="flex items-center gap-1.5 bg-gray-100 p-1 rounded-2xl border text-sm font-semibold shadow-inner">
+                            <button onclick="switchReportPeriod('monthly')" id="rep-monthly" class="px-4 py-2 rounded-xl bg-red-600 text-white font-bold shadow-sm transition">รายเดือน</button>
+                            <button onclick="switchReportPeriod('yearly')" id="rep-yearly" class="px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 transition">รายปี</button>
                         </div>
                     </div>
 
                     <div class="space-y-4 max-h-[360px] overflow-y-auto pr-1">
-                        <div class="border border-red-100 rounded-2xl p-4 bg-red-50/30 text-sm">
-                            <h3 class="font-bold text-red-800 text-base mb-2.5 flex justify-between">
+                        <div class="border border-red-100 rounded-2xl p-4 bg-red-50/30 text-sm shadow-sm">
+                            <h3 class="font-bold text-red-900 text-base mb-2.5 flex justify-between items-center">
                                 <span>1. งบกำไรขาดทุน (Income Statement)</span>
-                                <span id="plPeriodTitle" class="text-gray-500 font-semibold">พฤศจิกายน 2026</span>
+                                <span id="plPeriodTitle" class="text-gray-500 font-semibold text-xs bg-white px-2.5 py-1 rounded-full border shadow-sm">พฤศจิกายน 2026</span>
                             </h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between font-bold">
@@ -785,19 +785,19 @@
                             </div>
                         </div>
 
-                        <div class="border border-red-100 rounded-2xl p-4 bg-white text-sm">
-                            <h3 class="font-bold text-red-800 text-base mb-2.5 flex justify-between">
+                        <div class="border border-red-100 rounded-2xl p-4 bg-white text-sm shadow-sm">
+                            <h3 class="font-bold text-red-900 text-base mb-2.5 flex justify-between items-center">
                                 <span>2. งบดุล / แสดงฐานะการเงิน (Balance Sheet)</span>
-                                <span id="bsPeriodTitle" class="text-gray-500 font-semibold">ณ 30 พ.ย. 2026</span>
+                                <span id="bsPeriodTitle" class="text-gray-500 font-semibold text-xs bg-gray-50 px-2.5 py-1 rounded-full border shadow-sm">ณ 30 พ.ย. 2026</span>
                             </h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-gray-50 p-3 rounded-xl border">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50/80 p-3.5 rounded-2xl border shadow-sm">
                                     <div class="font-bold mb-1.5 text-gray-800 border-b pb-1 text-sm">สินทรัพย์ (Assets)</div>
                                     <div class="flex justify-between py-1"><span>เงินสดและธนาคาร</span><span>85,000 ฿</span></div>
                                     <div class="flex justify-between py-1"><span>สินค้าคงเหลือ (Stock)</span><span id="bsDynamicInventory">0.00 ฿</span></div>
                                     <div class="flex justify-between font-bold border-t mt-1.5 pt-1"><span>รวมสินทรัพย์</span><span id="bsTotalAsset">85,000 ฿</span></div>
                                 </div>
-                                <div class="bg-gray-50 p-3 rounded-xl border">
+                                <div class="bg-gray-50/80 p-3.5 rounded-2xl border shadow-sm">
                                     <div class="font-bold mb-1.5 text-gray-800 border-b pb-1 text-sm">หนี้สิน & ส่วนทุน</div>
                                     <div class="flex justify-between py-1"><span>เจ้าหนี้การค้า (AP)</span><span id="bsDynamicAP">0.00 ฿</span></div>
                                     <div class="flex justify-between py-1"><span>ทุนและกำไรสะสม</span><span>85,000 ฿</span></div>
@@ -813,31 +813,31 @@
 
 
     <!-- ================= 4. เลนหลักสำหรับ "เถ้าแก่" ================= -->
-    <div id="app-owner-content" class="hidden flex flex-col min-h-screen bg-gray-50">
-        <header class="bg-red-900 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <div id="app-owner-content" class="hidden flex flex-col min-h-screen bg-gray-50/50">
+        <header class="bg-gradient-to-r from-red-900 to-stone-900 text-white shadow-lg sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <span class="bg-white text-red-900 font-bold p-2.5 rounded-lg shadow text-xl">🐾 Pet's Station</span>
+                    <span class="bg-white text-red-900 font-extrabold px-3 py-2 rounded-xl shadow text-xl tracking-wider">🐾 Pet's Station</span>
                     <div>
                         <h1 class="text-lg font-bold">ระบบบริหารภาพรวมธุรกิจ (Owner Executive Dashboard)</h1>
-                        <p class="text-sm text-red-200">ผู้ใช้งาน: <span id="owner-user-display" class="font-semibold underline">เถ้าแก่</span> (ผู้บริหารสูงสุด)</p>
+                        <p class="text-xs text-red-200">ผู้ใช้งาน: <span id="owner-user-display" class="font-semibold underline">เถ้าแก่</span> (ผู้บริหารสูงสุด)</p>
                     </div>
                 </div>
-                <button onclick="handleLogout()" class="bg-red-950 hover:bg-black px-4 py-2 rounded-xl text-sm font-bold">ออกจากระบบ</button>
+                <button onclick="handleLogout()" class="bg-red-950 hover:bg-black px-4 py-2.5 rounded-2xl text-sm font-bold transition shadow-md">ออกจากระบบ</button>
             </div>
         </header>
-        <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-red-200">
-                <h3 class="text-sm font-bold text-gray-500 uppercase">ยอดขายรวมสุทธิวันนี้</h3>
-                <div class="text-3xl font-bold text-red-700 mt-2">12,500.00 ฿</div>
+        <main class="max-w-7xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">ยอดขายรวมสุทธิวันนี้</h3>
+                <div class="text-3xl font-extrabold text-red-700 mt-2">12,500.00 ฿</div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-red-200">
-                <h3 class="text-sm font-bold text-gray-500 uppercase">คำสั่งซื้อรออนุมัติ</h3>
-                <div class="text-3xl font-bold text-emerald-700 mt-2">3 รายการ</div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">คำสั่งซื้อรออนุมัติ</h3>
+                <div class="text-3xl font-extrabold text-emerald-700 mt-2">3 รายการ</div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-red-200">
-                <h3 class="text-sm font-bold text-gray-500 uppercase">สถานะคลังสินค้า</h3>
-                <div class="text-2xl font-bold text-gray-800 mt-2">🟢 ปกติ</div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">สถานะคลังสินค้า</h3>
+                <div class="text-2xl font-extrabold text-gray-800 mt-2 flex items-center gap-2">🟢 ปกติ (Stable)</div>
             </div>
         </main>
     </div>
@@ -934,8 +934,8 @@
             document.getElementById('form-otp-reset').classList.add('hidden');
             document.getElementById('login-error-alert').classList.add('hidden');
 
-            document.getElementById('tab-login-btn').className = "flex-1 py-3 rounded-xl text-gray-600 transition";
-            document.getElementById('tab-forgot-btn').className = "flex-1 py-3 rounded-xl text-gray-600 transition";
+            document.getElementById('tab-login-btn').className = "flex-1 py-3 rounded-xl text-gray-600 transition hover:text-gray-900";
+            document.getElementById('tab-forgot-btn').className = "flex-1 py-3 rounded-xl text-gray-600 transition hover:text-gray-900";
 
             if(tab === 'login') {
                 document.getElementById('form-login').classList.remove('hidden');
@@ -1032,8 +1032,8 @@
 
             let filtered = productsFromSheet.filter(p => {
                 const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                   p.name.toLowerCase().includes(keyword) || 
-                                   p.brand.toLowerCase().includes(keyword);
+                                     p.name.toLowerCase().includes(keyword) || 
+                                     p.brand.toLowerCase().includes(keyword);
                 const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                 const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                 return matchKeyword && matchBrand && matchUnit;
@@ -1140,7 +1140,7 @@
             const tbody = document.getElementById('f1ProductTableBody');
             tbody.innerHTML = '';
             if(products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">ไม่พบสินค้าที่คุณค้นหา</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium">ไม่พบสินค้าที่คุณค้นหา</td></tr>`;
                 return;
             }
             products.forEach(p => {
@@ -1223,13 +1223,13 @@
             const container = document.getElementById('member-list-container');
             container.innerHTML = '';
             if (list.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-gray-400 text-sm">ไม่พบข้อมูลสมาชิกที่คุณค้นหา</div>`;
+                container.innerHTML = `<div class="text-center py-8 text-gray-400 text-sm font-medium">ไม่พบข้อมูลสมาชิกที่คุณค้นหา</div>`;
                 return;
             }
             list.forEach((m, idx) => {
                 const originalIndex = membersData.indexOf(m);
                 const card = document.createElement('div');
-                card.className = 'border border-gray-200 hover:border-red-300 bg-gray-50/50 rounded-2xl p-3.5 flex justify-between items-center transition';
+                card.className = 'border border-gray-200 hover:border-red-300 bg-gray-50/50 rounded-2xl p-4 flex justify-between items-center transition shadow-sm';
                 card.innerHTML = `
                     <div class="cursor-pointer flex-grow" onclick="selectMember(${originalIndex})">
                         <div class="font-bold text-gray-900 text-base">🐶 ชื่อน้อง: <span class="text-red-700">${m.petName}</span> (เจ้าของ: ${m.ownerName})</div>
@@ -1277,7 +1277,6 @@
             backToMemberList();
         }
 
-        // ================= Checkout / Payment Modal Functions =================
         let currentCheckoutSubtotal = 0;
 
         function openCheckoutModal() {
@@ -1404,16 +1403,15 @@
 
             document.getElementById('pay-modal-change').innerText = change.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
-            // แสดงแจ้งเตือนส่วนต่าง (ขาดเท่าไหร่ / เกินเท่าไหร่)
             if (totalReceived < finalNet) {
                 let shortage = finalNet - totalReceived;
                 warningAlert.innerText = `⚠️ รับเงินไม่พอ ขาดอีก ${shortage.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
-                warningAlert.className = "mt-2 p-2.5 text-xs font-bold rounded-xl text-center border bg-red-100 text-red-800 border-red-300";
+                warningAlert.className = "mt-2 p-3 text-xs font-bold rounded-2xl text-center border bg-red-100 text-red-800 border-red-300 shadow-sm";
                 warningAlert.classList.remove('hidden');
             } else if (totalReceived > finalNet) {
                 let excess = totalReceived - finalNet;
                 warningAlert.innerText = `⚠️ รับเงินเกิน ${excess.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
-                warningAlert.className = "mt-2 p-2.5 text-xs font-bold rounded-xl text-center border bg-amber-100 text-amber-800 border-amber-300";
+                warningAlert.className = "mt-2 p-3 text-xs font-bold rounded-2xl text-center border bg-amber-100 text-amber-800 border-amber-300 shadow-sm";
                 warningAlert.classList.remove('hidden');
             } else {
                 warningAlert.classList.add('hidden');
@@ -1444,7 +1442,6 @@
             clearCart();
         }
 
-        // ================= Edit Cart Item Modal =================
         function openEditCartModal(index) {
             const item = cartItems[index];
             document.getElementById('edit-cart-index').value = index;
@@ -1731,7 +1728,7 @@
             let totalDiscount = 0;
 
             if(cartItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">ยังไม่มีสินค้าในตะกร้า</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีสินค้าในตะกร้า</td></tr>`;
                 document.getElementById('cartTotalPrice').innerText = "0.00 ฿";
                 document.getElementById('summary-total-qty').innerText = "0 ชิ้น";
                 document.getElementById('summary-total-discount').innerText = "0.00 ฿";
@@ -1754,19 +1751,19 @@
                 totalDiscount += (itemDisc * item.qty);
 
                 const row = document.createElement('tr');
-                row.className = 'border-b border-gray-50 hover:bg-gray-50/50';
+                row.className = 'border-b border-gray-100 hover:bg-gray-50/50';
                 row.innerHTML = `
                     <td class="py-3 pr-2 font-bold text-gray-900 text-sm">
                         ${item.name}
-                        ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold">ของแถม</span>' : ''}
+                        ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold border border-red-200">ของแถม</span>' : ''}
                     </td>
                     <td class="py-3 text-center">
-                        <input type="number" min="1" ${item.isGift ? 'disabled' : ''} value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-lg text-center py-1.5 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
+                        <input type="number" min="1" ${item.isGift ? 'disabled' : ''} value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-xl text-center py-1 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
                     </td>
                     <td class="py-3 text-right font-bold text-gray-900 text-sm">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
                     <td class="py-3 text-center flex items-center justify-center gap-1.5">
-                        <button onclick="openEditCartModal(${index})" class="bg-blue-600 hover:bg-blue-700 text-white w-7 h-7 rounded-lg text-xs font-bold transition flex items-center justify-center shadow-sm" title="แก้ไขรายการ">✏️</button>
-                        <button onclick="removeCartItem(${index})" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-lg text-xs font-bold transition flex items-center justify-center shadow-sm" title="ลบรายการ">🗑️</button>
+                        <button onclick="openEditCartModal(${index})" class="bg-blue-600 hover:bg-blue-700 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="แก้ไขรายการ">✏️</button>
+                        <button onclick="removeCartItem(${index})" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="ลบรายการ">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -1784,27 +1781,27 @@
             document.getElementById('section-journal').classList.add('hidden');
             document.getElementById('section-reports').classList.add('hidden');
 
-            document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700";
-            document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700";
-            document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700";
-            document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition text-white hover:bg-red-700";
+            document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
 
             if(tab === 'procurement') {
                 document.getElementById('form-procurement-container').classList.remove('hidden');
                 document.getElementById('section-journal').classList.remove('hidden');
-                document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow";
+                document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
             } else if(tab === 'expense') {
                 document.getElementById('form-expense-container').classList.remove('hidden');
                 document.getElementById('section-journal').classList.remove('hidden');
-                document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow";
+                document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
             } else if(tab === 'tax') {
                 document.getElementById('form-tax-container').classList.remove('hidden');
                 document.getElementById('section-journal').classList.remove('hidden');
-                document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow";
+                document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
             } else if(tab === 'reports') {
                 document.getElementById('section-journal').classList.remove('hidden');
                 document.getElementById('section-reports').classList.remove('hidden');
-                document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-lg transition bg-white text-red-700 shadow";
+                document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
                 updateFinancialStatements();
             }
         }
@@ -1934,11 +1931,11 @@
             const btnM = document.getElementById('rep-monthly');
             const btnY = document.getElementById('rep-yearly');
             if(mode === 'monthly') {
-                btnM.className = "px-3.5 py-1.5 rounded-lg bg-red-600 text-white font-bold";
-                btnY.className = "px-3.5 py-1.5 rounded-lg text-gray-700";
+                btnM.className = "px-4 py-2 rounded-xl bg-red-600 text-white font-bold shadow-sm transition";
+                btnY.className = "px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 transition";
             } else {
-                btnY.className = "px-3.5 py-1.5 rounded-lg bg-red-600 text-white font-bold";
-                btnM.className = "px-3.5 py-1.5 rounded-lg text-gray-700";
+                btnY.className = "px-4 py-2 rounded-xl bg-red-600 text-white font-bold shadow-sm transition";
+                btnM.className = "px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 transition";
             }
             updateFinancialStatements();
         }
