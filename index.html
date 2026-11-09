@@ -181,7 +181,7 @@
                                     <th class="pb-2">รายการ</th>
                                     <th class="pb-2 text-center">จำนวน</th>
                                     <th class="pb-2 text-right">ราคา</th>
-                                    <th class="pb-2 text-center">ลบ</th>
+                                    <th class="pb-2 text-center">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="cartTableBody">
@@ -253,6 +253,58 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ติ๊กแถม) ================= -->
+    <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/60 z-[140] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
+            <button onclick="closeEditCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
+            <h3 class="text-lg font-bold text-gray-800 mb-5">แก้ไขข้อมูลสินค้า</h3>
+            
+            <form onsubmit="saveCartItemEdit(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="edit-cart-index" value="-1">
+                
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">ราคาขาย</label>
+                    <div class="relative">
+                        <input type="number" id="form-edit-item-price" step="0.01" min="0" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none pr-10">
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">⌄</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">จำนวน</label>
+                    <input type="number" id="form-edit-item-qty" min="1" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">ส่วนลด</label>
+                    <input type="number" id="form-edit-item-discount" step="0.01" min="0" value="0" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">หมายเหตุ</label>
+                    <input type="text" id="form-edit-item-note" placeholder="กรอกหมายเหตุ" class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- เพิ่มตัวเลือกติ๊กแถม -->
+                <div class="bg-red-50 p-3.5 rounded-xl border border-red-200">
+                    <label class="flex items-center space-x-2 text-sm text-red-900 font-semibold cursor-pointer">
+                        <input type="checkbox" id="form-edit-is-gift" onchange="toggleGiftItemCheckbox()" class="w-5 h-5 text-red-600 rounded">
+                        <span>🎁 ของแถม (ปรับราคาขายเป็น 0 บาท)</span>
+                    </label>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition text-base">
+                        บันทึก
+                    </button>
+                    <button type="button" onclick="closeEditCartModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl shadow transition text-base">
+                        ยกเลิก
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -967,6 +1019,7 @@
                 closeHoldBillModal();
                 closeCashDrawerModal();
                 closeMemberModal();
+                closeEditCartModal();
             }
         });
 
@@ -1135,6 +1188,52 @@
             backToMemberList();
         }
 
+        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม =================
+        function openEditCartModal(index) {
+            const item = cartItems[index];
+            document.getElementById('edit-cart-index').value = index;
+            document.getElementById('form-edit-item-price').value = item.price;
+            document.getElementById('form-edit-item-qty').value = item.qty;
+            document.getElementById('form-edit-item-discount').value = item.discount || 0;
+            document.getElementById('form-edit-item-note').value = item.note || '';
+
+            const isGift = item.price === 0;
+            document.getElementById('form-edit-is-gift').checked = isGift;
+            
+            document.getElementById('edit-cart-modal').classList.remove('hidden');
+        }
+
+        function closeEditCartModal() {
+            document.getElementById('edit-cart-modal').classList.add('hidden');
+        }
+
+        function toggleGiftItemCheckbox() {
+            const isChecked = document.getElementById('form-edit-is-gift').checked;
+            const priceInput = document.getElementById('form-edit-item-price');
+            if (isChecked) {
+                priceInput.value = 0;
+            }
+        }
+
+        function saveCartItemEdit(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('edit-cart-index').value);
+            const newQty = parseInt(document.getElementById('form-edit-item-qty').value) || 1;
+            const isGift = document.getElementById('form-edit-is-gift').checked;
+            const newPrice = isGift ? 0 : (parseFloat(document.getElementById('form-edit-item-price').value) || 0);
+            const newDiscount = parseFloat(document.getElementById('form-edit-item-discount').value) || 0;
+            const newNote = document.getElementById('form-edit-item-note').value;
+
+            if (index >= 0 && index < cartItems.length) {
+                cartItems[index].qty = newQty;
+                cartItems[index].price = newPrice;
+                cartItems[index].discount = newDiscount;
+                cartItems[index].note = newNote;
+            }
+            renderCart();
+            closeEditCartModal();
+        }
+
         function openCashDrawerModal() {
             document.getElementById('cash-drawer-modal').classList.remove('hidden');
             backToDrawerStep1();
@@ -1270,7 +1369,7 @@
             if(existing) { 
                 existing.qty += 1; 
             } else { 
-                cartItems.push({ name, price, qty: 1 }); 
+                cartItems.push({ name, price, qty: 1, discount: 0, note: '' }); 
             }
             renderCart();
         }
@@ -1305,18 +1404,24 @@
                 return;
             }
             cartItems.forEach((item, index) => {
-                let sum = item.price * item.qty;
+                let sum = (item.price * item.qty) - (item.discount || 0);
+                if(sum < 0) sum = 0;
                 total += sum;
+
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-50 hover:bg-gray-50/50';
                 row.innerHTML = `
-                    <td class="py-3 pr-2 font-bold text-gray-900 text-sm">${item.name}</td>
+                    <td class="py-3 pr-2 font-bold text-gray-900 text-sm">
+                        ${item.name}
+                        ${item.price === 0 ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold">ของแถม</span>' : ''}
+                    </td>
                     <td class="py-3 text-center">
                         <input type="number" min="1" value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-lg text-center py-1.5 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none">
                     </td>
                     <td class="py-3 text-right font-bold text-gray-900 text-sm">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
-                    <td class="py-3 text-center">
-                        <button onclick="removeCartItem(${index})" class="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded transition text-base" title="ลบรายการ">🗑️</button>
+                    <td class="py-3 text-center flex items-center justify-center gap-1.5">
+                        <button onclick="openEditCartModal(${index})" class="bg-blue-600 hover:bg-blue-700 text-white w-7 h-7 rounded-lg text-xs font-bold transition flex items-center justify-center shadow-sm" title="แก้ไขรายการ">✏️</button>
+                        <button onclick="removeCartItem(${index})" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-lg text-xs font-bold transition flex items-center justify-center shadow-sm" title="ลบรายการ">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(row);
