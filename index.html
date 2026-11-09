@@ -16,25 +16,21 @@
     <div id="auth-wrapper" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-red-100 p-8 transform transition-all">
             
-            <!-- Logo & Store Header -->
             <div class="text-center mb-6">
                 <div class="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white font-bold p-4 rounded-2xl shadow-lg text-3xl mb-2">Pet's Station</div>
                 <h2 class="text-2xl font-extrabold text-gray-900">ระบบจัดการร้านสถานีสัตว์เลี้ยง</h2>
                 <p class="text-sm text-red-600 font-medium mt-1">สุราษฎร์ธานี (Surat Thani)</p>
             </div>
 
-            <!-- Error / Success Notification Alert -->
             <div id="login-error-alert" class="hidden mb-4 p-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl flex items-center gap-2 shadow-sm">
                 <span>⚠️</span> <span id="error-message-text">อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
             </div>
 
-            <!-- Tab Switcher -->
             <div class="flex bg-gray-100 p-1.5 rounded-2xl mb-6 text-sm font-semibold">
                 <button onclick="switchAuthTab('login')" id="tab-login-btn" class="flex-1 py-3 rounded-xl bg-white text-red-700 shadow-sm transition">เข้าสู่ระบบ</button>
                 <button onclick="switchAuthTab('forgot')" id="tab-forgot-btn" class="flex-1 py-3 rounded-xl text-gray-600 transition">ขอรับรหัส</button>
             </div>
 
-            <!-- Form: Login -->
             <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Google Mail (Gmail)</label>
@@ -54,7 +50,6 @@
                 </button>
             </form>
 
-            <!-- Form: Request New Password (Step 1) -->
             <form id="form-forgot" onsubmit="handleRequestNewPassword(event)" class="space-y-4 hidden">
                 <p class="text-sm text-gray-600 bg-red-50 p-3.5 rounded-xl border border-red-100 leading-relaxed">💡 กรอกอีเมลที่อยู่ในระบบอนุญาต ระบบจะสร้างรหัสผ่านใหม่ทันที และส่งแจ้งเตือนไปยังอีเมลเถ้าแก่ (<span class="font-semibold text-red-700">pets.station681@gmail.com</span>)</p>
                 <div>
@@ -66,7 +61,6 @@
                 </button>
             </form>
 
-            <!-- Form: Result & New Password Display (Step 2) -->
             <form id="form-otp-reset" onsubmit="return false;" class="space-y-4 hidden">
                 <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-xs text-blue-800 space-y-1.5">
                     <p class="font-bold text-sm">✉️ เจนรหัสผ่านใหม่สำเร็จ!</p>
@@ -149,9 +143,7 @@
                                 <th class="p-3.5 text-center">เลือก</th>
                             </tr>
                         </thead>
-                        <tbody id="googleSheetProductTable" class="text-sm divide-y divide-gray-100">
-                            <!-- ข้อมูลจะถูกโหลดเข้ามาอัตโนมัติจาก Google Sheets -->
-                        </tbody>
+                        <tbody id="googleSheetProductTable" class="text-sm divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -165,7 +157,7 @@
                             <button onclick="clearCart()" class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-xl text-xs font-bold transition">🗑️ ล้างจอ</button>
                         </div>
                     </div>
-                    <!-- ส่วนแสดงข้อมูลสมาชิกลูกค้าที่เลือก -->
+                    
                     <div id="selected-member-display" class="hidden mb-3 bg-red-50 border border-red-200 p-3.5 rounded-xl text-xs flex justify-between items-center">
                         <div>
                             <span class="font-bold text-red-800 block text-sm">👤 สมาชิก: <span id="disp-owner" class="text-gray-900"></span> (น้อง: <span id="disp-pet" class="text-gray-900"></span>)</span>
@@ -191,7 +183,6 @@
                     </div>
                 </div>
 
-                <!-- ส่วนสรุปรายการ จำนวน, ส่วนลด, ราคารวมสุทธิ -->
                 <div class="border-t pt-3 pb-2 space-y-1.5 text-sm bg-gray-50 p-3 rounded-xl border border-gray-200">
                     <div class="flex justify-between text-gray-600">
                         <span>จำนวนสินค้าทั้งหมด:</span>
@@ -268,7 +259,7 @@
         </div>
     </div>
 
-    <!-- ================= Checkout Payment Modal (หน้าต่างชำระเงินปรับปรุงใหม่ตามเงื่อนไข) ================= -->
+    <!-- ================= Checkout Payment Modal ================= -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-black/70 z-[150] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative max-h-[95vh] overflow-y-auto">
             <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
@@ -280,13 +271,11 @@
                     <span id="pay-modal-total" class="font-bold text-gray-900 text-lg">0.00</span>
                 </div>
                 
-                <!-- ส่วนลดท้ายบิล [F6] ที่สามารถกรอกแก้ไขได้ -->
                 <div class="flex justify-between items-center text-base bg-gray-50 p-2.5 rounded-xl border">
                     <span class="text-gray-700 font-semibold">ส่วนลดท้ายบิล [F6] (บาทหรือ %)</span>
                     <input type="number" id="pay-modal-extra-discount" oninput="calculateFinalCheckout()" value="0" min="0" step="0.01" class="w-32 border border-gray-300 rounded-lg p-1.5 text-right font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
                 </div>
 
-                <!-- ช่องเลือกคิด VAT 7% (Defult เป็นไม่มี VAT) -->
                 <div class="flex justify-between items-center text-base bg-red-50/50 p-3 rounded-xl border border-red-100">
                     <label class="flex items-center gap-2 font-bold text-gray-800 cursor-pointer">
                         <input type="checkbox" id="pay-modal-vat-checkbox" onchange="calculateFinalCheckout()" class="w-5 h-5 text-red-600 rounded">
@@ -297,50 +286,67 @@
 
                 <div class="flex justify-between items-center text-lg font-bold bg-red-50 p-3 rounded-xl border border-red-100">
                     <span class="text-red-800">ยอดสุทธิ (อัปเดตอัตโนมัติ)</span>
-                    <span id="pay-modal-net" class="text-red-700 text-2xl">0.00</span>
+                    <span id="pay-modal-net" class="text-red-700 text-2xl font-extrabold">0.00</span>
                 </div>
 
                 <div>
                     <input type="text" placeholder="หมายเหตุ กรอกหมายเหตุ..." class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
                 </div>
 
-                <!-- Payment Methods Checkboxes -->
-                <div class="flex items-center gap-6 py-2">
-                    <label class="flex items-center gap-2 font-bold text-gray-800 cursor-pointer">
-                        <input type="checkbox" checked class="w-4 h-4 text-red-600 rounded"> เงินสด
+                <!-- Payment Methods -->
+                <div class="grid grid-cols-5 gap-2 py-2 text-xs font-bold text-center">
+                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <input type="radio" name="payMethod" value="cash" onchange="handlePaymentMethodChange()" class="text-red-600"> เงินสด
                     </label>
-                    <label class="flex items-center gap-2 font-semibold text-gray-600 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 text-red-600 rounded"> เงินโอน
+                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-red-50 border-red-200 text-red-800">
+                        <input type="radio" name="payMethod" value="transfer" checked onchange="handlePaymentMethodChange()" class="text-red-600"> เงินโอน
                     </label>
-                    <label class="flex items-center gap-2 font-semibold text-gray-600 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 text-red-600 rounded"> บัตรเครดิต
+                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <input type="radio" name="payMethod" value="credit" onchange="handlePaymentMethodChange()" class="text-red-600"> บัตรเครดิต
                     </label>
-                    <label class="flex items-center gap-2 font-semibold text-gray-600 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 text-red-600 rounded"> ลูกหนี้
+                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <input type="radio" name="payMethod" value="debt" onchange="handlePaymentMethodChange()" class="text-red-600"> ลูกหนี้
+                    </label>
+                    <label class="border rounded-xl p-2.5 flex items-center justify-center gap-1 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <input type="radio" name="payMethod" value="mixed" onchange="handlePaymentMethodChange()" class="text-red-600"> โอนผสมสด
                     </label>
                 </div>
 
                 <!-- Quick Cash Buttons Grid -->
-                <div class="grid grid-cols-5 gap-2">
-                    <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">1</button>
-                    <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">5</button>
-                    <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">20</button>
-                    <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">100</button>
-                    <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">1000</button>
+                <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
+                    <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">1</button>
+                    <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">5</button>
+                    <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">20</button>
+                    <button type="button" onclick="addCashAmount(100)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">100</button>
+                    <button type="button" onclick="addCashAmount(1000)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">1000</button>
                     
-                    <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">2</button>
-                    <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">10</button>
-                    <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">50</button>
-                    <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm">500</button>
-                    <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2.5 font-bold text-blue-700 shadow-sm text-xs">พอดี</button>
+                    <button type="button" onclick="addCashAmount(2)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">2</button>
+                    <button type="button" onclick="addCashAmount(10)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">10</button>
+                    <button type="button" onclick="addCashAmount(50)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">50</button>
+                    <button type="button" onclick="addCashAmount(500)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2 font-bold text-gray-700 shadow-sm text-xs">500</button>
+                    <button type="button" onclick="setExactCash()" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl py-2 font-bold text-blue-700 shadow-sm text-[11px]">พอดี</button>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <div class="flex-grow">
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">รับเงิน [F7]</label>
+                <!-- ช่องรับเงิน / แยกช่องโอนผสมสด และป้ายแจ้งเตือนส่วนต่าง -->
+                <div class="pt-1">
+                    <div id="single-receive-box">
+                        <label id="receive-label-title" class="block text-xs font-bold text-gray-700 mb-1">รับเงินโอน [F7]</label>
                         <input type="number" id="pay-modal-received" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-3 text-lg font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
                     </div>
-                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl font-bold mt-5 shadow">฿</div>
+
+                    <div id="mixed-receive-box" class="hidden grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">💵 เงินสด (ฝั่งซ้าย)</label>
+                            <input type="number" id="pay-mixed-cash" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-2.5 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">💳 เงินโอน (ฝั่งขวา)</label>
+                            <input type="number" id="pay-mixed-transfer" oninput="calculateChange()" step="0.01" class="w-full border border-gray-300 rounded-xl p-2.5 text-base font-bold focus:ring-2 focus:ring-red-500 focus:outline-none" value="0">
+                        </div>
+                    </div>
+
+                    <!-- พื้นที่แจ้งเตือนพร้อมแสดงจำนวนเงินที่ขาดหรือเกิน -->
+                    <div id="payment-warning-alert" class="hidden mt-2 p-2.5 text-xs font-bold rounded-xl text-center border"></div>
                 </div>
 
                 <div class="flex justify-between items-center bg-gray-50 p-3.5 rounded-xl border">
@@ -361,7 +367,7 @@
         </div>
     </div>
 
-    <!-- ================= Edit Cart Item Modal (หน้าต่างแก้ไขข้อมูลสินค้าในตะกร้า + ติ๊กแถมล็อกจำนวนเป็น 1) ================= -->
+    <!-- ================= Edit Cart Item Modal ================= -->
     <div id="edit-cart-modal" class="hidden fixed inset-0 bg-black/60 z-[140] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-200 p-6 relative">
             <button onclick="closeEditCartModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
@@ -382,7 +388,6 @@
 
                 <div>
                     <label class="block font-semibold text-gray-700 mb-1">จำนวน</label>
-                    <!-- ช่องจำนวน: หากติ๊กของแถมจะถูกล็อกไม่ให้แก้และเป็น 1 เท่านั้น -->
                     <input type="number" id="form-edit-item-qty" min="1" required class="w-full border border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 </div>
 
@@ -405,18 +410,14 @@
                 </div>
 
                 <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition text-base">
-                        บันทึก
-                    </button>
-                    <button type="button" onclick="closeEditCartModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl shadow transition text-base">
-                        ยกเลิก
-                    </button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition text-base">บันทึก</button>
+                    <button type="button" onclick="closeEditCartModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl shadow transition text-base">ยกเลิก</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ================= Cash Drawer Popup Modal (เปิดลิ้นชัก รับ/จ่าย) ================= -->
+    <!-- ================= Cash Drawer Modal ================= -->
     <div id="cash-drawer-modal" class="hidden fixed inset-0 bg-black/70 z-[120] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6 relative">
             <button onclick="closeCashDrawerModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
@@ -487,7 +488,7 @@
         </div>
     </div>
 
-    <!-- ================= Hold Bill Popup Modal (พักบิล 3 ช่อง) ================= -->
+    <!-- ================= Hold Bill Popup Modal ================= -->
     <div id="hold-bill-modal" class="hidden fixed inset-0 bg-black/70 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-red-200 p-6">
             <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
@@ -534,7 +535,7 @@
     </div>
 
 
-    <!-- ================= 3. เลนหลักสำหรับ "นักบัญชี" (Audit & Accounting Hub) ================= -->
+    <!-- ================= 3. เลนหลักสำหรับ "นักบัญชี" ================= -->
     <div id="app-accountant-content" class="hidden flex flex-col min-h-screen bg-gray-50">
         <header class="bg-red-700 text-white shadow-md">
             <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -811,7 +812,7 @@
     </div>
 
 
-    <!-- ================= 4. เลนหลักสำหรับ "เถ้าแก่" (Owner Executive Dashboard) ================= -->
+    <!-- ================= 4. เลนหลักสำหรับ "เถ้าแก่" ================= -->
     <div id="app-owner-content" class="hidden flex flex-col min-h-screen bg-gray-50">
         <header class="bg-red-900 text-white shadow-md">
             <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -1276,7 +1277,7 @@
             backToMemberList();
         }
 
-        // ================= Checkout / Payment Modal Functions (ตามเงื่อนไขข้อ 3) =================
+        // ================= Checkout / Payment Modal Functions =================
         let currentCheckoutSubtotal = 0;
 
         function openCheckoutModal() {
@@ -1292,17 +1293,53 @@
             document.getElementById('pay-modal-vat-checkbox').checked = false;
             document.getElementById('pay-modal-vat-amount').innerText = "0.00 ฿";
 
+            const radios = document.getElementsByName('payMethod');
+            for(let r of radios) {
+                if(r.value === 'transfer') r.checked = true;
+            }
+
             calculateFinalCheckout();
             document.getElementById('checkout-modal').classList.remove('hidden');
-            setTimeout(() => {
-                const recInput = document.getElementById('pay-modal-received');
-                recInput.focus();
-                recInput.select();
-            }, 100);
         }
 
         function closeCheckoutModal() {
             document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function handlePaymentMethodChange() {
+            const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
+            const singleBox = document.getElementById('single-receive-box');
+            const mixedBox = document.getElementById('mixed-receive-box');
+            const quickCashGrid = document.getElementById('quick-cash-grid');
+            const recLabel = document.getElementById('receive-label-title');
+            const recInput = document.getElementById('pay-modal-received');
+            const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
+
+            if (selectedMethod === 'mixed') {
+                singleBox.classList.add('hidden');
+                mixedBox.classList.remove('hidden');
+                quickCashGrid.classList.add('hidden');
+                document.getElementById('pay-mixed-cash').value = 0;
+                document.getElementById('pay-mixed-transfer').value = finalNet.toFixed(2);
+            } else {
+                mixedBox.classList.add('hidden');
+                singleBox.classList.remove('hidden');
+
+                if (selectedMethod === 'cash') {
+                    quickCashGrid.classList.remove('hidden');
+                    recLabel.innerText = "รับเงินสด [F7]";
+                    recInput.value = "";
+                } else if (selectedMethod === 'transfer') {
+                    quickCashGrid.classList.add('hidden');
+                    recLabel.innerText = "รับเงินโอน [F7]";
+                    recInput.value = finalNet.toFixed(2);
+                } else {
+                    quickCashGrid.classList.add('hidden');
+                    recLabel.innerText = "รับเงิน [F7]";
+                    recInput.value = finalNet.toFixed(2);
+                }
+            }
+            calculateChange();
         }
 
         function calculateFinalCheckout() {
@@ -1322,7 +1359,15 @@
 
             document.getElementById('pay-modal-vat-amount').innerText = vatAmount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             document.getElementById('pay-modal-net').innerText = finalNet.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            document.getElementById('pay-modal-received').value = finalNet.toFixed(2);
+
+            const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
+            if (selectedMethod === 'transfer') {
+                document.getElementById('pay-modal-received').value = finalNet.toFixed(2);
+            } else if (selectedMethod === 'mixed') {
+                document.getElementById('pay-mixed-transfer').value = finalNet.toFixed(2);
+                document.getElementById('pay-mixed-cash').value = 0;
+            }
+
             calculateChange();
         }
 
@@ -1340,17 +1385,57 @@
         }
 
         function calculateChange() {
-            const received = parseFloat(document.getElementById('pay-modal-received').value) || 0;
             const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
-            let change = received - finalNet;
-            document.getElementById('pay-modal-change').innerText = change >= 0 ? change.toLocaleString('en-US', { minimumFractionDigits: 2 }) : change.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
+            const warningAlert = document.getElementById('payment-warning-alert');
+
+            let totalReceived = 0;
+
+            if (selectedMethod === 'mixed') {
+                const cashPart = parseFloat(document.getElementById('pay-mixed-cash').value) || 0;
+                const transferPart = parseFloat(document.getElementById('pay-mixed-transfer').value) || 0;
+                totalReceived = cashPart + transferPart;
+            } else {
+                totalReceived = parseFloat(document.getElementById('pay-modal-received').value) || 0;
+            }
+
+            let diff = totalReceived - finalNet;
+            let change = diff >= 0 ? diff : 0;
+
+            document.getElementById('pay-modal-change').innerText = change.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+            // แสดงแจ้งเตือนส่วนต่าง (ขาดเท่าไหร่ / เกินเท่าไหร่)
+            if (totalReceived < finalNet) {
+                let shortage = finalNet - totalReceived;
+                warningAlert.innerText = `⚠️ รับเงินไม่พอ ขาดอีก ${shortage.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
+                warningAlert.className = "mt-2 p-2.5 text-xs font-bold rounded-xl text-center border bg-red-100 text-red-800 border-red-300";
+                warningAlert.classList.remove('hidden');
+            } else if (totalReceived > finalNet) {
+                let excess = totalReceived - finalNet;
+                warningAlert.innerText = `⚠️ รับเงินเกิน ${excess.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
+                warningAlert.className = "mt-2 p-2.5 text-xs font-bold rounded-xl text-center border bg-amber-100 text-amber-800 border-amber-300";
+                warningAlert.classList.remove('hidden');
+            } else {
+                warningAlert.classList.add('hidden');
+            }
         }
 
         function confirmCheckout() {
-            const received = parseFloat(document.getElementById('pay-modal-received').value) || 0;
             const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
-            if (received < finalNet) {
-                alert('⚠️ ยอดรับเงินน้อยกว่ายอดสุทธิ กรุณารับเงินเพิ่ม');
+            const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
+            let totalReceived = 0;
+
+            if (selectedMethod === 'mixed') {
+                const cashPart = parseFloat(document.getElementById('pay-mixed-cash').value) || 0;
+                const transferPart = parseFloat(document.getElementById('pay-mixed-transfer').value) || 0;
+                totalReceived = cashPart + transferPart;
+            } else {
+                totalReceived = parseFloat(document.getElementById('pay-modal-received').value) || 0;
+            }
+
+            if (totalReceived < finalNet) {
+                let shortage = finalNet - totalReceived;
+                alert(`⚠️ รับเงินไม่พอ ขาดอีก ${shortage.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท ไม่สามารถบันทึกรายการได้`);
                 return;
             }
             const memberInfo = selectedMemberData ? ` [สมาชิก: ${selectedMemberData.ownerName} (น้อง ${selectedMemberData.petName})]` : '';
@@ -1359,7 +1444,7 @@
             clearCart();
         }
 
-        // ================= ฟังก์ชันสำหรับแก้ไขสินค้าในตะกร้า & ติ๊กแถม (ล็อกจำนวนเป็น 1 และเพิ่มซ้ำได้ตามข้อ 1, 2) =================
+        // ================= Edit Cart Item Modal =================
         function openEditCartModal(index) {
             const item = cartItems[index];
             document.getElementById('edit-cart-index').value = index;
@@ -1604,7 +1689,6 @@
                 alert('⚠️ บิลถูกพักไว้เต็มทั้ง 3 ช่องแล้ว! กรุณากดลบบิลที่พักไว้ก่อนจึงจะสามารถเพิ่มสินค้าใหม่ได้');
                 return;
             }
-            // เงื่อนไขข้อ 2: หากเพิ่มสินค้าปกติ (ไม่ใช่ของแถม) ให้รวมจำนวนถ้ารายการซ้ำ แต่ถ้าเพิ่มของแถมหรือสินค้าทั่วไป จะพิจารณาเพิ่มแถวใหม่หรือบวกตามเหมาะสม
             const existing = cartItems.find(i => i.name === name && !i.isGift);
             if(existing) { 
                 existing.qty += 1; 
@@ -1617,7 +1701,7 @@
         function updateCartQty(index, newQty) {
             const qty = parseInt(newQty);
             if (cartItems[index].isGift) {
-                cartItems[index].qty = 1; // ล็อกของแถมเป็น 1 เสมอ
+                cartItems[index].qty = 1;
                 renderCart();
                 return;
             }
@@ -1761,7 +1845,7 @@
 
             filterJournalByDateRange();
             updateFinancialStatements();
-            alert('อนุมัติระบบจ่ายเงินและบันทึกบัญชีสินค้าเข้าสต็อกเรียบร้อย!');
+            alert('อนุมัติระบบจ่ายเงินและลงบัญชีสินค้าเข้าสต็อกเรียบร้อย!');
         }
 
         function processExpenseEntry() {
