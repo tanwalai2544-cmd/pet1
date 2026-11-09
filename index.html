@@ -10,20 +10,22 @@
         body { font-family: 'Sarabun', sans-serif; }
         @media print {
             body * {
-                visibility: hidden;
+                visibility: hidden !important;
             }
             #receipt-printable-area, #receipt-printable-area * {
-                visibility: visible;
+                visibility: visible !important;
             }
             #receipt-printable-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 80mm !important;
+                max-width: 80mm !important;
                 border: none !important;
                 box-shadow: none !important;
-                margin: 0;
-                padding: 0;
+                margin: 0 !important;
+                padding: 4px !important;
+                background: white !important;
             }
         }
     </style>
@@ -345,7 +347,7 @@
             </div>
 
             <!-- Quick Cash Buttons Grid -->
-            <div id="quick-cash-grid" class="grid grid-cols-5 gap-2">
+            <div id="quick-cash-grid" class="grid grid-cols-5 gap-2 hidden">
                 <button type="button" onclick="addCashAmount(1)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">1</button>
                 <button type="button" onclick="addCashAmount(5)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">5</button>
                 <button type="button" onclick="addCashAmount(20)" class="bg-gray-50 hover:bg-gray-100 border rounded-xl py-2.5 font-bold text-gray-700 shadow-sm text-sm transition">20</button>
@@ -397,6 +399,7 @@
         </div>
     </div>
 </div>
+
     <!-- ================= Receipt 80cm Popup Modal ================= -->
 <div id="receipt-modal" class="hidden fixed inset-0 bg-black/80 z-[160] flex items-center justify-center p-4 backdrop-blur-md">
     <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-gray-300 p-6 relative max-h-[90vh] flex flex-col">
@@ -948,7 +951,6 @@
         let selectedMemberData = null;
         let originalItemBasePrice = 0;
 
-        // ตัวแปรสำหรับนับลำดับธุรกรรมการขายในแต่ละเดือน (รูปแบบ YYYYMM)
         let salesTaxIdCounters = {};
 
         let membersData = [
@@ -1384,15 +1386,16 @@
             document.getElementById('pay-modal-vat-checkbox').checked = false;
             document.getElementById('pay-modal-vat-amount').innerText = "0.00 ฿";
 
+            // Default เป็นโอน (transfer) เสมอ
             const radios = document.getElementsByName('payMethod');
             for(let r of radios) {
                 if(r.value === 'transfer') r.checked = true;
             }
 
-            // Defult เป็น 'noprint' (ไม่พิมพ์ใบเสร็จ) เสมอตามคำสั่ง
+            // Defult ปุ่มไม่พิมพ์ใบเสร็จเสมอตามคำสั่งก่อนหน้า
             document.getElementById('print-option-select').value = 'noprint';
 
-            calculateFinalCheckout();
+            handlePaymentMethodChange();
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
 
@@ -1423,14 +1426,20 @@
                     quickCashGrid.classList.remove('hidden');
                     recLabel.innerText = "รับเงินสด [F7]";
                     recInput.value = "";
+                    recInput.readOnly = false;
+                    recInput.classList.remove('bg-gray-100');
                 } else if (selectedMethod === 'transfer') {
                     quickCashGrid.classList.add('hidden');
                     recLabel.innerText = "รับเงินโอน [F7]";
                     recInput.value = finalNet.toFixed(2);
+                    recInput.readOnly = true;
+                    recInput.classList.add('bg-gray-100');
                 } else {
                     quickCashGrid.classList.add('hidden');
                     recLabel.innerText = "รับเงิน [F7]";
                     recInput.value = finalNet.toFixed(2);
+                    recInput.readOnly = false;
+                    recInput.classList.remove('bg-gray-100');
                 }
             }
             calculateChange();
@@ -1498,12 +1507,17 @@
 
             document.getElementById('pay-modal-change').innerText = change.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
+            if (selectedMethod === 'transfer') {
+                warningAlert.classList.add('hidden');
+                return;
+            }
+
             if (totalReceived < finalNet) {
                 let shortage = finalNet - totalReceived;
                 warningAlert.innerText = `⚠️ รับเงินไม่พอ ขาดอีก ${shortage.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
                 warningAlert.className = "mt-2 p-3 text-xs font-bold rounded-2xl text-center border bg-red-100 text-red-800 border-red-300 shadow-sm";
                 warningAlert.classList.remove('hidden');
-            } else if (totalReceived > finalNet) {
+            } else if (totalReceived > finalNet && selectedMethod === 'cash') {
                 let excess = totalReceived - finalNet;
                 warningAlert.innerText = `⚠️ รับเงินเกิน ${excess.toLocaleString('en-US', { minimumFractionDigits: 2 })} บาท`;
                 warningAlert.className = "mt-2 p-3 text-xs font-bold rounded-2xl text-center border bg-amber-100 text-amber-800 border-amber-300 shadow-sm";
@@ -1547,17 +1561,16 @@
             }
 
             const now = new Date();
-            const yearStr = now.getFullYear().toString(); // ปี ค.ศ. 4 หลัก
-            const monthStr = (now.getMonth() + 1).toString().padStart(2, '0'); // เดือน 2 หลัก
+            const yearStr = now.getFullYear().toString();
+            const monthStr = (now.getMonth() + 1).toString().padStart(2, '0');
             const yyyymm = yearStr + monthStr;
 
-            // จัดการสร้างและเรียงลำดับ Tax ID อัตโนมัติ (YYYYMM + ลำดับที่ของเดือนนั้นๆ)
             if (!salesTaxIdCounters[yyyymm]) {
                 salesTaxIdCounters[yyyymm] = 1;
             } else {
                 salesTaxIdCounters[yyyymm]++;
             }
-            let runningNumber = salesTaxIdCounters[yyyymm].toString(); // ไม่เติม zero padding เพื่อให้ได้เลขลำดับตรงๆ เช่น 1, 100
+            let runningNumber = salesTaxIdCounters[yyyymm].toString();
             let generatedTaxId = yyyymm + runningNumber;
 
             const dateStr = now.toISOString().split('T')[0];
