@@ -193,7 +193,7 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr class="text-gray-400 border-b text-xs font-semibold">
-                                    <th class="pb-2">รายการ</th>
+                                    <th class="pb-2">รายการ / เลือก Tier</th>
                                     <th class="pb-2 text-center">จำนวน</th>
                                     <th class="pb-2 text-right">ราคา</th>
                                     <th class="pb-2 text-center">จัดการ</th>
@@ -239,7 +239,6 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <h3 class="text-xl font-bold text-red-700 flex items-center gap-2"><span>📊</span> รายงานการขาย & ประวัติบิลสินค้าสำเร็จ</h3>
                     
-                    <!-- ตัวกรองวันที่ และปุ่มลัด วันนี้ / เมื่อวาน -->
                     <div class="flex items-center gap-2 flex-wrap text-sm">
                         <span class="font-bold text-gray-700">จากวันที่:</span>
                         <input type="date" id="reportFilterStart" onchange="filterStaffReports()" class="border border-gray-300 rounded-xl p-2 text-sm shadow-sm">
@@ -250,7 +249,6 @@
                     </div>
                 </div>
 
-                <!-- ช่องค้นหาที่ขยายให้ยาวเต็มแถว ค้นหาได้ทั้ง ชื่อสมาชิก, น้อง, สินค้า และ Tax ID แบบ Real-time -->
                 <div>
                     <input type="text" id="reportSearchInput" onkeyup="filterStaffReports()" placeholder="🔍 ค้นหาด่วน: พิมพ์ชื่อสมาชิก, ชื่อสัตว์เลี้ยง, รายการสินค้า หรือ Tax ID..." class="w-full border-2 border-red-200 focus:border-red-500 rounded-2xl px-4 py-3 text-sm shadow-inner focus:outline-none bg-red-50/20 font-medium">
                 </div>
@@ -268,9 +266,7 @@
                             <th class="p-3.5 text-center">จัดการบิล</th>
                         </tr>
                     </thead>
-                    <tbody id="staffReportTableBody" class="text-sm divide-y divide-gray-100">
-                        <!-- รายการบิลจะถูกแสดงผลที่นี่ -->
-                    </tbody>
+                    <tbody id="staffReportTableBody" class="text-sm divide-y divide-gray-100"></tbody>
                 </table>
             </div>
 
@@ -456,7 +452,6 @@
                 <p class="text-xs text-gray-500">ตรวจสอบความถูกต้องก่อนสั่งพิมพ์</p>
             </div>
 
-            <!-- พื้นที่พิมพ์ใบเสร็จ (จัดกึ่งกลางและปรับให้อยู่ในกรอบเต็มจอที่สวยงาม) -->
             <div class="flex-grow overflow-y-auto flex justify-center bg-gray-100/70 p-4 rounded-2xl border shadow-inner">
                 <div id="receipt-printable-area" class="font-mono text-xs text-gray-900 bg-white p-6 w-full max-w-md space-y-3 border border-gray-300 rounded-2xl shadow-md my-auto">
                     
@@ -473,7 +468,6 @@
                         <div class="flex justify-between font-bold text-red-700"><span>สมาชิก:</span> <span id="rec-member">ทั่วไป (General)</span></div>
                     </div>
 
-                    <!-- ตารางรายการสินค้าสไตล์ Excel -->
                     <div class="border border-gray-300 rounded-xl overflow-hidden">
                         <table class="w-full text-left border-collapse text-[11px]">
                             <thead>
@@ -483,9 +477,7 @@
                                     <th class="p-2 text-right w-20">รวม (฿)</th>
                                 </tr>
                             </thead>
-                            <tbody id="rec-items-container" class="divide-y divide-gray-200">
-                                <!-- รายการสินค้าจะถูกเติมที่นี่ -->
-                            </tbody>
+                            <tbody id="rec-items-container" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
 
@@ -1017,7 +1009,7 @@
         let originalItemBasePrice = 0;
 
         let salesTaxIdCounters = {};
-        let completedSalesBills = []; // เก็บประวัติบิลการขายสำเร็จทั้งหมด
+        let completedSalesBills = [];
 
         let membersData = [
             { petName: "หมีพู", ownerName: "ปะป๊า", address: "ศรีไพศาล", phone: "0813143599" },
@@ -1075,7 +1067,6 @@
             "TX-2026-903": { supplier: "Royal Canin Thailand", invoice: "INV-RC-5541", items: "อาหารสุนัขพันธุ์เล็ก (30 แพ็ค)", amount: 42000 }
         };
 
-        // ฟังก์ชันดึงวันที่ปัจจุบันในรูปแบบ YYYY-MM-DD ตาม Local Time ของเครื่อง เพื่อป้องกันปัญหาเวลาเหลื่อมล้ำ
         function getLocalTodayDateString() {
             const d = new Date();
             const year = d.getFullYear();
@@ -1084,7 +1075,6 @@
             return `${year}-${month}-${day}`;
         }
 
-        // ฟังก์ชันแสดงผล Timestamp ปัจจุบันแบบ Real-time ที่ Header พนักงาน
         function updateLiveTimestamp() {
             const now = new Date();
             const dateFormatted = now.toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -1199,12 +1189,12 @@
                     <td class="p-3.5 text-gray-500 font-medium">${p.unit}</td>
                     <td class="p-3.5 text-right">
                         <div class="inline-flex rounded-xl shadow-sm bg-gray-100 p-0.5 border border-gray-200">
-                            <button type="button" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price}, 'Tier 1')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white text-red-700 shadow-sm transition hover:bg-red-50" title="Tier 1 ราคาสด/ส่งปกติ">T1: ${p.price}฿</button>
-                            <button type="button" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.priceTier2}, 'Tier 2')" class="px-2.5 py-1 text-xs font-bold rounded-lg text-gray-600 transition hover:bg-red-100 hover:text-red-800" title="Tier 2 ราคาพิเศษสมาชิก/จำนวนมาก">T2: ${p.priceTier2}฿</button>
+                            <button type="button" onclick="addToCart('${p.code}', 'Tier 1')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white text-red-700 shadow-sm transition hover:bg-red-50" title="Tier 1 ราคาสด/ส่งปกติ">T1: ${p.price}฿</button>
+                            <button type="button" onclick="addToCart('${p.code}', 'Tier 2')" class="px-2.5 py-1 text-xs font-bold rounded-lg text-gray-600 transition hover:bg-red-100 hover:text-red-800" title="Tier 2 ราคาพิเศษสมาชิก/จำนวนมาก">T2: ${p.priceTier2}฿</button>
                         </div>
                     </td>
                     <td class="p-3.5 text-center">
-                        <button onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price}, 'Tier 1')" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition">เพิ่ม</button>
+                        <button onclick="addToCart('${p.code}', 'Tier 1')" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition">เพิ่ม</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1253,7 +1243,7 @@
                 });
 
                 if (filtered.length > 0) {
-                    addToCart(filtered[0].name, filtered[0].price, 'Tier 1');
+                    addToCart(filtered[0].code, 'Tier 1');
                     document.getElementById('productSearchInput').value = '';
                     filterProducts();
                 }
@@ -1342,20 +1332,20 @@
                     <td class="p-3.5 text-gray-500 font-medium">${p.unit}</td>
                     <td class="p-3.5 text-right">
                         <div class="inline-flex rounded-xl shadow-sm bg-gray-100 p-0.5 border border-gray-200">
-                            <button type="button" onclick="addToCartFromF1('${p.name.replace(/'/g, "\\'")}', ${p.price}, 'Tier 1')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white text-red-700 shadow-sm transition hover:bg-red-50">T1: ${p.price}฿</button>
-                            <button type="button" onclick="addToCartFromF1('${p.name.replace(/'/g, "\\'")}', ${p.priceTier2}, 'Tier 2')" class="px-2.5 py-1 text-xs font-bold rounded-lg text-gray-600 transition hover:bg-red-100 hover:text-red-800">T2: ${p.priceTier2}฿</button>
+                            <button type="button" onclick="addToCartFromF1('${p.code}', 'Tier 1')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white text-red-700 shadow-sm transition hover:bg-red-50">T1: ${p.price}฿</button>
+                            <button type="button" onclick="addToCartFromF1('${p.code}', 'Tier 2')" class="px-2.5 py-1 text-xs font-bold rounded-lg text-gray-600 transition hover:bg-red-100 hover:text-red-800">T2: ${p.priceTier2}฿</button>
                         </div>
                     </td>
                     <td class="p-3.5 text-center">
-                        <button onclick="addToCartFromF1('${p.name.replace(/'/g, "\\'")}', ${p.price}, 'Tier 1')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow transition">เลือกซื้อ</button>
+                        <button onclick="addToCartFromF1('${p.code}', 'Tier 1')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow transition">เลือกซื้อ</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function addToCartFromF1(name, price, tier) {
-            addToCart(name, price, tier);
+        function addToCartFromF1(code, tier) {
+            addToCart(code, tier);
             closeF1Modal();
         }
 
@@ -1687,7 +1677,6 @@
             }
         }
 
-        // ฟังก์ชันเปิดหน้ารายงานการขาย (ใช้ getLocalTodayDateString เพื่อให้ค่า Default เป็นวันปัจจุบันตามเครื่องเสมอ)
         function openStaffReportModal() {
             const today = getLocalTodayDateString();
             document.getElementById('reportFilterStart').value = today;
@@ -1786,7 +1775,7 @@
             const content = document.getElementById('bill-detail-content');
             let itemsHtml = '';
             bill.items.forEach(i => {
-                itemsHtml += `<div>- ${i.name} x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
+                itemsHtml += `<div>- ${i.name} (${i.tier || 'Tier 1'}) x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
             });
 
             content.innerHTML = `
@@ -1858,7 +1847,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-2 border-r border-gray-200">
-                        <div class="font-bold text-gray-900">${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''} ${item.tier ? '<span class="text-xs text-gray-500 font-semibold">(' + item.tier + ')</span>' : ''}</div>
+                        <div class="font-bold text-gray-900">${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''} <span class="text-xs text-gray-500 font-semibold">(${item.tier || 'Tier 1'})</span></div>
                         <div class="text-[10px] text-gray-500">@ ${item.price.toLocaleString()} ฿</div>
                     </td>
                     <td class="p-2 text-center border-r border-gray-200 font-semibold">${item.qty}</td>
@@ -1882,7 +1871,7 @@
             const item = cartItems[index];
             document.getElementById('edit-cart-index').value = index;
             
-            const foundProd = productsFromSheet.find(p => p.name === item.name);
+            const foundProd = productsFromSheet.find(p => p.code === item.code);
             originalItemBasePrice = foundProd ? (item.tier === 'Tier 2' ? foundProd.priceTier2 : foundProd.price) : (item.price === 0 ? item.originalPrice || 150 : item.price);
 
             document.getElementById('form-edit-item-qty').value = item.qty;
@@ -2117,17 +2106,48 @@
             return heldBills[0] !== null && heldBills[1] !== null && heldBills[2] !== null;
         }
 
-        function addToCart(name, price, tier = 'Tier 1') {
+        function addToCart(code, tier = 'Tier 1') {
             if (areAllBillsHeld()) {
                 alert('⚠️ บิลถูกพักไว้เต็มทั้ง 3 ช่องแล้ว! กรุณากดลบบิลที่พักไว้ก่อนจึงจะสามารถเพิ่มสินค้าใหม่ได้');
                 return;
             }
-            const existing = cartItems.find(i => i.name === name && i.tier === tier && !i.isGift);
+            const foundProd = productsFromSheet.find(p => p.code === code);
+            if (!foundProd) return;
+
+            let priceToUse = (tier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
+
+            const existing = cartItems.find(i => i.code === code && i.tier === tier && !i.isGift);
             if(existing) { 
                 existing.qty += 1; 
             } else { 
-                cartItems.push({ name, price, qty: 1, discount: 0, note: '', originalPrice: price, isGift: false, tier: tier }); 
+                cartItems.push({ 
+                    code: foundProd.code, 
+                    name: foundProd.name, 
+                    price: priceToUse, 
+                    qty: 1, 
+                    discount: 0, 
+                    note: '', 
+                    originalPrice: priceToUse, 
+                    isGift: false, 
+                    tier: tier 
+                }); 
             }
+            renderCart();
+        }
+
+        // ฟังก์ชันเปลี่ยน Tier ของสินค้าในตะกร้าโดยตรงทันที
+        function changeCartItemTier(index, newTier) {
+            const item = cartItems[index];
+            const foundProd = productsFromSheet.find(p => p.code === item.code);
+            if (!foundProd) return;
+
+            item.tier = newTier;
+            let newPrice = (newTier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
+            item.price = newPrice;
+            item.originalPrice = newPrice;
+            item.discount = 0; // รีเซ็ตส่วนลดเมื่อสลับ Tier เพื่อความถูกต้อง
+            item.isGift = false;
+
             renderCart();
         }
 
@@ -2189,16 +2209,19 @@
                 const row = document.createElement('tr');
                 row.className = 'border-b border-gray-100 hover:bg-gray-50/50';
                 row.innerHTML = `
-                    <td class="py-3 pr-2 font-bold text-gray-900 text-sm">
-                        ${item.name}
-                        <span class="text-xs text-gray-500 font-semibold ml-1">(${item.tier || 'Tier 1'})</span>
+                    <td class="py-3 pr-2">
+                        <div class="font-bold text-gray-900 text-sm mb-1">${item.name}</div>
+                        <div class="inline-flex rounded-lg shadow-sm bg-gray-100 p-0.5 border border-gray-200 text-xs">
+                            <button type="button" onclick="changeCartItemTier(${index}, 'Tier 1')" class="px-2 py-0.5 font-bold rounded-md transition ${item.tier === 'Tier 1' ? 'bg-white text-red-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}">T1</button>
+                            <button type="button" onclick="changeCartItemTier(${index}, 'Tier 2')" class="px-2 py-0.5 font-bold rounded-md transition ${item.tier === 'Tier 2' ? 'bg-white text-red-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}">T2</button>
+                        </div>
                         ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold border border-red-200">ของแถม</span>' : ''}
                     </td>
-                    <td class="py-3 text-center">
+                    <td class="py-3 text-center align-middle">
                         <input type="number" min="1" ${item.isGift ? 'disabled' : ''} value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-xl text-center py-1 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
                     </td>
-                    <td class="py-3 text-right font-bold text-gray-900 text-sm">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
-                    <td class="py-3 text-center flex items-center justify-center gap-1.5">
+                    <td class="py-3 text-right font-bold text-gray-900 text-sm align-middle">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    <td class="py-3 text-center align-middle flex items-center justify-center gap-1.5 pt-4">
                         <button onclick="openEditCartModal(${index})" class="bg-blue-600 hover:bg-blue-700 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="แก้ไขรายการ">✏️</button>
                         <button onclick="removeCartItem(${index})" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="ลบรายการ">🗑️</button>
                     </td>
