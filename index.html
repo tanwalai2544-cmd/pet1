@@ -23,7 +23,7 @@
                 border: none !important;
                 box-shadow: none !important;
                 margin: 0;
-                padding: 0;
+                padding: 10px;
             }
         }
     </style>
@@ -446,58 +446,78 @@
         </div>
     </div>
 
-    <!-- ================= Receipt 80cm Popup Modal ================= -->
-    <div id="receipt-modal" class="hidden fixed inset-0 bg-black/80 z-[160] flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-gray-300 p-6 relative max-h-[90vh] flex flex-col">
-            <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition z-10">✕</button>
+    <!-- ================= Receipt 80cm Popup Modal (Full Screen & Excel Table Style) ================= -->
+    <div id="receipt-modal" class="hidden fixed inset-0 bg-black/85 z-[160] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white w-full max-w-3xl h-[92vh] rounded-3xl shadow-2xl overflow-hidden border border-gray-300 p-6 relative flex flex-col">
+            <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl bg-gray-100 w-9 h-9 rounded-full flex items-center justify-center transition z-10">✕</button>
             
-            <div id="receipt-printable-area" class="font-mono text-xs text-gray-900 bg-white p-3 overflow-y-auto flex-grow space-y-2 border border-dashed border-gray-300 rounded-2xl shadow-inner my-2">
-                <div class="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
-                    <h2 class="text-base font-extrabold tracking-wider">ร้านสถานีสัตว์เลี้ยงTH</h2>
-                    <p class="text-[11px] text-gray-600">สุราษฎร์ธานี (Surat Thani)</p>
-                    <p class="text-[10px] text-gray-500">Tax ID: <span id="rec-tax-id">0845568000XXX</span></p>
-                </div>
+            <div class="text-center mb-3">
+                <h3 class="text-xl font-extrabold text-red-700">🧾 พรีวิวใบเสร็จรับเงิน (Full Screen Preview)</h3>
+                <p class="text-xs text-gray-500">ตรวจสอบความถูกต้องก่อนสั่งพิมพ์</p>
+            </div>
 
-                <div class="py-1 space-y-0.5 text-[11px] text-gray-700 border-b border-dashed border-gray-300 pb-2">
-                    <div class="flex justify-between"><span>วันที่:</span> <span id="rec-date"></span></div>
-                    <div class="flex justify-between"><span>เวลา:</span> <span id="rec-time"></span></div>
-                    <div class="flex justify-between"><span>แคชเชียร์:</span> <span id="rec-cashier">พนักงานหน้าร้าน</span></div>
-                    <div class="flex justify-between font-bold text-red-700"><span>สมาชิก:</span> <span id="rec-member">ทั่วไป (General)</span></div>
-                </div>
-
-                <div class="border-b border-dashed border-gray-300 pb-2">
-                    <div class="font-bold text-[11px] mb-1 text-gray-800">รายการสินค้า:</div>
-                    <div id="rec-items-container" class="space-y-1"></div>
-                </div>
-
-                <div class="space-y-1 pt-1 text-[11px] border-b border-dashed border-gray-300 pb-2">
-                    <div class="flex justify-between"><span>รวมสินค้า:</span> <span id="rec-subtotal">0.00</span></div>
-                    <div class="flex justify-between text-red-600"><span>ส่วนลดท้ายบิล:</span> <span id="rec-extra-disc">0.00</span></div>
-                    <div class="flex justify-between"><span>VAT 7%:</span> <span id="rec-vat">0.00</span></div>
-                    <div class="flex justify-between font-bold text-sm text-gray-900 pt-1 border-t">
-                        <span>ยอดสุทธิ:</span> <span id="rec-net" class="text-red-700">0.00 ฿</span>
+            <!-- พื้นที่พิมพ์ใบเสร็จ (จัดกึ่งกลางและปรับให้อยู่ในกรอบเต็มจอที่สวยงาม) -->
+            <div class="flex-grow overflow-y-auto flex justify-center bg-gray-100/70 p-4 rounded-2xl border shadow-inner">
+                <div id="receipt-printable-area" class="font-mono text-xs text-gray-900 bg-white p-6 w-full max-w-md space-y-3 border border-gray-300 rounded-2xl shadow-md my-auto">
+                    
+                    <div class="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
+                        <h2 class="text-lg font-extrabold tracking-wider">ร้านสถานีสัตว์เลี้ยงTH</h2>
+                        <p class="text-xs text-gray-600">สุราษฎร์ธานี (Surat Thani)</p>
+                        <p class="text-[11px] text-gray-500">Tax ID: <span id="rec-tax-id">0845568000XXX</span></p>
                     </div>
-                </div>
 
-                <div class="space-y-0.5 text-[11px] text-gray-600 pt-1">
-                    <div class="flex justify-between"><span>ชำระโดย:</span> <span id="rec-pay-method">เงินโอน</span></div>
-                    <div class="flex justify-between"><span>รับเงิน:</span> <span id="rec-received">0.00</span></div>
-                    <div class="flex justify-between font-bold text-gray-800"><span>เงินทอน:</span> <span id="rec-change">0.00</span></div>
-                    <div id="rec-note-wrapper" class="hidden text-gray-500 italic pt-1">หมายเหตุ: <span id="rec-note"></span></div>
-                </div>
+                    <div class="py-1 space-y-1 text-xs text-gray-700 border-b border-dashed border-gray-300 pb-2">
+                        <div class="flex justify-between"><span>วันที่:</span> <span id="rec-date"></span></div>
+                        <div class="flex justify-between"><span>เวลา:</span> <span id="rec-time"></span></div>
+                        <div class="flex justify-between"><span>แคชเชียร์:</span> <span id="rec-cashier">พนักงานหน้าร้าน</span></div>
+                        <div class="flex justify-between font-bold text-red-700"><span>สมาชิก:</span> <span id="rec-member">ทั่วไป (General)</span></div>
+                    </div>
 
-                <div class="text-center pt-3 text-[10px] text-gray-500 space-y-0.5 border-t border-dashed border-gray-400">
-                    <p class="font-bold">🙏 ขอบคุณที่ใช้บริการสถานีสัตว์เลี้ยงTH 🙏</p>
-                    <p>Goods once sold are not returnable.</p>
+                    <!-- ตารางรายการสินค้าสไตล์ Excel -->
+                    <div class="border border-gray-300 rounded-xl overflow-hidden">
+                        <table class="w-full text-left border-collapse text-[11px]">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-800 border-b border-gray-300 font-bold">
+                                    <th class="p-2 border-r border-gray-300">รายการสินค้า</th>
+                                    <th class="p-2 text-center border-r border-gray-300 w-12">จำนวน</th>
+                                    <th class="p-2 text-right w-20">รวม (฿)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rec-items-container" class="divide-y divide-gray-200">
+                                <!-- รายการสินค้าจะถูกเติมที่นี่ -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="space-y-1 pt-1 text-xs border-b border-dashed border-gray-300 pb-2">
+                        <div class="flex justify-between"><span>รวมสินค้า:</span> <span id="rec-subtotal">0.00</span></div>
+                        <div class="flex justify-between text-red-600"><span>ส่วนลดท้ายบิล:</span> <span id="rec-extra-disc">0.00</span></div>
+                        <div class="flex justify-between"><span>VAT 7%:</span> <span id="rec-vat">0.00</span></div>
+                        <div class="flex justify-between font-bold text-sm text-gray-900 pt-1 border-t">
+                            <span>ยอดสุทธิ:</span> <span id="rec-net" class="text-red-700">0.00 ฿</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-0.5 text-xs text-gray-600 pt-1">
+                        <div class="flex justify-between"><span>ชำระโดย:</span> <span id="rec-pay-method">เงินโอน</span></div>
+                        <div class="flex justify-between"><span>รับเงิน:</span> <span id="rec-received">0.00</span></div>
+                        <div class="flex justify-between font-bold text-gray-800"><span>เงินทอน:</span> <span id="rec-change">0.00</span></div>
+                        <div id="rec-note-wrapper" class="hidden text-gray-500 italic pt-1">หมายเหตุ: <span id="rec-note"></span></div>
+                    </div>
+
+                    <div class="text-center pt-3 text-[10px] text-gray-500 space-y-0.5 border-t border-dashed border-gray-400">
+                        <p class="font-bold">🙏 ขอบคุณที่ใช้บริการสถานีสัตว์เลี้ยงTH 🙏</p>
+                        <p>Goods once sold are not returnable.</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="pt-3 flex gap-2">
-                <button onclick="triggerDirectPrint()" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 text-white font-bold py-3 rounded-2xl shadow-md transition text-sm flex items-center justify-center gap-1.5">
+            <div class="pt-4 flex gap-3">
+                <button onclick="triggerDirectPrint()" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 text-white font-bold py-3.5 rounded-2xl shadow-md transition text-base flex items-center justify-center gap-2">
                     <span>🖨️</span> พิมพ์ใบเสร็จทันที
                 </button>
-                <button onclick="closeReceiptModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-3 rounded-2xl transition text-sm">
-                    ปิด
+                <button onclick="closeReceiptModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-8 py-3.5 rounded-2xl transition text-base">
+                    ปิดหน้าต่าง
                 </button>
             </div>
         </div>
@@ -1475,7 +1495,6 @@
             const selectedMethod = document.querySelector('input[name="payMethod"]:checked').value;
             const singleBox = document.getElementById('single-receive-box');
             const mixedBox = document.getElementById('mixed-receive-box');
-            const quickCashGrid = document.getElementById('quick-cash-grid');
             const recLabel = document.getElementById('receive-label-title');
             const recInput = document.getElementById('pay-modal-received');
             const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
@@ -1483,7 +1502,6 @@
             if (selectedMethod === 'mixed') {
                 singleBox.classList.add('hidden');
                 mixedBox.classList.remove('hidden');
-                quickCashGrid.classList.add('hidden');
                 document.getElementById('pay-mixed-cash').value = 0;
                 document.getElementById('pay-mixed-transfer').value = finalNet.toFixed(2);
             } else {
@@ -1491,15 +1509,12 @@
                 singleBox.classList.remove('hidden');
 
                 if (selectedMethod === 'cash') {
-                    quickCashGrid.classList.remove('hidden');
                     recLabel.innerText = "รับเงินสด [F7]";
                     recInput.value = "";
                 } else if (selectedMethod === 'transfer') {
-                    quickCashGrid.classList.add('hidden');
                     recLabel.innerText = "รับเงินโอน [F7]";
                     recInput.value = finalNet.toFixed(2);
                 } else {
-                    quickCashGrid.classList.add('hidden');
                     recLabel.innerText = "รับเงิน [F7]";
                     recInput.value = finalNet.toFixed(2);
                 }
@@ -1533,19 +1548,6 @@
                 document.getElementById('pay-mixed-cash').value = 0;
             }
 
-            calculateChange();
-        }
-
-        function addCashAmount(val) {
-            const recInput = document.getElementById('pay-modal-received');
-            let current = parseFloat(recInput.value) || 0;
-            recInput.value = current + val;
-            calculateChange();
-        }
-
-        function setExactCash() {
-            const finalNet = parseFloat(document.getElementById('pay-modal-net').innerText.replace(/,/g, '')) || 0;
-            document.getElementById('pay-modal-received').value = finalNet.toFixed(2);
             calculateChange();
         }
 
@@ -1726,8 +1728,8 @@
                     const itemsText = b.items.map(i => i.name.toLowerCase()).join(' ');
                     
                     matchSearch = memberText.includes(searchKeyword) || 
-                                  taxIdText.includes(searchKeyword) || 
-                                  itemsText.includes(searchKeyword);
+                                taxIdText.includes(searchKeyword) || 
+                                itemsText.includes(searchKeyword);
                 }
 
                 return matchDate && matchSearch;
@@ -1843,23 +1845,19 @@
             itemsContainer.innerHTML = '';
             data.items.forEach(item => {
                 let sum = (item.price * item.qty);
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-start text-[11px]';
-                div.innerHTML = `
-                    <div class="pr-2">
-                        <div>${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''}</div>
-                        <div class="text-[10px] text-gray-500">${item.qty} x ${item.price.toLocaleString()} ฿</div>
-                    </div>
-                    <div class="font-bold text-gray-900">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 border-r border-gray-200">
+                        <div class="font-bold text-gray-900">${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''}</div>
+                        <div class="text-[10px] text-gray-500">@ ${item.price.toLocaleString()} ฿</div>
+                    </td>
+                    <td class="p-2 text-center border-r border-gray-200 font-semibold">${item.qty}</td>
+                    <td class="p-2 text-right font-bold text-gray-900">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 `;
-                itemsContainer.appendChild(div);
+                itemsContainer.appendChild(tr);
             });
 
             document.getElementById('receipt-modal').classList.remove('hidden');
-
-            setTimeout(() => {
-                window.print();
-            }, 300);
         }
 
         function closeReceiptModal() {
