@@ -1130,7 +1130,7 @@
                 document.getElementById('auth-wrapper').classList.add('hidden');
 
                 if(found.role === 'staff') {
-                    document.getElementById('staff-user-display').innerText = `${found.name} (${found.email})`;
+                    document.getElementById('staff-user-display.innerText').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-staff-content').classList.remove('hidden');
                     updateLiveTimestamp();
                     renderProductTable(productsFromSheet);
@@ -1162,7 +1162,7 @@
                 switchAuthTab('otp-reset');
             } else {
                 document.getElementById('error-message-text').innerText = "ไม่พบ Google Mail นี้ในระบบฐานข้อมูลร้านที่ได้รับอนุญาต";
-                document.getElementById('login-error-alert').classList.add('hidden');
+                document.getElementById('login-error-alert').classList.remove('hidden');
             }
         }
 
@@ -1235,8 +1235,8 @@
 
                 let filtered = productsFromSheet.filter(p => {
                     const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                       p.name.toLowerCase().includes(keyword) || 
-                                       p.brand.toLowerCase().includes(keyword);
+                                           p.name.toLowerCase().includes(keyword) || 
+                                           p.brand.toLowerCase().includes(keyword);
                     const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                     const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                     return matchKeyword && matchBrand && matchUnit;
@@ -1727,8 +1727,8 @@
                     const itemsText = b.items.map(i => i.name.toLowerCase()).join(' ');
                     
                     matchSearch = memberText.includes(searchKeyword) || 
-                                taxIdText.includes(searchKeyword) || 
-                                itemsText.includes(searchKeyword);
+                                  taxIdText.includes(searchKeyword) || 
+                                  itemsText.includes(searchKeyword);
                 }
 
                 return matchDate && matchSearch;
@@ -1743,7 +1743,7 @@
 
             filtered.forEach((bill, idx) => {
                 const globalIdx = completedSalesBills.indexOf(bill);
-                let itemNamesSummary = bill.items.map(i => `${i.name} (${i.qty})`).join(', ');
+                let itemNamesSummary = bill.items.map(i => `${i.name}(${i.qty})`).join(', ');
 
                 const tr = document.createElement('tr');
                 tr.className = bill.status === 'cancelled' ? 'bg-gray-100 opacity-60' : 'hover:bg-red-50/50 transition';
@@ -2134,85 +2134,7 @@
             }
             renderCart();
         }
-        <!-- ================= เพิ่มส่วนแท็บ "ระบบบันทึกหลักฐาน & ตรวจสอบเอกสาร (Evidence Audit)" ในเลนนักบัญชี ================= -->
-<!-- (ให้เพิ่มปุ่มนี้ไว้ในชุดเมนูของนักบัญชี) -->
-<!-- 
-<button onclick="switchMainTab('evidence')" id="btn-evidence" class="px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80">📂 ตรวจสอบหลักฐาน & ตีกลับ (Audit Evidence)</button>
--->
 
-<div id="form-evidence-container" class="hidden">
-    <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2"><span>📂</span> ตรวจสอบหลักฐาน & อนุมัติเอกสาร (Audit & Evidence Hub)</h2>
-        <span class="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-bold border border-amber-200">Workflow Active</span>
-    </div>
-    
-    <div class="space-y-4 text-sm">
-        <div class="bg-red-50/60 p-4 rounded-2xl border border-red-200 space-y-2">
-            <label class="block font-bold text-gray-800 text-sm">📋 รายการเอกสารรอการตรวจสอบ (Pending Evidence)</label>
-            <select id="pendingEvidenceSelect" onchange="loadPendingEvidenceDetail()" class="w-full border border-gray-300 rounded-xl p-3 bg-white font-semibold text-gray-800 shadow-sm">
-                <option value="EV-2026-001">EV-2026-001 | Supplier: บ. จรัญกิจ (สลิปโอน + ใบเสร็จ)</option>
-                <option value="EV-2026-002">EV-2026-002 | พนักงานสต็อก: แจ้งเคลมสินค้าเสียหาย (อาหารเม็ดเปียก)</option>
-            </select>
-        </div>
-
-        <div id="evidence-preview-box" class="bg-gray-50 border border-gray-200 p-4 rounded-2xl space-y-2">
-            <p class="font-bold text-gray-700">🔍 รายละเอียดหลักฐานแนบ:</p>
-            <div id="evidence-detail-text" class="text-xs text-gray-600 space-y-1 font-mono">
-                - ผู้ส่ง: บริษัท จรัญกิจ (Supplier)<br>
-                - ยอดเงิน: 15,000.00 บาท<br>
-                - ไฟล์แนบ: Slip_Transfer_15000.jpg (มีรูปภาพยืนยัน)<br>
-                - สถานะปัจจุบัน: รอการตรวจสอบจากนักบัญชี (Audit Review)
-            </div>
-            <div class="pt-2 flex items-center gap-2">
-                <button type="button" onclick="alert('เปิดดูรูปภาพหลักฐานขนาดใหญ่ในหน้าต่างใหม่')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">👁️ ดูรูปหลักฐาน</button>
-            </div>
-        </div>
-
-        <div>
-            <label class="block font-semibold text-gray-700 mb-1">✍️ บันทึกความเห็น / เหตุผลกรณีตีกลับ (Remark)</label>
-            <textarea id="auditRemarkInput" placeholder="ระบุเหตุผล หากต้องการตีกลับเอกสารให้แก้ไข เช่น ยอดเงินไม่ตรง, หลักฐานไม่ชัดเจน..." class="w-full border border-gray-300 rounded-2xl p-3 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none shadow-sm" rows="3"></textarea>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 pt-2">
-            <button onclick="processEvidenceAction('approve')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl shadow transition text-sm flex items-center justify-center gap-1.5">
-                <span>✅</span> อนุมัติผ่าน & ลงบัญชี
-            </button>
-            <button onclick="processEvidenceAction('reject')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-2xl shadow transition text-sm flex items-center justify-center gap-1.5">
-                <span>↩️</span> ตีกลับเพื่อแก้ไข (Reject)
-            </button>
-        </div>
-    </div>
-</div>
-
-    // ฟังก์ชันเสริมสำหรับการจัดการ Workflow ตรวจสอบและตีกลับเอกสาร
-    function loadPendingEvidenceDetail() {
-        const evId = document.getElementById('pendingEvidenceSelect').value;
-        const detailBox = document.getElementById('evidence-detail-text');
-        if(evId === 'EV-2026-001') {
-            detailBox.innerHTML = `- ผู้ส่ง: บริษัท จรัญกิจ (Supplier)<br>- ยอดเงิน: 15,000.00 บาท<br>- ไฟล์แนบ: Slip_Transfer_15000.jpg (มีรูปภาพยืนยัน)<br>- สถานะปัจจุบัน: รอการตรวจสอบจากนักบัญชี`;
-        } else {
-            detailBox.innerHTML = `- ผู้ส่ง: พนักงานนับสต็อก (Staff Stock)<br>- รายการ: แจ้งเคลมสินค้าเสียหาย 3 ถุง<br>- ไฟล์แนบ: Claim_Damaged_Goods.jpg<br>- สถานะปัจจุบัน: รอออกใบลดหนี้ (CN Tracking)`;
-        }
-    }
-
-    function processEvidenceAction(actionType) {
-        const remark = document.getElementById('auditRemarkInput').value.trim();
-        const evId = document.getElementById('pendingEvidenceSelect').value;
-
-        if(actionType === 'approve') {
-            alert(`[ระบบบันทึกหลักฐาน]\n- อนุมัติเอกสาร ${evId} สำเร็จ!\n- ระบบบันทึกลงบัญชีและอัปเดตสต็อก/สถานะเรียบร้อย`);
-        } else {
-            if(!remark) {
-                alert('⚠️ กรุณากรอกเหตุผล (Remark) ในช่องด้านบน ก่อนกดตีกลับเอกสาร');
-                document.getElementById('auditRemarkInput').focus();
-                return;
-            }
-            alert(`[ระบบตีกลับเอกสาร - Reject]\n- ตีกลับเอกสาร ${evId} ไปยังผู้บันทึกเรียบร้อย\n- เหตุผล: "${remark}"\n- ระบบส่งแจ้งเตือน Line OA แจ้งผู้เกี่ยวข้องให้แก้ไขแล้ว`);
-        }
-        document.getElementById('auditRemarkInput').value = '';
-    }
-
-        // ฟังก์ชันเปลี่ยน Tier ของสินค้าในตะกร้าโดยตรงทันที
         function changeCartItemTier(index, newTier) {
             const item = cartItems[index];
             const foundProd = productsFromSheet.find(p => p.code === item.code);
@@ -2222,7 +2144,7 @@
             let newPrice = (newTier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
             item.price = newPrice;
             item.originalPrice = newPrice;
-            item.discount = 0; // รีเซ็ตส่วนลดเมื่อสลับ Tier เพื่อความถูกต้อง
+            item.discount = 0; 
             item.isGift = false;
 
             renderCart();
