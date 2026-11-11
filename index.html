@@ -960,7 +960,7 @@
     </div>
 
 
-    <!-- ================= 4. เลนหลักสำหรับ "เถ้าแก่" ================= -->
+    <!-- ================= 4. เลนหลักสำหรับ "เถ้าแก่" (Owner Executive Dashboard) ================= -->
     <div id="app-owner-content" class="hidden flex flex-col min-h-screen bg-gray-50/50">
         <header class="bg-gradient-to-r from-red-900 to-stone-900 text-white shadow-lg sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -974,18 +974,135 @@
                 <button onclick="handleLogout()" class="bg-red-950 hover:bg-black px-4 py-2.5 rounded-2xl text-sm font-bold transition shadow-md">ออกจากระบบ</button>
             </div>
         </header>
-        <main class="max-w-7xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
-                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">ยอดขายรวมสุทธิวันนี้</h3>
-                <div class="text-3xl font-extrabold text-red-700 mt-2">12,500.00 ฿</div>
+
+        <main class="max-w-7xl mx-auto px-4 py-8 flex-grow space-y-6 w-full">
+            <!-- ส่วนตัวกรองช่วงวันที่ (Date Range Filter สำหรับเถ้าแก่) -->
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-red-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-bold text-red-700">📅 เลือกช่วงเวลาวิเคราะห์:</span>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-gray-700">จากวันที่:</span>
+                        <input type="date" id="ownerStartDate" class="border border-gray-300 rounded-xl p-2.5 text-sm shadow-sm font-semibold">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-gray-700">ถึง:</span>
+                        <input type="date" id="ownerEndDate" class="border border-gray-300 rounded-xl p-2.5 text-sm shadow-sm font-semibold">
+                    </div>
+                    <button onclick="updateOwnerDashboardData()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-sm text-sm">ประมวลผลข้อมูล</button>
+                    <button onclick="setOwnerDateToday()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold transition text-sm">วันนี้</button>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
-                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">คำสั่งซื้อรออนุมัติ</h3>
-                <div class="text-3xl font-extrabold text-emerald-700 mt-2">3 รายการ</div>
+
+            <!-- การ์ดสรุป KPI ผู้บริหาร -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">ยอดขายรวมสุทธิ (Net Sales)</h3>
+                    <div id="owner-stat-netsales" class="text-2xl font-extrabold text-red-700 mt-2">0.00 ฿</div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">จำนวนบิลสำเร็จ / ส่วนลดรวม</h3>
+                    <div id="owner-stat-bills" class="text-xl font-extrabold text-emerald-700 mt-2">0 บิล</div>
+                    <div id="owner-stat-discounts" class="text-xs text-red-600 font-semibold mt-0.5">ส่วนลด: 0.00 ฿</div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">ภาษีมูลค่าเพิ่ม (VAT 7% เก็บได้)</h3>
+                    <div id="owner-stat-vat" class="text-2xl font-extrabold text-blue-700 mt-2">0.00 ฿</div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">สถานะคลังสินค้า & สภาพคล่อง</h3>
+                    <div class="text-lg font-extrabold text-gray-800 mt-2 flex items-center gap-1.5">🟢 ปกติ (Stable)</div>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 hover:shadow-md transition">
-                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide">สถานะคลังสินค้า</h3>
-                <div class="text-2xl font-extrabold text-gray-800 mt-2 flex items-center gap-2">🟢 ปกติ (Stable)</div>
+
+            <!-- ส่วนสรุปช่องทางรับเงิน (Cash, Transfer, Credit, Debt, Mixed) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100">
+                    <h3 class="text-base font-bold text-red-700 mb-4 flex items-center gap-2"><span>💵</span> สรุปยอดเงินตามช่องทางชำระ (Payment Summary)</h3>
+                    <div class="space-y-3" id="owner-payment-breakdown">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl border">
+                            <span class="font-semibold text-gray-700">เงินสดในลิ้นชัก (Cash)</span>
+                            <span id="pay-summary-cash" class="font-bold text-gray-900">0.00 ฿</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl border">
+                            <span class="font-semibold text-gray-700">เงินโอนธนาคาร (Transfer)</span>
+                            <span id="pay-summary-transfer" class="font-bold text-gray-900">0.00 ฿</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl border">
+                            <span class="font-semibold text-gray-700">บัตรเครดิต (Credit Card)</span>
+                            <span id="pay-summary-credit" class="font-bold text-gray-900">0.00 ฿</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl border">
+                            <span class="font-semibold text-gray-700">ลูกหนี้การค้า (Debt)</span>
+                            <span id="pay-summary-debt" class="font-bold text-gray-900">0.00 ฿</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-red-700 mb-4 flex items-center gap-2"><span>⏰</span> วิเคราะห์ช่วงเวลาหนาแน่น (Peak Hours Traffic)</h3>
+                        <p class="text-xs text-gray-500 mb-3">ช่วงเวลาที่มียอดขายและลูกค้าหนาแน่นที่สุดในช่วงวันที่เลือก:</p>
+                        <div id="owner-peak-hours-container" class="space-y-2">
+                            <div class="p-3 bg-red-50 rounded-2xl border border-red-200 text-sm flex justify-between items-center">
+                                <span class="font-bold text-red-900">ช่วงเช้า (08:00 - 12:00 น.)</span>
+                                <span id="peak-morning" class="font-extrabold text-red-700">0 รายการ</span>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded-2xl border border-red-200 text-sm flex justify-between items-center">
+                                <span class="font-bold text-red-900">ช่วงบ่าย (12:00 - 17:00 น.)</span>
+                                <span id="peak-afternoon" class="font-extrabold text-red-700">0 รายการ</span>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded-2xl border border-red-200 text-sm flex justify-between items-center">
+                                <span class="font-bold text-red-900">ช่วงเย็น (17:00 - 21:00 น.)</span>
+                                <span id="peak-evening" class="font-extrabold text-red-700">0 รายการ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ส่วนวิเคราะห์สินค้าขายดี (Best-Selling Inventory) ตามช่วงวันที่เลือก -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100">
+                <h3 class="text-base font-bold text-red-700 mb-4 flex items-center gap-2"><span>🏆</span> สินค้าขายดีตามช่วงเวลา (Best-Selling Products Analysis)</h3>
+                <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-inner max-h-[300px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-red-50 text-red-900 text-sm uppercase font-bold sticky top-0 backdrop-blur-sm z-10">
+                            <tr>
+                                <th class="p-3.5">ลำดับ</th>
+                                <th class="p-3.5">รหัส / ชื่อสินค้า</th>
+                                <th class="p-3.5">ยี่ห้อ / ประเภท</th>
+                                <th class="p-3.5 text-center">จำนวนที่ขายได้ (ชิ้น)</th>
+                                <th class="p-3.5 text-right">ยอดขายรวม (บาท)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerBestSellerTableBody" class="text-sm divide-y divide-gray-100">
+                            <tr><td colspan="5" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีข้อมูลการขายในช่วงเวลานี้</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ส่วนตรวจสอบหลักฐานการโอนเงิน & ประวัติบิลทั้งหมดของเถ้าแก่ -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-red-100">
+                <h3 class="text-base font-bold text-red-700 mb-4 flex items-center gap-2"><span>🔍</span> ตรวจสอบหลักฐานการโอนเงิน & ประวัติบิลทั้งหมด (Audit Log)</h3>
+                <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-inner max-h-[320px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-red-50 text-red-900 text-sm uppercase font-bold sticky top-0 backdrop-blur-sm z-10">
+                            <tr>
+                                <th class="p-3.5">Tax-ID / วันที่-เวลา</th>
+                                <th class="p-3.5">ชื่อลูกค้า / สมาชิก</th>
+                                <th class="p-3.5">รายการสินค้า</th>
+                                <th class="p-3.5 text-center">ช่องทางชำระเงิน</th>
+                                <th class="p-3.5 text-right">ยอดสุทธิ</th>
+                                <th class="p-3.5 text-center">ตรวจสอบสลิป</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerAuditTableBody" class="text-sm divide-y divide-gray-100">
+                            <tr><td colspan="6" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีประวัติบิลในช่วงเวลานี้</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -1142,6 +1259,11 @@
                 } else if(found.role === 'owner') {
                     document.getElementById('owner-user-display').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-owner-content').classList.remove('hidden');
+                    // ตั้งค่าเริ่มต้น Date Filter ของเถ้าแก่เป็นวันนี้
+                    const todayStr = getLocalTodayDateString();
+                    document.getElementById('ownerStartDate').value = todayStr;
+                    document.getElementById('ownerEndDate').value = todayStr;
+                    updateOwnerDashboardData();
                 }
             } else {
                 document.getElementById('error-message-text').innerText = "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
@@ -1208,8 +1330,8 @@
 
             let filtered = productsFromSheet.filter(p => {
                 const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                     p.name.toLowerCase().includes(keyword) || 
-                                     p.brand.toLowerCase().includes(keyword);
+                                   p.name.toLowerCase().includes(keyword) || 
+                                   p.brand.toLowerCase().includes(keyword);
                 const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                 const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                 return matchKeyword && matchBrand && matchUnit;
@@ -1235,8 +1357,8 @@
 
                 let filtered = productsFromSheet.filter(p => {
                     const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                         p.name.toLowerCase().includes(keyword) || 
-                                         p.brand.toLowerCase().includes(keyword);
+                                       p.name.toLowerCase().includes(keyword) || 
+                                       p.brand.toLowerCase().includes(keyword);
                     const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                     const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                     return matchKeyword && matchBrand && matchUnit;
@@ -2123,6 +2245,7 @@
                 cartItems.push({ 
                     code: foundProd.code, 
                     name: foundProd.name, 
+                    brand: foundProd.brand,
                     price: priceToUse, 
                     qty: 1, 
                     discount: 0, 
@@ -2135,7 +2258,6 @@
             renderCart();
         }
 
-        // ฟังก์ชันเปลี่ยน Tier ของสินค้าในตะกร้าโดยตรงทันที
         function changeCartItemTier(index, newTier) {
             const item = cartItems[index];
             const foundProd = productsFromSheet.find(p => p.code === item.code);
@@ -2145,7 +2267,7 @@
             let newPrice = (newTier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
             item.price = newPrice;
             item.originalPrice = newPrice;
-            item.discount = 0; // รีเซ็ตส่วนลดเมื่อสลับ Tier เพื่อความถูกต้อง
+            item.discount = 0;
             item.isGift = false;
 
             renderCart();
@@ -2428,6 +2550,134 @@
             document.getElementById('bsDynamicAP').innerText = totalAP.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             document.getElementById('bsTotalAsset').innerText = (85000 + totalInventory).toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             document.getElementById('bsTotalLE').innerText = (85000 + totalAP).toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+        }
+
+        // ================= ฟังก์ชันควบคุม Executive Dashboard สำหรับเถ้าแก่ =================
+        function setOwnerDateToday() {
+            const today = getLocalTodayDateString();
+            document.getElementById('ownerStartDate').value = today;
+            document.getElementById('ownerEndDate').value = today;
+            updateOwnerDashboardData();
+        }
+
+        function updateOwnerDashboardData() {
+            const startDate = document.getElementById('ownerStartDate').value;
+            const endDate = document.getElementById('ownerEndDate').value;
+
+            // กรองบิลสำเร็จตามช่วงวันที่
+            const filteredBills = completedSalesBills.filter(b => b.date >= startDate && b.date <= endDate && b.status === 'completed');
+
+            let totalNetSales = 0;
+            let totalDiscountVal = 0;
+            let totalVatVal = 0;
+            let paymentTotals = { cash: 0, transfer: 0, credit: 0, debt: 0, mixed: 0 };
+            let peakMorning = 0, peakAfternoon = 0, peakEvening = 0;
+            let productSalesMap = {};
+
+            filteredBills.forEach(bill => {
+                totalNetSales += bill.net;
+                totalDiscountVal += bill.totalDiscount;
+                totalVatVal += bill.vat;
+
+                if (paymentTotals[bill.payMethod] !== undefined) {
+                    paymentTotals[bill.payMethod] += bill.net;
+                } else if (bill.payMethod === 'mixed') {
+                    paymentTotals.transfer += bill.net; // ประมาณการหรือรวมยอด
+                }
+
+                // วิเคราะห์ช่วงเวลา Peak Hours จาก HH:MM:SS
+                if (bill.time) {
+                    const hour = parseInt(bill.time.split(':')[0]);
+                    if (hour >= 8 && hour < 12) peakMorning++;
+                    else if (hour >= 12 && hour < 17) peakAfternoon++;
+                    else if (hour >= 17 && hour <= 21) peakEvening++;
+                    else peakAfternoon++;
+                }
+
+                // วิเคราะห์สินค้าขายดี
+                bill.items.forEach(item => {
+                    if (!productSalesMap[item.code]) {
+                        productSalesMap[item.code] = {
+                            code: item.code,
+                            name: item.name,
+                            brand: item.brand || 'ทั่วไป',
+                            qty: 0,
+                            revenue: 0
+                        };
+                    }
+                    productSalesMap[item.code].qty += item.qty;
+                    productSalesMap[item.code].revenue += (item.price * item.qty);
+                });
+            });
+
+            // อัปเดต KPI Cards
+            document.getElementById('owner-stat-netsales').innerText = totalNetSales.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('owner-stat-bills').innerText = filteredBills.length + " บิล";
+            document.getElementById('owner-stat-discounts').innerText = `ส่วนลดรวม: ${totalDiscountVal.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿`;
+            document.getElementById('owner-stat-vat').innerText = totalVatVal.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            // อัปเดต Payment Breakdown
+            document.getElementById('pay-summary-cash').innerText = paymentTotals.cash.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-transfer').innerText = paymentTotals.transfer.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-credit').innerText = paymentTotals.credit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-debt').innerText = paymentTotals.debt.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            // อัปเดต Peak Hours Traffic
+            document.getElementById('peak-morning').innerText = peakMorning + " รายการบิล";
+            document.getElementById('peak-afternoon').innerText = peakAfternoon + " รายการบิล";
+            document.getElementById('peak-evening').innerText = peakEvening + " รายการบิล";
+
+            // อัปเดตตารางสินค้าขายดี (เรียงจากมากไปน้อย)
+            const bestSellerTbody = document.getElementById('ownerBestSellerTableBody');
+            bestSellerTbody.innerHTML = '';
+            let productArray = Object.values(productSalesMap);
+            productArray.sort((a, b) => b.qty - a.qty);
+
+            if (productArray.length === 0) {
+                bestSellerTbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีข้อมูลการขายในช่วงเวลานี้</td></tr>`;
+            } else {
+                productArray.forEach((p, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-red-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3.5 font-bold text-gray-700">#${idx + 1}</td>
+                        <td class="p-3.5 font-bold text-gray-900">${p.name} <span class="text-xs text-gray-500 font-mono">(${p.code})</span></td>
+                        <td class="p-3.5 text-gray-600">${p.brand}</td>
+                        <td class="p-3.5 text-center font-extrabold text-red-700">${p.qty} ชิ้น</td>
+                        <td class="p-3.5 text-right font-bold text-gray-900">${p.revenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    `;
+                    bestSellerTbody.appendChild(tr);
+                });
+            }
+
+            // อัปเดตตารางตรวจสอบบิล/หลักฐานการโอน (Audit Log สำหรับเถ้าแก่)
+            const auditTbody = document.getElementById('ownerAuditTableBody');
+            auditTbody.innerHTML = '';
+            if (filteredBills.length === 0) {
+                auditTbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีประวัติบิลในช่วงเวลานี้</td></tr>`;
+            } else {
+                const methodMap = { cash: 'เงินสด', transfer: 'เงินโอน', credit: 'บัตรเครดิต', debt: 'ลูกหนี้', mixed: 'โอนผสมสด' };
+                filteredBills.forEach((bill, idx) => {
+                    const globalIdx = completedSalesBills.indexOf(bill);
+                    let itemNamesSummary = bill.items.map(i => `${i.name}(${i.qty})`).join(', ');
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-red-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3.5">
+                            <div class="font-bold font-mono text-gray-900">${bill.taxId}</div>
+                            <div class="text-xs text-gray-500">${bill.date} ${bill.time}</div>
+                        </td>
+                        <td class="p-3.5 font-semibold text-gray-800">${bill.member}</td>
+                        <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="${itemNamesSummary}">${itemNamesSummary}</td>
+                        <td class="p-3.5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">${methodMap[bill.payMethod] || bill.payMethod}</span></td>
+                        <td class="p-3.5 text-right font-bold text-gray-900">${bill.net.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                        <td class="p-3.5 text-center">
+                            <button onclick="viewBillDetail(${globalIdx})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">ตรวจสอบสลิป</button>
+                        </td>
+                    `;
+                    auditTbody.appendChild(tr);
+                });
+            }
         }
     </script>
 </body>
