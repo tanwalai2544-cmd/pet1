@@ -1130,7 +1130,8 @@
                 document.getElementById('auth-wrapper').classList.add('hidden');
 
                 if(found.role === 'staff') {
-                    document.getElementById('staff-user-display.innerText').innerText = `${found.name} (${found.email})`;
+                    const staffDisplay = document.getElementById('staff-user-display');
+                    if(staffDisplay) staffDisplay.innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-staff-content').classList.remove('hidden');
                     updateLiveTimestamp();
                     renderProductTable(productsFromSheet);
