@@ -1072,7 +1072,7 @@
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            return `year-{month}-${day}`;
+            return `${year}-${month}-${day}`;
         }
 
         function updateLiveTimestamp() {
@@ -1130,17 +1130,17 @@
                 document.getElementById('auth-wrapper').classList.add('hidden');
 
                 if(found.role === 'staff') {
-                    document.getElementById('staff-user-display').innerText = `found.name({found.email})`;
+                    document.getElementById('staff-user-display').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-staff-content').classList.remove('hidden');
                     updateLiveTimestamp();
                     renderProductTable(productsFromSheet);
                 } else if(found.role === 'accountant') {
-                    document.getElementById('current-user-display').innerText = `found.name({found.email})`;
+                    document.getElementById('current-user-display').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-accountant-content').classList.remove('hidden');
                     filterJournalByDateRange();
                     updateFinancialStatements();
                 } else if(found.role === 'owner') {
-                    document.getElementById('owner-user-display').innerText = `found.name({found.email})`;
+                    document.getElementById('owner-user-display').innerText = `${found.name} (${found.email})`;
                     document.getElementById('app-owner-content').classList.remove('hidden');
                 }
             } else {
@@ -1235,8 +1235,8 @@
 
                 let filtered = productsFromSheet.filter(p => {
                     const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                       p.name.toLowerCase().includes(keyword) || 
-                                       p.brand.toLowerCase().includes(keyword);
+                                         p.name.toLowerCase().includes(keyword) || 
+                                         p.brand.toLowerCase().includes(keyword);
                     const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                     const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                     return matchKeyword && matchBrand && matchUnit;
@@ -1703,7 +1703,7 @@
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            const yesterday = `year-{month}-${day}`;
+            const yesterday = `${year}-${month}-${day}`;
             document.getElementById('reportFilterStart').value = yesterday;
             document.getElementById('reportFilterEnd').value = yesterday;
             filterStaffReports();
@@ -1727,8 +1727,8 @@
                     const itemsText = b.items.map(i => i.name.toLowerCase()).join(' ');
                     
                     matchSearch = memberText.includes(searchKeyword) || 
-                                taxIdText.includes(searchKeyword) || 
-                                itemsText.includes(searchKeyword);
+                                  taxIdText.includes(searchKeyword) || 
+                                  itemsText.includes(searchKeyword);
                 }
 
                 return matchDate && matchSearch;
@@ -1743,7 +1743,7 @@
 
             filtered.forEach((bill, idx) => {
                 const globalIdx = completedSalesBills.indexOf(bill);
-                let itemNamesSummary = bill.items.map(i => `i.name({i.qty})`).join(', ');
+                let itemNamesSummary = bill.items.map(i => `${i.name}(${i.qty})`).join(', ');
 
                 const tr = document.createElement('tr');
                 tr.className = bill.status === 'cancelled' ? 'bg-gray-100 opacity-60' : 'hover:bg-red-50/50 transition';
@@ -1753,7 +1753,7 @@
                         <div class="text-xs text-gray-500">${bill.date} ${bill.time}</div>
                     </td>
                     <td class="p-3.5 font-semibold text-gray-800">${bill.member}</td>
-                    <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="itemNamesSummary">{itemNamesSummary}</td>
+                    <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="${itemNamesSummary}">${itemNamesSummary}</td>
                     <td class="p-3.5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">${methodMap[bill.payMethod] || bill.payMethod}</span></td>
                     <td class="p-3.5 text-right font-bold text-gray-900">${bill.net.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
                     <td class="p-3.5 text-center">
@@ -1775,7 +1775,7 @@
             const content = document.getElementById('bill-detail-content');
             let itemsHtml = '';
             bill.items.forEach(i => {
-                itemsHtml += `<div>- i.name({i.tier || 'Tier 1'}) x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
+                itemsHtml += `<div>- ${i.name} (${i.tier || 'Tier 1'}) x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
             });
 
             content.innerHTML = `
@@ -1847,7 +1847,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-2 border-r border-gray-200">
-                        <div class="font-bold text-gray-900">${item.name} item.isGift?'<spanclass="text-red-600font-bold">[ของแถม]</span>':''<spanclass="text-xstext-gray-500font-semibold">({item.tier || 'Tier 1'})</span></div>
+                        <div class="font-bold text-gray-900">${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''} <span class="text-xs text-gray-500 font-semibold">(${item.tier || 'Tier 1'})</span></div>
                         <div class="text-[10px] text-gray-500">@ ${item.price.toLocaleString()} ฿</div>
                     </td>
                     <td class="p-2 text-center border-r border-gray-200 font-semibold">${item.qty}</td>
@@ -2060,7 +2060,7 @@
                 if (heldBills[i]) {
                     const itemCount = heldBills[i].length;
                     const totalAmount = heldBills[i].reduce((sum, item) => sum + (item.price * item.qty), 0);
-                    statusSpan.innerHTML = `<span class="text-emerald-700 font-bold text-sm">itemCountรายการ<br>{totalAmount.toLocaleString()} ฿</span>`;
+                    statusSpan.innerHTML = `<span class="text-emerald-700 font-bold text-sm">${itemCount} รายการ<br>${totalAmount.toLocaleString()} ฿</span>`;
                     btnSlot.innerText = "📂 ดึงบิล";
                     btnSlot.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm";
                     btnClear.classList.remove('hidden');
@@ -2218,7 +2218,7 @@
                         ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold border border-red-200">ของแถม</span>' : ''}
                     </td>
                     <td class="py-3 text-center align-middle">
-                        <input type="number" min="1" item.isGift?'disabled':''value="{item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-xl text-center py-1 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
+                        <input type="number" min="1" ${item.isGift ? 'disabled' : ''} value="${item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-xl text-center py-1 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
                     </td>
                     <td class="py-3 text-right font-bold text-gray-900 text-sm align-middle">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
                     <td class="py-3 text-center align-middle flex items-center justify-center gap-1.5 pt-4">
@@ -2336,7 +2336,7 @@
             journalEntries.unshift({
                 date: todayStr,
                 id: `TAX-${Math.floor(Math.random()*8999+1000)}`,
-                supplier: `customer({docType})`,
+                supplier: `${customer} (${docType})`,
                 account: docType === 'CN' ? 'ใบลดหนี้ (Contra Revenue)' : 'รายได้จากการขายสินค้า (Sales Revenue)',
                 creditAcc: 'ภาษีขายและลูกหนี้การค้า',
                 amount: amount,
@@ -2376,7 +2376,7 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50';
                 row.innerHTML = `
-                    <td class="p-3.5"><div class="font-bold text-gray-900 text-sm">item.id</div><divclass="text-xstext-gray-500">{item.date} (${item.supplier})</div></td>
+                    <td class="p-3.5"><div class="font-bold text-gray-900 text-sm">${item.id}</div><div class="text-xs text-gray-500">${item.date} (${item.supplier})</div></td>
                     <td class="p-3.5"><div class="font-bold text-red-700 text-sm">${item.account}</div><div class="text-xs text-gray-500 pl-3">เครดิต: ${item.creditAcc}</div></td>
                     <td class="p-3.5 text-right font-bold text-gray-900 text-sm">${formatted}</td>
                     <td class="p-3.5 text-right font-bold text-gray-900 text-sm">${formatted}</td>
@@ -2432,4 +2432,3 @@
     </script>
 </body>
 </html>
-
