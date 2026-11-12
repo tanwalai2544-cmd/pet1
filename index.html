@@ -1167,6 +1167,7 @@
         </main>
     </div>
 
+
     <!-- ================= 5. JavaScript ควบคุมทั้งหมด ================= -->
     <script>
         let registeredUsers = [
@@ -1257,7 +1258,7 @@
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `year-{month}-${day}`;
         }
 
         function updateLiveTimestamp() {
@@ -1315,17 +1316,17 @@
                 document.getElementById('auth-wrapper').classList.add('hidden');
 
                 if(found.role === 'staff') {
-                    document.getElementById('staff-user-display').innerText = `${found.name} (${found.email})`;
+                    document.getElementById('staff-user-display').innerText = `found.name({found.email})`;
                     document.getElementById('app-staff-content').classList.remove('hidden');
                     updateLiveTimestamp();
                     renderProductTable(productsFromSheet);
                 } else if(found.role === 'accountant') {
-                    document.getElementById('current-user-display').innerText = `${found.name} (${found.email})`;
+                    document.getElementById('current-user-display').innerText = `found.name({found.email})`;
                     document.getElementById('app-accountant-content').classList.remove('hidden');
                     filterJournalByDateRange();
                     updateFinancialStatements();
                 } else if(found.role === 'owner') {
-                    document.getElementById('owner-user-display').innerText = `${found.name} (${found.email})`;
+                    document.getElementById('owner-user-display').innerText = `found.name({found.email})`;
                     document.getElementById('app-owner-content').classList.remove('hidden');
                     const todayStr = getLocalTodayDateString();
                     document.getElementById('ownerStartDate').value = todayStr;
@@ -1397,8 +1398,8 @@
 
             let filtered = productsFromSheet.filter(p => {
                 const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                     p.name.toLowerCase().includes(keyword) || 
-                                     p.brand.toLowerCase().includes(keyword);
+                                   p.name.toLowerCase().includes(keyword) || 
+                                   p.brand.toLowerCase().includes(keyword);
                 const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                 const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                 return matchKeyword && matchBrand && matchUnit;
@@ -1424,8 +1425,8 @@
 
                 let filtered = productsFromSheet.filter(p => {
                     const matchKeyword = p.code.toLowerCase().includes(keyword) || 
-                                         p.name.toLowerCase().includes(keyword) || 
-                                         p.brand.toLowerCase().includes(keyword);
+                                       p.name.toLowerCase().includes(keyword) || 
+                                       p.brand.toLowerCase().includes(keyword);
                     const matchBrand = selectedBrand === "" || p.brand === selectedBrand;
                     const matchUnit = selectedUnit === "" || p.unit === selectedUnit;
                     return matchKeyword && matchBrand && matchUnit;
@@ -1732,7 +1733,7 @@
 
             document.getElementById('pay-modal-vat-amount').innerText = vatAmount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             
-            let diffText = roundingDiff >= 0 ? `+${roundingDiff.toFixed(2)}` : `${roundingDiff.toFixed(2)}`;
+            let diffText = roundingDiff >= 0 ? `+roundingDiff.toFixed(2)`:`{roundingDiff.toFixed(2)}`;
             document.getElementById('pay-modal-rounding-diff').innerText = `ปัดเศษ: ${diffText} ฿ (ยอดสุทธิเต็มบาท)`;
             document.getElementById('pay-modal-net').innerText = finalNetRounded.toLocaleString('en-US');
 
@@ -1899,7 +1900,7 @@
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            const yesterday = `${year}-${month}-${day}`;
+            const yesterday = `year-{month}-${day}`;
             document.getElementById('reportFilterStart').value = yesterday;
             document.getElementById('reportFilterEnd').value = yesterday;
             filterStaffReports();
@@ -1939,7 +1940,7 @@
 
             filtered.forEach((bill, idx) => {
                 const globalIdx = completedSalesBills.indexOf(bill);
-                let itemNamesSummary = bill.items.map(i => `${i.name} (${i.qty})`).join(', ');
+                let itemNamesSummary = bill.items.map(i => `i.name({i.qty})`).join(', ');
 
                 const tr = document.createElement('tr');
                 tr.className = bill.status === 'cancelled' ? 'bg-gray-100 opacity-60' : 'hover:bg-red-50/50 transition';
@@ -1949,7 +1950,7 @@
                         <div class="text-xs text-gray-500">${bill.date} ${bill.time}</div>
                     </td>
                     <td class="p-3.5 font-semibold text-gray-800">${bill.member}</td>
-                    <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="${itemNamesSummary}">${itemNamesSummary}</td>
+                    <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="itemNamesSummary">{itemNamesSummary}</td>
                     <td class="p-3.5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">${methodMap[bill.payMethod] || bill.payMethod}</span></td>
                     <td class="p-3.5 text-right font-bold text-gray-900">${bill.net.toLocaleString('en-US')} ฿</td>
                     <td class="p-3.5 text-center">
@@ -1971,7 +1972,7 @@
             const content = document.getElementById('bill-detail-content');
             let itemsHtml = '';
             bill.items.forEach(i => {
-                itemsHtml += `<div>- ${i.name} (${i.tier || 'Tier 1'}) x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
+                itemsHtml += `<div>- i.name({i.tier || 'Tier 1'}) x ${i.qty} = ${(i.price * i.qty).toLocaleString()} ฿</div>`;
             });
 
             content.innerHTML = `
@@ -2043,7 +2044,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-2 border-r border-gray-200">
-                        <div class="font-bold text-gray-900">${item.name} ${item.isGift ? '<span class="text-red-600 font-bold">[ของแถม]</span>' : ''} <span class="text-xs text-gray-500 font-semibold">(${item.tier || 'Tier 1'})</span></div>
+                        <div class="font-bold text-gray-900">${item.name} item.isGift?'<spanclass="text-red-600font-bold">[ของแถม]</span>':''<spanclass="text-xstext-gray-500font-semibold">({item.tier || 'Tier 1'})</span></div>
                         <div class="text-[10px] text-gray-500">@ ${item.price.toLocaleString()} ฿</div>
                     </td>
                     <td class="p-2 text-center border-r border-gray-200 font-semibold">${item.qty}</td>
@@ -2154,7 +2155,661 @@
                 }
             }
         }
-        // (ส่วนฟังก์ชันอื่นๆ ทำงานได้ปกติเหมือนเดิม)
+
+        function saveCartItemEdit(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('edit-cart-index').value);
+            const isGift = document.getElementById('form-edit-is-gift').checked;
+            const newQty = isGift ? 1 : (parseInt(document.getElementById('form-edit-item-qty').value) || 1);
+            const finalPrice = isGift ? 0 : (parseFloat(document.getElementById('form-edit-item-price').value) || 0);
+            const newDiscount = isGift ? originalItemBasePrice : (parseFloat(document.getElementById('form-edit-item-discount').value) || 0);
+            const newNote = document.getElementById('form-edit-item-note').value;
+
+            if (index >= 0 && index < cartItems.length) {
+                cartItems[index].qty = newQty;
+                cartItems[index].price = finalPrice;
+                cartItems[index].discount = newDiscount;
+                cartItems[index].note = newNote;
+                cartItems[index].originalPrice = originalItemBasePrice;
+                cartItems[index].isGift = isGift;
+            }
+            renderCart();
+            closeEditCartModal();
+        }
+
+        function openCashDrawerModal() {
+            document.getElementById('cash-drawer-modal').classList.remove('hidden');
+            backToDrawerStep1();
+        }
+
+        function closeCashDrawerModal() {
+            document.getElementById('cash-drawer-modal').classList.add('hidden');
+        }
+
+        function selectDrawerType(type) {
+            currentDrawerType = type;
+            document.getElementById('cash-drawer-step-1').classList.add('hidden');
+            document.getElementById('cash-drawer-step-2').classList.remove('hidden');
+            const titleElem = document.getElementById('drawer-form-title');
+            if (type === 'income') {
+                titleElem.innerHTML = '<span>📥</span> บันทึกรับเงินเข้าลิ้นชัก';
+            } else {
+                titleElem.innerHTML = '<span>📤</span> บันทึกจ่ายเงินออกจากลิ้นชัก';
+            }
+            document.getElementById('drawer-desc').value = '';
+            document.getElementById('drawer-amount').value = '';
+        }
+
+        function backToDrawerStep1() {
+            currentDrawerType = '';
+            document.getElementById('cash-drawer-step-2').classList.add('hidden');
+            document.getElementById('cash-drawer-step-1').classList.remove('hidden');
+        }
+
+        function submitCashDrawer(e) {
+            e.preventDefault();
+            const desc = document.getElementById('drawer-desc').value.trim();
+            const amount = parseFloat(document.getElementById('drawer-amount').value) || 0;
+            const todayStr = getLocalTodayDateString();
+
+            if (currentDrawerType === 'income') {
+                journalEntries.unshift({
+                    date: todayStr,
+                    id: `DRAWER-IN-${Math.floor(Math.random()*8999+1000)}`,
+                    supplier: desc,
+                    account: "เงินสดในลิ้นชัก (Cash Drawer)",
+                    creditAcc: "รายรับอื่นๆ (Other Income)",
+                    amount: amount,
+                    type: "expense"
+                });
+                alert(`💵 เปิดลิ้นชักสำเร็จ!\n- บันทึกรับเงิน "${desc}" จำนวน ${amount.toLocaleString()} บาท เข้าสมุดบัญชีเรียบร้อย`);
+            } else {
+                journalEntries.unshift({
+                    date: todayStr,
+                    id: `DRAWER-OUT-${Math.floor(Math.random()*8999+1000)}`,
+                    supplier: desc,
+                    account: "ค่าใช้จ่ายเบ็ดเตล็ด (Misc Expense)",
+                    creditAcc: "เงินสดในลิ้นชัก (Cash Drawer)",
+                    amount: amount,
+                    type: "expense"
+                });
+                alert(`💵 เปิดลิ้นชักสำเร็จ!\n- บันทึกจ่ายเงิน "${desc}" จำนวน ${amount.toLocaleString()} บาท ออกจากสมุดบัญชีเรียบร้อย`);
+            }
+
+            closeCashDrawerModal();
+        }
+
+        function openHoldBillModal() {
+            document.getElementById('hold-bill-modal').classList.remove('hidden');
+            renderHoldBillSlots();
+        }
+
+        function closeHoldBillModal() {
+            document.getElementById('hold-bill-modal').classList.add('hidden');
+        }
+
+        function renderHoldBillSlots() {
+            for (let i = 0; i < 3; i++) {
+                const statusSpan = document.getElementById(`slot-status-${i}`);
+                const btnSlot = document.getElementById(`slot-btn-${i}`);
+                const btnClear = document.getElementById(`slot-clear-${i}`);
+
+                if (heldBills[i]) {
+                    const itemCount = heldBills[i].length;
+                    const totalAmount = heldBills[i].reduce((sum, item) => sum + (item.price * item.qty), 0);
+                    statusSpan.innerHTML = `<span class="text-emerald-700 font-bold text-sm">itemCountรายการ<br>{totalAmount.toLocaleString()} ฿</span>`;
+                    btnSlot.innerText = "📂 ดึงบิล";
+                    btnSlot.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm";
+                    btnClear.classList.remove('hidden');
+                } else {
+                    statusSpan.innerHTML = `<span class="text-gray-400 text-xs">ว่าง</span>`;
+                    btnSlot.innerText = "+ พักบิล";
+                    btnSlot.className = "w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm";
+                    btnClear.classList.add('hidden');
+                }
+            }
+        }
+
+        function holdOrRecallBill(index) {
+            if (heldBills[index]) {
+                cartItems = JSON.parse(JSON.stringify(heldBills[index]));
+                heldBills[index] = null;
+                renderCart();
+                renderHoldBillSlots();
+                closeHoldBillModal();
+                alert(`ดึงบิลที่ ${index + 1} กลับมาเรียบร้อยแล้ว`);
+            } else {
+                if (cartItems.length === 0) {
+                    alert('ไม่มีสินค้าในตะกร้าสำหรับพักบิล');
+                    return;
+                }
+                heldBills[index] = JSON.parse(JSON.stringify(cartItems));
+                cartItems = [];
+                renderCart();
+                renderHoldBillSlots();
+                closeHoldBillModal();
+                alert(`พักบิลไว้ที่ช่อง ${index + 1} เรียบร้อยแล้ว`);
+            }
+        }
+
+        function clearHeldBill(index) {
+            if (confirm(`คุณต้องการลบ/ล้างบิลที่พักไว้ในช่องที่ ${index + 1} ใช่หรือไม่?`)) {
+                heldBills[index] = null;
+                renderHoldBillSlots();
+            }
+        }
+
+        function areAllBillsHeld() {
+            return heldBills[0] !== null && heldBills[1] !== null && heldBills[2] !== null;
+        }
+
+        function addToCart(code, tier = 'Tier 1') {
+            if (areAllBillsHeld()) {
+                alert('⚠️ บิลถูกพักไว้เต็มทั้ง 3 ช่องแล้ว! กรุณากดลบบิลที่พักไว้ก่อนจึงจะสามารถเพิ่มสินค้าใหม่ได้');
+                return;
+            }
+            const foundProd = productsFromSheet.find(p => p.code === code);
+            if (!foundProd) return;
+
+            let priceToUse = (tier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
+
+            const existing = cartItems.find(i => i.code === code && i.tier === tier && !i.isGift);
+            if(existing) { 
+                existing.qty += 1; 
+            } else { 
+                cartItems.push({ 
+                    code: foundProd.code, 
+                    name: foundProd.name, 
+                    brand: foundProd.brand,
+                    price: priceToUse, 
+                    qty: 1, 
+                    discount: 0, 
+                    note: '', 
+                    originalPrice: priceToUse, 
+                    isGift: false, 
+                    tier: tier 
+                }); 
+            }
+            renderCart();
+        }
+
+        function changeCartItemTier(index, newTier) {
+            const item = cartItems[index];
+            const foundProd = productsFromSheet.find(p => p.code === item.code);
+            if (!foundProd) return;
+
+            item.tier = newTier;
+            let newPrice = (newTier === 'Tier 2') ? foundProd.priceTier2 : foundProd.price;
+            item.price = newPrice;
+            item.originalPrice = newPrice;
+            item.discount = 0;
+            item.isGift = false;
+
+            renderCart();
+        }
+
+        function updateCartQty(index, newQty) {
+            const qty = parseInt(newQty);
+            if (cartItems[index].isGift) {
+                cartItems[index].qty = 1;
+                renderCart();
+                return;
+            }
+            if (isNaN(qty) || qty <= 0) {
+                cartItems.splice(index, 1);
+            } else {
+                cartItems[index].qty = qty;
+            }
+            renderCart();
+        }
+
+        function removeCartItem(index) {
+            cartItems.splice(index, 1);
+            renderCart();
+        }
+
+        function clearCart() {
+            cartItems = [];
+            renderCart();
+        }
+
+        function renderCart() {
+            const tbody = document.getElementById('cartTableBody');
+            tbody.innerHTML = '';
+            let total = 0;
+            let totalQty = 0;
+            let totalDiscount = 0;
+
+            if(cartItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีสินค้าในตะกร้า</td></tr>`;
+                document.getElementById('cartTotalPrice').innerText = "0.00 ฿";
+                document.getElementById('summary-total-qty').innerText = "0 ชิ้น";
+                document.getElementById('summary-total-discount').innerText = "0.00 ฿";
+                return;
+            }
+
+            cartItems.forEach((item, index) => {
+                let origPrice = item.originalPrice !== undefined ? item.originalPrice : item.price;
+                let itemDisc = item.discount || 0;
+                
+                if (item.isGift) {
+                    itemDisc = origPrice;
+                }
+
+                let sum = (item.price * item.qty);
+                if(sum < 0) sum = 0;
+
+                total += sum;
+                totalQty += item.qty;
+                totalDiscount += (itemDisc * item.qty);
+
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50/50';
+                row.innerHTML = `
+                    <td class="py-3 pr-2">
+                        <div class="font-bold text-gray-900 text-sm mb-1">${item.name}</div>
+                        <div class="inline-flex rounded-lg shadow-sm bg-gray-100 p-0.5 border border-gray-200 text-xs">
+                            <button type="button" onclick="changeCartItemTier(${index}, 'Tier 1')" class="px-2 py-0.5 font-bold rounded-md transition ${item.tier === 'Tier 1' ? 'bg-white text-red-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}">T1</button>
+                            <button type="button" onclick="changeCartItemTier(${index}, 'Tier 2')" class="px-2 py-0.5 font-bold rounded-md transition ${item.tier === 'Tier 2' ? 'bg-white text-red-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}">T2</button>
+                        </div>
+                        ${item.isGift ? '<span class="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded ml-1 font-semibold border border-red-200">ของแถม</span>' : ''}
+                    </td>
+                    <td class="py-3 text-center align-middle">
+                        <input type="number" min="1" item.isGift?'disabled':''value="{item.qty}" onchange="updateCartQty(${index}, this.value)" class="w-16 border border-gray-300 rounded-xl text-center py-1 text-sm font-bold focus:ring-1 focus:ring-red-500 focus:outline-none ${item.isGift ? 'bg-gray-100 cursor-not-allowed' : ''}">
+                    </td>
+                    <td class="py-3 text-right font-bold text-gray-900 text-sm align-middle">${sum.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    <td class="py-3 text-center align-middle flex items-center justify-center gap-1.5 pt-4">
+                        <button onclick="openEditCartModal(${index})" class="bg-blue-600 hover:bg-blue-700 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="แก้ไขรายการ">✏️</button>
+                        <button onclick="removeCartItem(${index})" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-xl text-xs font-bold transition flex items-center justify-center shadow-sm" title="ลบรายการ">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('cartTotalPrice').innerText = total.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('summary-total-qty').innerText = totalQty + " ชิ้น";
+            document.getElementById('summary-total-discount').innerText = totalDiscount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+        }
+
+        function switchMainTab(tab) {
+            document.getElementById('form-procurement-container').classList.add('hidden');
+            document.getElementById('form-expense-container').classList.add('hidden');
+            document.getElementById('form-tax-container').classList.add('hidden');
+            document.getElementById('section-journal').classList.add('hidden');
+            document.getElementById('section-reports').classList.add('hidden');
+
+            document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+            document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition text-white hover:bg-red-700/80";
+
+            if(tab === 'procurement') {
+                document.getElementById('form-procurement-container').classList.remove('hidden');
+                document.getElementById('section-journal').classList.remove('hidden');
+                document.getElementById('btn-procurement').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
+            } else if(tab === 'expense') {
+                document.getElementById('form-expense-container').classList.remove('hidden');
+                document.getElementById('section-journal').classList.remove('hidden');
+                document.getElementById('btn-expense').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
+            } else if(tab === 'tax') {
+                document.getElementById('form-tax-container').classList.remove('hidden');
+                document.getElementById('section-journal').classList.remove('hidden');
+                document.getElementById('btn-tax').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
+            } else if(tab === 'reports') {
+                document.getElementById('section-journal').classList.remove('hidden');
+                document.getElementById('section-reports').classList.remove('hidden');
+                document.getElementById('btn-reports').className = "px-3.5 py-2 text-sm font-bold rounded-xl transition bg-white text-red-700 shadow";
+                updateFinancialStatements();
+            }
+        }
+
+        function loadTransactionData() {
+            const txId = document.getElementById('txId').value;
+            const data = transactionMockup[txId];
+            if(data) {
+                document.getElementById('auditSupplier').value = data.supplier;
+                document.getElementById('auditInvoice').value = data.invoice;
+                document.getElementById('auditItems').value = data.items;
+                document.getElementById('auditAmount').value = data.amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            }
+        }
+
+        function processAuditApproval() {
+            const txId = document.getElementById('txId').value;
+            const dateStr = document.getElementById('txDate').value || getLocalTodayDateString();
+            const data = transactionMockup[txId];
+            const channel = document.getElementById('auditPaymentChannel').value;
+            
+            if(!document.getElementById('checkMatch').checked) {
+                alert('กรุณายืนยันจุดตรวจ Audit ความถูกต้องของสินค้าก่อนลงบัญชี');
+                return;
+            }
+
+            let creditName = channel === 'transfer' ? 'ธนาคารร้าน (Bank Transfer)' : (channel === 'cash' ? 'เงินสด (Cash)' : 'เจ้าหนี้การค้า (Accounts Payable)');
+
+            journalEntries.unshift({
+                date: dateStr,
+                id: txId,
+                supplier: data.supplier,
+                account: "สินค้าคงเหลือ (Inventory - Ministock)",
+                creditAcc: creditName,
+                amount: data.amount,
+                type: "procurement"
+            });
+
+            filterJournalByDateRange();
+            updateFinancialStatements();
+            alert('อนุมัติระบบจ่ายเงินและลงบัญชีสินค้าเข้าสต็อกเรียบร้อย!');
+        }
+
+        function processExpenseEntry() {
+            const category = document.getElementById('expenseCategory').value;
+            const desc = document.getElementById('expenseDesc').value;
+            const refNo = document.getElementById('expRefNo').value;
+            const dateStr = document.getElementById('expDate').value || getLocalTodayDateString();
+            const amount = parseFloat(document.getElementById('expAmount').value) || 0;
+
+            journalEntries.unshift({
+                date: dateStr,
+                id: refNo,
+                supplier: desc,
+                account: `${category} (Expense)`,
+                creditAcc: "เงินสด / ธนาคารร้าน",
+                amount: amount,
+                type: "expense"
+            });
+
+            filterJournalByDateRange();
+            updateFinancialStatements();
+            alert('บันทึกค่าใช้จ่ายและตัดบัญชีเรียบร้อย!');
+        }
+
+        function generateTaxDocument() {
+            const docType = document.getElementById('taxDocType').value;
+            const customer = document.getElementById('taxCustomer').value;
+            const amount = parseFloat(document.getElementById('taxAmount').value) || 0;
+            const todayStr = getLocalTodayDateString();
+
+            journalEntries.unshift({
+                date: todayStr,
+                id: `TAX-${Math.floor(Math.random()*8999+1000)}`,
+                supplier: `customer({docType})`,
+                account: docType === 'CN' ? 'ใบลดหนี้ (Contra Revenue)' : 'รายได้จากการขายสินค้า (Sales Revenue)',
+                creditAcc: 'ภาษีขายและลูกหนี้การค้า',
+                amount: amount,
+                type: "tax"
+            });
+
+            filterJournalByDateRange();
+            updateFinancialStatements();
+            alert(`ออกเอกสาร ${docType} สำหรับ ${customer} เรียบร้อยและบันทึกลงสมุดบัญชีแล้ว!`);
+        }
+
+        function filterJournalByDateRange() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            const filtered = journalEntries.filter(item => item.date >= start && item.date <= end);
+            renderJournalTable(filtered);
+            document.getElementById('periodSummaryLabel').innerText = `สรุปยอดรวม (ช่วงวันที่ ${start} ถึง ${end}):`;
+        }
+
+        function resetDateFilter() {
+            const todayStr = getLocalTodayDateString();
+            document.getElementById('startDate').value = todayStr;
+            document.getElementById('endDate').value = todayStr;
+            filterJournalByDateRange();
+        }
+
+        function renderJournalTable(dataArray) {
+            const tbody = document.getElementById('journalTableBody');
+            tbody.innerHTML = '';
+            let tDebit = 0, tCredit = 0;
+
+            dataArray.forEach(item => {
+                const formatted = item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+                tDebit += item.amount;
+                tCredit += item.amount;
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="p-3.5"><div class="font-bold text-gray-900 text-sm">item.id</div><divclass="text-xstext-gray-500">{item.date} (${item.supplier})</div></td>
+                    <td class="p-3.5"><div class="font-bold text-red-700 text-sm">${item.account}</div><div class="text-xs text-gray-500 pl-3">เครดิต: ${item.creditAcc}</div></td>
+                    <td class="p-3.5 text-right font-bold text-gray-900 text-sm">${formatted}</td>
+                    <td class="p-3.5 text-right font-bold text-gray-900 text-sm">${formatted}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('totalDebit').innerText = tDebit.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('totalCredit').innerText = tCredit.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        }
+
+        function switchReportPeriod(mode) {
+            currentReportMode = mode;
+            const btnM = document.getElementById('rep-monthly');
+            const btnY = document.getElementById('rep-yearly');
+            if(mode === 'monthly') {
+                btnM.className = "px-4 py-2 rounded-xl bg-red-600 text-white font-bold shadow-sm transition";
+                btnY.className = "px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 transition";
+            } else {
+                btnY.className = "px-4 py-2 rounded-xl bg-red-600 text-white font-bold shadow-sm transition";
+                btnM.className = "px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 transition";
+            }
+            updateFinancialStatements();
+        }
+
+        function updateFinancialStatements() {
+            let totalInventory = 0, totalAP = 0, totalExpenses = 0;
+            journalEntries.forEach(item => {
+                if(item.type === 'procurement') {
+                    totalInventory += item.amount;
+                    if(item.creditAcc.includes('เจ้าหนี้')) totalAP += item.amount;
+                } else if(item.type === 'expense') {
+                    totalExpenses += item.amount;
+                }
+            });
+
+            let baseSales = currentReportMode === 'monthly' ? 125000 : 1500000;
+            let baseCOGS = currentReportMode === 'monthly' ? 75000 : 900000;
+            let grossProfit = baseSales - baseCOGS;
+            let netProfit = grossProfit - totalExpenses;
+
+            document.getElementById('plSales').innerText = "+" + baseSales.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plCOGS').innerText = "-" + baseCOGS.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plGrossProfit').innerText = grossProfit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plDynamicExp').innerText = totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plNetProfit').innerText = netProfit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            document.getElementById('bsDynamicInventory').innerText = totalInventory.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('bsDynamicAP').innerText = totalAP.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('bsTotalAsset').innerText = (85000 + totalInventory).toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('bsTotalLE').innerText = (85000 + totalAP).toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+        }
+
+        // ================= ฟังก์ชันควบคุม Executive Dashboard สำหรับเถ้าแก่ (พร้อมระบบโปรโมชั่นสินค้าใกล้หมดอายุ) =================
+        function setOwnerDateToday() {
+            const today = getLocalTodayDateString();
+            document.getElementById('ownerStartDate').value = today;
+            document.getElementById('ownerEndDate').value = today;
+            updateOwnerDashboardData();
+        }
+
+        function executeOwnerPromotion(productCode, actionType) {
+            const item = expiringInventoryData.find(i => i.code === productCode);
+            if (!item) return;
+
+            let actionName = actionType === 'discount' ? 'ลดราคาเคลียร์สต็อก 20%' : 'จัดเป็นสินค้าแถม (Buy-Get-Free)';
+            
+            // บันทึกแคมเปญโปรโมชั่น
+            activePromotionsData.unshift({
+                name: item.name,
+                type: actionName,
+                revenue: Math.floor(Math.random() * 2500 + 500)
+            });
+
+            // ลบออกจากรายการใกล้หมดอายุ
+            expiringInventoryData = expiringInventoryData.filter(i => i.code !== productCode);
+
+            alert(`🚀 เถ้าแก่อนุมัติแคมเปญสำเร็จ!\n- สินค้า: ${item.name}\n- ประเภทโปรโมชั่น: ${actionName}\n- ระบบได้ส่งอัปเดตโปรโมชั่นไปยังหน้า POS เรียบร้อยแล้ว`);
+            updateOwnerDashboardData();
+        }
+
+        function updateOwnerDashboardData() {
+            const startDate = document.getElementById('ownerStartDate').value;
+            const endDate = document.getElementById('ownerEndDate').value;
+
+            const filteredBills = completedSalesBills.filter(b => b.date >= startDate && b.date <= endDate && b.status === 'completed');
+
+            let totalNetSales = 0;
+            let totalDiscountVal = 0;
+            let totalVatVal = 0;
+            let paymentTotals = { cash: 0, transfer: 0, credit: 0, debt: 0, mixed: 0 };
+            let peakMorning = 0, peakAfternoon = 0, peakEvening = 0;
+            let productSalesMap = {};
+
+            filteredBills.forEach(bill => {
+                totalNetSales += bill.net;
+                totalDiscountVal += bill.totalDiscount;
+                totalVatVal += bill.vat;
+
+                if (paymentTotals[bill.payMethod] !== undefined) {
+                    paymentTotals[bill.payMethod] += bill.net;
+                } else if (bill.payMethod === 'mixed') {
+                    paymentTotals.transfer += bill.net;
+                }
+
+                if (bill.time) {
+                    const hour = parseInt(bill.time.split(':')[0]);
+                    if (hour >= 8 && hour < 12) peakMorning++;
+                    else if (hour >= 12 && hour < 17) peakAfternoon++;
+                    else if (hour >= 17 && hour <= 21) peakEvening++;
+                    else peakAfternoon++;
+                }
+
+                bill.items.forEach(item => {
+                    if (!productSalesMap[item.code]) {
+                        productSalesMap[item.code] = {
+                            code: item.code,
+                            name: item.name,
+                            brand: item.brand || 'ทั่วไป',
+                            qty: 0,
+                            revenue: 0
+                        };
+                    }
+                    productSalesMap[item.code].qty += item.qty;
+                    productSalesMap[item.code].revenue += (item.price * item.qty);
+                });
+            });
+
+            document.getElementById('owner-stat-netsales').innerText = totalNetSales.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('owner-stat-bills').innerText = filteredBills.length + " บิล";
+            document.getElementById('owner-stat-discounts').innerText = `ส่วนลดรวม: ${totalDiscountVal.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿`;
+            document.getElementById('owner-stat-vat').innerText = totalVatVal.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            document.getElementById('pay-summary-cash').innerText = paymentTotals.cash.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-transfer').innerText = paymentTotals.transfer.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-credit').innerText = paymentTotals.credit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('pay-summary-debt').innerText = paymentTotals.debt.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            document.getElementById('peak-morning').innerText = peakMorning + " รายการบิล";
+            document.getElementById('peak-afternoon').innerText = peakAfternoon + " รายการบิล";
+            document.getElementById('peak-evening').innerText = peakEvening + " รายการบิล";
+
+            // Render Expiring Inventory & Promotion Actions
+            const expiringTbody = document.getElementById('ownerExpiringTableBody');
+            expiringTbody.innerHTML = '';
+            if (expiringInventoryData.length === 0) {
+                expiringTbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-400 font-medium">ไม่มีสินค้าใกล้หมดอายุในขณะนี้ยอดเยี่ยมมาก!</td></tr>`;
+            } else {
+                expiringInventoryData.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-amber-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3 font-bold text-gray-900">item.name<br><spanclass="text-[10px]text-red-600font-semibold">{item.status}</span></td>
+                        <td class="p-3 text-center font-bold text-gray-700">${item.stock} ชิ้น</td>
+                        <td class="p-3 text-center font-mono text-xs text-amber-900">${item.expiry}</td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <button onclick="executeOwnerPromotion('${item.code}', 'discount')" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition shadow-sm">ลดราคา</button>
+                                <button onclick="executeOwnerPromotion('${item.code}', 'gift')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition shadow-sm">จัดเป็นของแถม</button>
+                            </div>
+                        </td>
+                    `;
+                    expiringTbody.appendChild(tr);
+                });
+            }
+
+            // Render Active Campaigns
+            const campaignTbody = document.getElementById('ownerCampaignTableBody');
+            campaignTbody.innerHTML = '';
+            if (activePromotionsData.length === 0) {
+                campaignTbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีแคมเปญโปรโมชั่นที่เปิดใช้งานในขณะนี้</td></tr>`;
+            } else {
+                activePromotionsData.forEach(camp => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-red-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3 font-bold text-gray-900">${camp.name}</td>
+                        <td class="p-3 text-center"><span class="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold border border-red-200">${camp.type}</span></td>
+                        <td class="p-3 text-right font-extrabold text-emerald-700">+${camp.revenue.toLocaleString()} ฿</td>
+                    `;
+                    campaignTbody.appendChild(tr);
+                });
+            }
+
+            const bestSellerTbody = document.getElementById('ownerBestSellerTableBody');
+            bestSellerTbody.innerHTML = '';
+            let productArray = Object.values(productSalesMap);
+            productArray.sort((a, b) => b.qty - a.qty);
+
+            if (productArray.length === 0) {
+                bestSellerTbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีข้อมูลการขายในช่วงเวลานี้</td></tr>`;
+            } else {
+                productArray.forEach((p, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-red-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3.5 font-bold text-gray-700">#${idx + 1}</td>
+                        <td class="p-3.5 font-bold text-gray-900">p.name<spanclass="text-xstext-gray-500font-mono">({p.code})</span></td>
+                        <td class="p-3.5 text-gray-600">${p.brand}</td>
+                        <td class="p-3.5 text-center font-extrabold text-red-700">${p.qty} ชิ้น</td>
+                        <td class="p-3.5 text-right font-bold text-gray-900">${p.revenue.toLocaleString('en-US', { minimumFractionDigits: 2 })} ฿</td>
+                    `;
+                    bestSellerTbody.appendChild(tr);
+                });
+            }
+
+            const auditTbody = document.getElementById('ownerAuditTableBody');
+            auditTbody.innerHTML = '';
+            if (filteredBills.length === 0) {
+                auditTbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-400 font-medium">ยังไม่มีประวัติบิลในช่วงเวลานี้</td></tr>`;
+            } else {
+                const methodMap = { cash: 'เงินสด', transfer: 'เงินโอน', credit: 'บัตรเครดิต', debt: 'ลูกหนี้', mixed: 'โอนผสมสด' };
+                filteredBills.forEach((bill, idx) => {
+                    const globalIdx = completedSalesBills.indexOf(bill);
+                    let itemNamesSummary = bill.items.map(i => `i.name({i.qty})`).join(', ');
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-red-50/50 transition';
+                    tr.innerHTML = `
+                        <td class="p-3.5">
+                            <div class="font-bold font-mono text-gray-900">${bill.taxId}</div>
+                            <div class="text-xs text-gray-500">${bill.date} ${bill.time}</div>
+                        </td>
+                        <td class="p-3.5 font-semibold text-gray-800">${bill.member}</td>
+                        <td class="p-3.5 text-xs text-gray-700 max-w-xs truncate" title="itemNamesSummary">{itemNamesSummary}</td>
+                        <td class="p-3.5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-semibold">${methodMap[bill.payMethod] || bill.payMethod}</span></td>
+                        <td class="p-3.5 text-right font-bold text-gray-900">${bill.net.toLocaleString('en-US')} ฿</td>
+                        <td class="p-3.5 text-center">
+                            <button onclick="viewBillDetail(${globalIdx})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">ตรวจสอบสลิป</button>
+                        </td>
+                    `;
+                    auditTbody.appendChild(tr);
+                });
+            }
+        }
     </script>
 </body>
 </html>
+
+
